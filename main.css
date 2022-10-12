@@ -1,0 +1,41 @@
+div.printControls {
+  background-color: #edf0ec;
+  height: 100px;
+  padding: 5px;
+  bottom: 0;
+}
+
+#printDiv {
+  float: right;
+  width: 126px;
+}
+
+#printButton {
+  display: block;
+  width: 126px;
+  height: 98px;
+  font-size: 36pt;
+  font-weight: bold;
+  border: 0;
+  color: White;
+  background-color: Transparent;
+  background-repeat: no-repeat;
+}
+
+#printButton:hover {
+  color: black;
+}
+
+#printButton:disabled {
+  color: #cccccc;
+}
+
+#printersDiv {
+  float: left;
+  margin-right: 200px;
+  margin-top: 50px;
+}
+
+#labelFileSelection {
+  margin: 0px;
+}
