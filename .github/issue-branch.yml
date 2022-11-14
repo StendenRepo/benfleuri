@@ -1,0 +1,4 @@
+branchName: full
+gitSafeReplacementChar: '-'
+branchName: '${issue.number}-${issue.title}'
+defaultBranch: 'dev'
