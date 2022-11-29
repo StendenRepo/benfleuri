@@ -36,7 +36,7 @@ model Customer {
 model Employee {
   id      Int     @id @default(autoincrement())
   name    String
-  isAdmin Boolean
+  isAdmin Boolean @default(value: false)
   orders  Order[]
 }
 
@@ -66,8 +66,8 @@ model Order {
   includeDelivery Boolean
   price           Int
   dateOfDelivery  DateTime
-  orderState      OrderState
-  orderDate       DateTime
+  orderState      OrderState    @default(OPEN)
+  orderDate       DateTime      @default(now())
   paymentMethod   PaymentMethod
   customer        Customer[]
   reciever        Reciever      @relation(fields: [recieverId], references: [id])
