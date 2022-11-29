@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Customer {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   firstName    String
   lastName     String
   adress       String
@@ -21,23 +21,27 @@ model Customer {
   postal_code  String
   streetName   String
   houseNumber  Int
+  order        Order[]
 }
 
-model CustomerOrder {
-  customerId Int
-  orderId    Int
+// model CustomerOrder {
+//   customerId Int
+//   orderId    Int
+//   customer   Customer @relation(fields: [customerId], references: [id])
+//   order      Order    @relation(fields: [orderId], references: [id])
 
-  @@id([customerId, orderId])
-}
+//   @@id([customerId, orderId])
+// }
 
 model Employee {
   id      Int     @id @default(autoincrement())
   name    String
   isAdmin Boolean
+  orders  Order[]
 }
 
 model Reciever {
-  id           Int    @id @default(autoincrement())
+  id           Int     @id @default(autoincrement())
   firstName    String
   lastName     String
   adress       String
@@ -47,6 +51,7 @@ model Reciever {
   postal_code  String
   streetName   String
   houseNumber  Int
+  Order        Order[]
 }
 
 model Order {
@@ -64,6 +69,9 @@ model Order {
   orderState      OrderState
   orderDate       DateTime
   paymentMethod   PaymentMethod
+  customer        Customer[]
+  reciever        Reciever      @relation(fields: [recieverId], references: [id])
+  Employee        Employee      @relation(fields: [employeeId], references: [id])
 }
 
 enum CardType {
