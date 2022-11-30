@@ -20,7 +20,7 @@ model Customer {
   email        String
   postal_code  String
   streetName   String
-  houseNumber  Int
+  houseNumber  String  @db.VarChar(5)
   order        Order[]
 }
 
@@ -50,7 +50,7 @@ model Reciever {
   email        String
   postal_code  String
   streetName   String
-  houseNumber  Int
+  houseNumber  String  @db.VarChar(5)
   Order        Order[]
 }
 
