@@ -14,7 +14,6 @@ model Customer {
   id           Int     @id @default(autoincrement())
   firstName    String
   lastName     String
-  adress       String
   city         String
   phone_number String
   email        String
@@ -44,7 +43,6 @@ model Reciever {
   id           Int     @id @default(autoincrement())
   firstName    String
   lastName     String
-  adress       String
   city         String
   phone_number String
   email        String
