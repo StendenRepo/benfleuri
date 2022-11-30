@@ -26,6 +26,7 @@
 .logo {
   margin: 50px;
   margin-bottom: 10px;
+  max-width: 100%;
 }
 
 .title {
@@ -65,4 +66,20 @@
 
 .button:hover {
   background-color: #45a049;
+}
+
+@media only screen and (max-width: 600px) {
+  .block {
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  .background {
+    display: none;
+  }
+
+  .container {
+    min-height: 100vh;
+    background-color: #f4f4f4;
+  }
 }
