@@ -1,5 +1,5 @@
 .container {
-  height: 900px;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -8,16 +8,18 @@
 
 .background {
   z-index: -1;
+  height: 100%;
   position: absolute;
 }
 
 .block {
+  margin-top: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #f4f4f4;
-  width: 1000px;
-  height: 600px;
+  width: 60%;
+  height: 40%;
   border-radius: 20px;
 }
 
