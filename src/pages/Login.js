@@ -26,12 +26,8 @@ export default function LoginPage() {
         </div>
         <div className={styles.form}>
           <form action='' method='post'>
-            <div>
               <input className={styles.password} type="password" />
-            </div>
-            <div>
               <button className={styles.button} type="submit">Inloggen</button>
-            </div>
           </form>
         </div>
       </div>
