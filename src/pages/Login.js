@@ -17,8 +17,8 @@ export default function LoginPage() {
         <Image
           src="/Logo.svg"
           alt="Logo van BenFleuri"
-          width={250}
-          height={250}
+          width={175}
+          height={175}
           className={styles.logo}
         />
         <div className={styles.title}>
