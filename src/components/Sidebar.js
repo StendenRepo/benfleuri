@@ -23,6 +23,7 @@ export default function sidebar() {
                         src='/heart.svg'
                         width={20}
                         height={20}
+                        className={styles.heart}
                     />
                     <p className={styles.screenName}>Dashboard</p>
                 </div>
@@ -31,6 +32,7 @@ export default function sidebar() {
                         src='/heart.svg'
                         width={20}
                         height={20}
+                        className={styles.heart}
                     />
                     <p className={styles.screenName}>Nieuwe Bestelling</p>
                 </div>
@@ -39,6 +41,7 @@ export default function sidebar() {
                         src='/heart.svg'
                         width={20}
                         height={20}
+                        className={styles.heart}
                     />
                     <p className={styles.screenName}>Bestellingen</p>
                 </div>
@@ -47,6 +50,7 @@ export default function sidebar() {
                         src='/heart.svg'
                         width={20}
                         height={20}
+                        className={styles.heart}
                     />
                     <p className={styles.screenName}>Gebruikerbeheer</p>
                 </div>
