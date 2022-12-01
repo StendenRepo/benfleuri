@@ -69,6 +69,7 @@
     border-radius: 25px;
     height: 35px;
     width: 50%;
+    color: white;
 }
 
 .screenBox:hover p {
