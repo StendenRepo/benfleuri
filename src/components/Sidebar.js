@@ -21,32 +21,32 @@ export default function sidebar() {
                 <div className={styles.screenBox}>
                     <Image
                         src='/heart.svg'
-                        width={25}
-                        height={25}
+                        width={20}
+                        height={20}
                     />
                     <p className={styles.screenName}>Dashboard</p>
                 </div>
                 <div className={styles.screenBox}>
                     <Image
                         src='/heart.svg'
-                        width={25}
-                        height={25}
+                        width={20}
+                        height={20}
                     />
                     <p className={styles.screenName}>Nieuwe Bestelling</p>
                 </div>
                 <div className={styles.screenBox}>
                     <Image
                         src='/heart.svg'
-                        width={25}
-                        height={25}
+                        width={20}
+                        height={20}
                     />
                     <p className={styles.screenName}>Bestellingen</p>
                 </div>
                 <div className={styles.screenBox}>
                     <Image
                         src='/heart.svg'
-                        width={25}
-                        height={25}
+                        width={20}
+                        height={20}
                     />
                     <p className={styles.screenName}>Gebruikerbeheer</p>
                 </div>
