@@ -14,12 +14,12 @@ model Customer {
   id           Int     @id @default(autoincrement())
   firstName    String
   lastName     String
-  city         String
-  phone_number String
-  email        String
-  postal_code  String  @db.VarChar(6)
-  streetName   String
-  houseNumber  String  @db.VarChar(6)
+  city         String?
+  phone_number String?
+  email        String?
+  postal_code  String? @db.VarChar(6)
+  streetName   String?
+  houseNumber  String? @db.VarChar(6)
   order        Order[]
 }
 
@@ -46,7 +46,6 @@ model Reciever {
   lastName     String
   city         String
   phone_number String
-  email        String
   postal_code  String  @db.VarChar(6)
   streetName   String
   houseNumber  String  @db.VarChar(6)
