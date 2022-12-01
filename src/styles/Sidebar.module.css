@@ -82,3 +82,7 @@
 .screenBox:hover .heart {
     filter: grayscale(0%);
 }
+
+.logoutButton:hover {
+    background-color: #009a40be;
+}
