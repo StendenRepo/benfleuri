@@ -1,0 +1,46 @@
+.container {
+    background-color: white;
+    width: 20%;
+    height: 100vh;
+    box-shadow: 2px 0px 10px grey;
+}
+
+.imagecontainer {
+    display: flex;
+    justify-content: center;
+}
+
+.logo {
+    margin-top: 20px;
+}
+
+.welcomeText {
+    overflow: hidden;
+    font-size: 20px;
+    color: black;
+    margin: 15px 0 3px 10px;
+}
+
+.admin {
+    color: grey;
+    font-size: 16px;
+    margin: 0 0 20px 10px;
+}
+
+.hr {
+    border-top: 1px solid lightgray;
+    opacity: 0.2;
+}
+
+.screenBox {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.screenName {
+    padding: 0 0 5px 40px;
+    color: black;
+    font-size: 16px;
+}
