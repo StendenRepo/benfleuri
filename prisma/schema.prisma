@@ -17,9 +17,9 @@ model Customer {
   city         String
   phone_number String
   email        String
-  postal_code  String
+  postal_code  String  @db.VarChar(6)
   streetName   String
-  houseNumber  String  @db.VarChar(5)
+  houseNumber  String  @db.VarChar(6)
   order        Order[]
 }
 
@@ -33,10 +33,11 @@ model Customer {
 // }
 
 model Employee {
-  id      Int     @id @default(autoincrement())
-  name    String
-  isAdmin Boolean @default(value: false)
-  orders  Order[]
+  id       Int     @id @default(autoincrement())
+  name     String
+  isAdmin  Boolean @default(value: false)
+  password String
+  orders   Order[]
 }
 
 model Reciever {
@@ -46,9 +47,9 @@ model Reciever {
   city         String
   phone_number String
   email        String
-  postal_code  String
+  postal_code  String  @db.VarChar(6)
   streetName   String
-  houseNumber  String  @db.VarChar(5)
+  houseNumber  String  @db.VarChar(6)
   Order        Order[]
 }
 
