@@ -55,6 +55,9 @@ export default function sidebar() {
                     <p className={styles.screenName}>Gebruikerbeheer</p>
                 </div>
             </div>
+            <div className={styles.logoutContainer}>
+                <button className={styles.logoutButton}>Logout</button>
+            </div>
         </div>
     )
 }

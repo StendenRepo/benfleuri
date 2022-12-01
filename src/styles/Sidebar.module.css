@@ -1,6 +1,6 @@
 .container {
     background-color: white;
-    width: 15%;
+    width: 14rem;
     height: 100vh;
     box-shadow: 2px 0px 10px grey;
 }
@@ -30,13 +30,19 @@
 .hr {
     border-top: 1px solid lightgray;
     opacity: 0.2;
+    margin: 0;
+}
+
+.pages {
+    display: flex;
+    flex-direction: column;
 }
 
 .screenBox {
     display: flex;
-    flex-direction: row;
     align-items: center;
     padding-left: 10px;
+    margin-top: 0;
 }
 
 .heart {
@@ -50,6 +56,21 @@
     font-size: 14px;
 }
 
+.logoutContainer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: calc(100vh - 425px);
+}
+
+.logoutButton {
+    background-color: #009A40;
+    border: 0;
+    border-radius: 25px;
+    height: 35px;
+    width: 50%;
+}
+
 .screenBox:hover p {
     color: #009A40;
 }
@@ -58,7 +79,6 @@
     background-color: #009a4040;
 }
 
-.screenBox:hover .heart{
+.screenBox:hover .heart {
     filter: grayscale(0%);
 }
-
