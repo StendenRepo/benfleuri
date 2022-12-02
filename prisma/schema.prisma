@@ -23,15 +23,6 @@ model Customer {
   order        Order[]
 }
 
-// model CustomerOrder {
-//   customerId Int
-//   orderId    Int
-//   customer   Customer @relation(fields: [customerId], references: [id])
-//   order      Order    @relation(fields: [orderId], references: [id])
-
-//   @@id([customerId, orderId])
-// }
-
 model Employee {
   id       Int     @id @default(autoincrement())
   name     String
