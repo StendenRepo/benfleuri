@@ -3,7 +3,21 @@
     width: 14rem;
     height: 100vh;
     box-shadow: 2px 0px 10px grey;
-    overflow: scroll;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container::-webkit-scrollbar {
+    width: 4px;
+    height: 7px;
+    background-color: transparent
+}
+
+.container::-webkit-scrollbar-thumb {
+    background-color: gray;
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
 }
 
 .imagecontainer {
