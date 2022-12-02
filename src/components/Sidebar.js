@@ -54,6 +54,15 @@ export default function sidebar() {
                     />
                     <p className={styles.screenName}>Gebruikerbeheer</p>
                 </div>
+                <div className={styles.screenBox}>
+                    <Image
+                        src='/heart.svg'
+                        width={20}
+                        height={20}
+                        className={styles.heart}
+                    />
+                    <p className={styles.screenName}>Klanten</p>
+                </div>
             </div>
             <div className={styles.logoutContainer}>
                 <button className={styles.logoutButton}>Logout</button>

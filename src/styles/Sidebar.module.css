@@ -3,6 +3,7 @@
     width: 14rem;
     height: 100vh;
     box-shadow: 2px 0px 10px grey;
+    overflow: scroll;
 }
 
 .imagecontainer {
@@ -60,7 +61,8 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    height: calc(100vh - 425px);
+    margin-top: 30px;
+    height: calc(100vh - 500px);
 }
 
 .logoutButton {
