@@ -1,7 +1,7 @@
 import styles from "../styles/Sidebar.module.css"
 import Image from 'next/image'
 
-export default function sidebar() {
+export default function Sidebar() {
     return (
         <div className={styles.container}>
             <div className={styles.imagecontainer}>
