@@ -1,4 +1,4 @@
-import styles from '../styles/createUser.module.css';
+import styles from '../styles/changeUser.module.css';
 
 export default function CreateUser() {
   return (
@@ -25,12 +25,12 @@ export default function CreateUser() {
               Beheer
             </h3>
           </a>
-          <h1>Nieuwe gebruiker</h1>
+          <h1>Wijzigen</h1>
         </div>
         <hr className={styles.line}></hr>
         <div className={styles.main}>
           <div className={styles.header}>
-            <p>Gebruiker aanmaken</p>
+            <p>Gebruiker wijzigen</p>
           </div>
           <form className={styles.form}>
             <label>Naam gebruiker</label>
@@ -58,10 +58,16 @@ export default function CreateUser() {
           </form>
           <div className={styles.buttons}>
             <button
+              type="button"
+              className={styles.button3}
+            >
+              gebruiker verwijderen
+            </button>
+            <button
               type="submit"
               className={styles.button}
             >
-              Voeg gebruiker
+              Wijzigen
             </button>
             <button
               type="button"
