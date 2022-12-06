@@ -40,25 +40,25 @@ This section will explain the installation and setup of postgreSQL and prisma to
 ## PostgreSQL
 
 1. Download postgreSQL here: https://www.postgresql.org/download/
-2. Follow the steps from the installer and finish the installation (No need to launch stackbuilder at the last step)
-3. Launch pgAdmin
+2. Follow the steps from the installer and finish the installation (No need to launch `stackbuilder` at the last step)
+3. Launch `pgAdmin`
 4. Fill in the password you created when setting up postgreSQL
-5. Select Servers > PostgreSQL 15
-6. Right click on Databases and click on Create
-7. Fill in BenFleuri in the database field
+5. Select `Servers` > `PostgreSQL 15`
+6. Right click on `Databases` and click on `Create`
+7. Fill in `BenFleuri` in the database field
 8. Click on Save
 
 You now have an empty database in postgreSQL
 
 ## Prisma connection
 
-1. Go to the .env file in this directory
-2. In the DATABASE_URL, replace johndoe with postgres
-3. Replace randompassword with the password you created for postgres
-4. Replace mydb with BenFleuri
+1. Go to the `.env` file in this directory
+2. In the `DATABASE_URL`, replace `johndoe` with `postgres`
+3. Replace `randompassword` with the password you created for postgres
+4. Replace `mydb` with `BenFleuri`
 
 ## Importing database
 
-In the terminal, use the command npx prisma migrate dev
+Navigate to the BenFleuri repo in the terminal and use the command `npx prisma migrate dev`
 
-This will import all the models from the prisma schema into the postgreSQL database
+**This will import all the models from the prisma schema into the postgreSQL database**
