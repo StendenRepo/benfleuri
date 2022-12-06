@@ -131,9 +131,12 @@
   flex-direction: column;
 }
 
+.radio {
+  width: 50%;
+}
+
 .inputRadio {
-  color: #009a42;
-  background-color: #009a42;
+  accent-color: green;
 }
 
 .dropdown {
