@@ -18,64 +18,68 @@ export default function viewOrder() {
         <div className={styles.cardHeader}>
           <p className={styles.cardTitle}>Bestelling gegevens</p>
         </div>
-
-
         <div className={styles.orderData}>
           <div className={styles.section}>
             <h3>Besteller</h3>
             <form action="" method="POST">
               <div className={styles.formRow}>
                 <div className={styles.labelInput}>
-                  <label for="naamOpdrachtgever">Naam opdrachtgever</label>
+                  <label className={styles.label} for="naamOpdrachtgever">Naam opdrachtgever</label>
                   <input className={styles.input} type="text" name="naamOpdrachtgever" id="naamOpdrachtgever"></input>
                 </div>
+              </div>
+              <div className={styles.formRow}>
                 <div className={styles.labelInput}>
-                  <label for="naamContactpersoon">Naam contactpersoon</label>
-                  <input className={styles.input} type="text" name="naamContactpersoon" id="naamContactpersoon"></input>
+                    <label className={styles.label} for="naamContactpersoon">Naam contactpersoon</label>
+                    <input className={styles.input} type="text" name="naamContactpersoon" id="naamContactpersoon"></input>
+                  </div>
+                  <div className={styles.labelInput}>
+                    <label className={styles.label} for="naamContactpersoon">Achternaam</label>
+                    <input className={styles.input} type="text" name="naamContactpersoon" id="naamContactpersoon"></input>
                 </div>
               </div>
               <div className={styles.formRow}>
                   <div className={styles.labelInputMedium}>
-                    <label for="straatnaam">Straatnaam</label>
+                    <label className={styles.label} for="straatnaam">Straatnaam</label>
                     <input className={styles.input} type="text" name="straatnaam" id="straatnaam"></input>
                   </div>
                   <div className={styles.labelInputShort}>
-                    <label for="nummer">Nummer</label>
+                    <label className={styles.label} for="nummer">Nummer</label>
                     <input className={styles.input} type="text" name="nummer" id="nummer"></input>
                   </div>
                   <div className={styles.labelInputShort}>
-                    <label for="postcode">Postcode</label>
+                    <label className={styles.label} for="postcode">Postcode</label>
                     <input className={styles.input} type="text" name="postcode" id="postcode"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputLong}>
-                    <label for="plaatsnaam">Plaatsnaam</label>
+                    <label className={styles.label} for="plaatsnaam">Plaatsnaam</label>
                     <input className={styles.input} type="text" name="plaatsnaam" id="plaatsnaam"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputLong}>
-                    <label for="telefoonnummer">Telefoonnummer</label>
+                    <label className={styles.label} for="telefoonnummer">Telefoonnummer</label>
                     <input className={styles.input} type="text" name="telefoonnummer" id="telefoonnummer"></input>
                   </div>
                 </div>
                 <div className={styles.formRowRadio}>
-                  <label>Bezorgkosten</label>
+                  <label className={styles.label}>Bezorgkosten</label>
                    <div className={styles.radio}>
                       <input className={styles.inputRadio} type="radio" name="bezorgkosten" id="ja" value="ja"></input>
-                      <label for="ja">ja</label>
+                      <label className={styles.label} for="ja">ja</label>
                       <input className={styles.inputRadio} type="radio" name="bezorgkosten" id="nee" value="nee"></input>
-                      <label for="nee">nee</label>
+                      <label className={styles.label} for="nee">nee</label>
                    </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInput}>
-                    <label for="datumBezorging">datum van bezorging</label>
+                    <label className={styles.label} for="datumBezorging">Datum van bezorging</label>
                     <input className={styles.input} type="date" name="datumBezorging" id="datumBezorging"></input>
                   </div>
                   <div className={styles.labelInput}>
-                    <label for="verzending">Type verzending</label>
+                    <label className={styles.label} for="verzending">Type verzending</label>
                     <select className={styles.dropdown}name="verzending" id="verzending">
                       <option value="bezorging">Bezorging</option>
                       <option value="afhalen">Afhalen</option>
@@ -90,47 +94,47 @@ export default function viewOrder() {
               <form action="" method="POST">
                 <div className={styles.formRow}>
                   <div className={styles.labelInput}>
-                    <label for="naamOpdrachtgever">Naam opdrachtgever</label>
+                    <label className={styles.label} for="naamOpdrachtgever">Naam opdrachtgever</label>
                     <input className={styles.input} type="text" name="naamOpdrachtgever" id="naamOpdrachtgever"></input>
                   </div>
                   <div className={styles.labelInput}>
-                    <label for="naamContactpersoon">Naam contactpersoon</label>
+                    <label className={styles.label} for="naamContactpersoon">Naam contactpersoon</label>
                     <input className={styles.input} type="text" name="naamContactpersoon" id="naamContactpersoon"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputMedium}>
-                    <label for="straatnaam">Straatnaam</label>
+                    <label className={styles.label} for="straatnaam">Straatnaam</label>
                     <input className={styles.input} type="text" name="straatnaam" id="straatnaam"></input>
                   </div>
                   <div className={styles.labelInputShort}>
-                    <label for="nummer">Nummer</label>
+                    <label className={styles.label} for="nummer">Nummer</label>
                     <input className={styles.input} type="text" name="nummer" id="nummer"></input>
                   </div>
                   <div className={styles.labelInputShort}>
-                    <label for="postcode">Postcode</label>
+                    <label className={styles.label} for="postcode">Postcode</label>
                     <input className={styles.input} type="text" name="postcode" id="postcode"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputLong}>
-                    <label for="plaatsnaam">Plaatsnaam</label>
+                    <label className={styles.label} for="plaatsnaam">Plaatsnaam</label>
                     <input className={styles.input} type="text" name="plaatsnaam" id="plaatsnaam"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputLong}>
-                    <label for="telefoonnummer">Telefoonnummer</label>
+                    <label className={styles.label} for="telefoonnummer">Telefoonnummer</label>
                     <input className={styles.input} type="text" name="telefoonnummer" id="telefoonnummer"></input>
                   </div>
                 </div>
                 <div className={styles.formRow}>
                   <div className={styles.labelInputShort}>
-                    <label for="prijs">Prijs bestelling</label>
+                    <label className={styles.label} for="prijs">Prijs bestelling</label>
                     <input className={styles.input} type="text" name="prijs" id="prijs"></input>
                   </div>
                   <div className={styles.labelInputShort}>
-                    <label for="prijsTotaal">Prijs totaal</label>
+                    <label className={styles.label} for="prijsTotaal">Prijs totaal</label>
                     <input className={styles.input} type="text" name="prijsTotaal" id="prijsTotaal"></input>
                   </div>
                 </div>
@@ -142,15 +146,15 @@ export default function viewOrder() {
           <div className={styles.section}>
             <h3>Product</h3>
             <div className={styles.labelInputLong}>
-              <label for="omschrijvingBestelling">Omschrijving bestelling</label>
+              <label className={styles.label} for="omschrijvingBestelling">Omschrijving bestelling</label>
               <textarea className={styles.textarea} type="text" name="omschrijvingBestelling" id="omschrijvingBestelling"></textarea>
             </div>
             <div className={styles.labelInputLong}>
-              <label for="tekstKaartje">Optionele tekst voor op het kaartje</label>
+              <label className={styles.label} for="tekstKaartje">Optionele tekst voor op het kaartje</label>
               <textarea className={styles.textarea} type="text" name="tekstKaartje" id="tekstKaartje"></textarea>
             </div>
             <div className={styles.labelInputLong}>
-              <label for="bijzonderheden">Bijzonderheden</label>
+              <label className={styles.label} for="bijzonderheden">Bijzonderheden</label>
               <textarea className={styles.textarea} type="text" name="bijzonderheden" id="bijzonderheden"></textarea>
             </div>
           </div>
@@ -158,34 +162,34 @@ export default function viewOrder() {
           <div className={styles.section}>
            <h3>Afhandeling</h3>
            <div className={styles.formRowSmall}>
-            <label for="aangenomen">Aangenomen door:</label>
+            <label className={styles.label} for="aangenomen">Aangenomen door:</label>
               <select className={styles.dropdown}name="aangenomen" id="aangenomen">
                 <option value="bernhardus">Bernhadus Annen</option>
-                <option value="Medewerker1">Medewerker1</option>
-                <option value="Medewerker2">Medewerker2</option>
+                <option value="medewerker1">Medewerker1</option>
+                <option value="medewerker2">Medewerker2</option>
               </select> 
            </div>
            <div className={styles.formRowSmall}>
-            <label for="behandeling">In behandeling door:</label>
+            <label className={styles.label} for="behandeling">In behandeling door:</label>
               <select className={styles.dropdown}name="behandeling" id="behandeling">
                 <option value="bernhardus">Bernhadus Annen</option>
-                <option value="Medewerker1">Medewerker1</option>
-                <option value="Medewerker2">Medewerker2</option>
+                <option value="medewerker1">Medewerker1</option>
+                <option value="medewerker2">Medewerker2</option>
               </select> 
            </div>
            <div className={styles.formRowSmall}>
-            <label>Status bestelling:</label>
+            <label className={styles.label}>Status bestelling:</label>
            </div>
            <div className={styles.formRowSmall}>
-            <button>Markeren als verzonden</button>
-            <button>Geleverd maar niet thuis</button>
+            <button className={styles.buttonVerzonden}>Markeren als verzonden</button>
+            <button className={styles.buttonNietThuis}>Geleverd maar niet thuis</button>
            </div>
            <div className={styles.formRowSmall}>
-            <button>Markeren als voltooid</button>
+            <button className={styles.buttonVoltooid}>Markeren als voltooid</button>
            </div>
            <div className={styles.printRow}>
-            <button>Tekst kaartje uitprinten</button>
-            <button>Adres uitprinten</button>
+            <button className={styles.buttonPrinten}>Tekst kaartje uitprinten</button>
+            <button className={styles.buttonPrinten}>Adres uitprinten</button>
            </div>
           </div>
         </div>

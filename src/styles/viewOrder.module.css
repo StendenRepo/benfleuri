@@ -82,6 +82,10 @@
     flex-direction: column;
 }
 
+.label{
+    margin-top:8px;
+}
+
 .input{
     background-color:white;
     color:black;
@@ -122,7 +126,7 @@
     
 }
 
-.inputRadio{
+.inputRadio:focus{
     color: #009A42;
     background-color: #009A42;
 }
@@ -134,4 +138,37 @@
 
 .section{
     width:45%;
+}
+
+.buttonVerzonden{
+    border:none;
+    border-radius:2px;
+    background-color:#FFCA3F;
+    color:white;
+}
+
+.buttonVoltooid{
+    border:none;
+    border-radius:2px;
+    background-color:#00A952;
+    color:white;
+}
+
+.buttonPrinten{
+    border:none;
+    border-radius:2px;
+    background-color:#5DA4E4;
+    color:white;
+}
+
+.buttonNietThuis{
+    border:none;
+    border-radius:2px;
+    background-color:#EF790C;
+    color:white;
+}
+
+/* phonesize */
+@media only screen and (max-width: 600px) {
+
 }
