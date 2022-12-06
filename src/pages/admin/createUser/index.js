@@ -1,8 +1,10 @@
 import styles from '../../../styles/createUser.module.css';
+import Sidebar from '../../../components/Sidebar.js';
 
 export default function CreateUser() {
   return (
     <>
+      <Sidebar />
       <div className={styles.container}>
         <div className={styles.navbar}>
           <a href="index.js">
