@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import styles from '../styles/EditCustomer.module.css'
 
 export default function EditCustomerPage() {
@@ -13,49 +12,45 @@ export default function EditCustomerPage() {
             <form action='' method='post' className={styles.blockForm}>
                 <div className={styles.formInputs}></div>
                     <div className={styles.formRow}>
-                        <label className={styles.inputLabel}>
+                        <label className={ `${styles.inputLabel} ${styles.inputLabelFullWidth}` }>
                             Naam opdrachtgever (optioneel)
                             <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
                         </label>
-                        <label className={styles.inputLabel}>
-                            Naam
-                            <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
-                        </label>
-                        <label className={styles.inputLabel}>
-                            Achternaam
-                            <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
-                        </label>
                     </div>
+                <div className={styles.formRow}>
+                    <label className={ `${styles.inputLabel} ${styles.inputLabelHalfWidth}` }>
+                        Naam
+                        <input name="customer-firstname" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
+                    </label>
+                    <label className={ `${styles.inputLabel} ${styles.inputLabelHalfWidth}` }>
+                        Achternaam
+                        <input name="customer-lastname" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
+                    </label>
+                </div>
                     <div className={styles.formRow}>
-                        <label className={styles.inputLabel}>
+                        <label className={ `${styles.inputLabel} ${styles.inputLabelHalfWidth}` }>
                             Straatnaam
-                            <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
+                            <input name="address" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
                         </label>
-                        <label className={ `${styles.inputLabel} ${styles.inputLabelRightAlign}` }>
+                        <label className={ `${styles.inputLabel} ${styles.inputNumber}` }>
                             Nummer
-                            <input name="client-name" className={ `${styles.inputNumber} ${styles.inputField}` } type="text" />
+                            <input name="house-number" className={ `${styles.inputField}` } type="text" />
                         </label>
-                        <label className={ `${styles.inputLabel} ${styles.inputLabelRightAlign}` }>
+                        <label className={ `${styles.inputLabel} ${styles.inputPostal}` }>
                             Postcode
-                            <input name="client-name" className={ `${styles.inputPostal} ${styles.inputField}` } type="text" />
+                            <input name="postal_code" className={ `${styles.inputField}` } type="text" />
                         </label>
                     </div>
                 <div className={styles.formRow}>
                     <label className={ `${styles.inputLabel} ${styles.inputLabelFullWidth}` }>
                         Plaats
-                        <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
+                        <input name="residence" className={ `${styles.inputName} ${styles.inputField}` } type="text" />
                     </label>
                 </div>
                 <div className={styles.formRow}>
                     <label className={ `${styles.inputLabel} ${styles.inputLabelFullWidth}` }>
                         Telefoon Nr
-                        <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="tel" />
-                    </label>
-                </div>
-                <div className={styles.formRow}>
-                    <label className={ `${styles.inputLabel} ${styles.inputLabelFullWidth}` }>
-                        Email
-                        <input name="client-name" className={ `${styles.inputName} ${styles.inputField}` } type="email" />
+                        <input name="phone" className={ `${styles.inputName} ${styles.inputField}` } type="tel" />
                     </label>
                 </div>
 

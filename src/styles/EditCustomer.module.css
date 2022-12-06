@@ -19,12 +19,12 @@
     font-family: Roboto serif;
 }
 
-.inputLabelRightAlign{
-    margin-left: auto;
-}
-
 .inputLabelFullWidth {
     flex-grow: 1;
+}
+
+.inputLabelHalfWidth {
+    width: 48%;
 }
 
 .inputLabelFullWidth input {
@@ -34,6 +34,7 @@
 .inputField {
     color: black;
     background-color: #FFFF;
+    width: 100%;
     font-family: Roboto serif;
     height: 25px;
     border: #ADADAE 1px solid;
@@ -45,15 +46,15 @@
 }
 
 .inputName{
-    /*width: 200px;*/
+    width: 100%;
 }
 
-.inputNumber{
-    width: 50px;
+.inputNumber {
+    width: 10%;
 }
 
-.inputPostal{
-    width: 80px;
+.inputPostal {
+    width: 15%;
 }
 
 
@@ -67,6 +68,7 @@
     justify-content: center;
     display: flex;
     column-gap: 50px;
+    max-width: 900px;
 }
 
 .blockForm {
@@ -74,9 +76,11 @@
     flex-direction: column;
     row-gap: 20px;
     width: 80%;
+    max-width: 900px;
 }
 
 .formInputs {
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -96,10 +100,7 @@
     width: 80%;
     height: 10%;
     border-radius: 20px 20px 0 0;
-}
-
-.inputSection {
-
+    max-width: 900px;
 }
 
 .inputHeader{
@@ -111,6 +112,8 @@
     font-family: Roboto, serif;
 }
 
+
+
 /*.form {
     display: flex;
     flex-direction: column;
@@ -118,10 +121,10 @@
 }*/
 
 
+
 .formRow {
     display: flex;
     column-gap: 10px;
-    flex-direction: row;
     justify-content: space-between;
 }
 
@@ -163,4 +166,30 @@
     background-color: black;
     color: white;
     cursor: pointer;
+}
+
+@media only screen and (max-width: 900px) {
+
+    .inputLabel, .inputLabelHalfWidth, .inputNumber, .inputPostal{
+        width: 100%;
+        padding-top: 10px;
+    }
+
+    .formButtons {
+        justify-content: center;
+        padding-top: 20px;
+    }
+
+    .formRow {
+        flex-wrap: wrap;
+        column-gap: 0;
+    }
+
+    .block{
+        padding: 2% 0 2% 0;
+    }
+
+    .blockForm {
+        row-gap: 0;
+    }
 }
