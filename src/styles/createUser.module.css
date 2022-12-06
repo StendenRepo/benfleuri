@@ -1,5 +1,9 @@
 .container {
     font-family: 'Roboto', sans-serif, Arial, Helvetica;
+    background-color: white;
+    margin-top: 3%;
+    margin-left: 1%;
+    width: max-content;
 }
 .navbar{
     color: black;
@@ -35,7 +39,6 @@
     height: 100%;
     width: 90%;
     margin: 0 auto;
-    background-color: white;
 }
 .button{
     background-color: #009A42;

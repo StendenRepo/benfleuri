@@ -1,5 +1,10 @@
 .container {
   padding: 0;
-  background-color: #f4f4f4;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
 }
 
