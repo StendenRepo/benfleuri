@@ -1,0 +1,166 @@
+.container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.background {
+    z-index: -1;
+    height: 100%;
+    position: absolute;
+}
+
+.inputField, .inputLabel {
+    display: block;
+    color: black;
+    font-family: Roboto serif;
+}
+
+.inputLabelRightAlign{
+    margin-left: auto;
+}
+
+.inputLabelFullWidth {
+    flex-grow: 1;
+}
+
+.inputLabelFullWidth input {
+    width: 100%;
+}
+
+.inputField {
+    color: black;
+    background-color: #FFFF;
+    font-family: Roboto serif;
+    height: 25px;
+    border: #ADADAE 1px solid;
+}
+
+.inputLabel{
+    font-size: 12px;
+    color: #39383A;
+}
+
+.inputName{
+    /*width: 200px;*/
+}
+
+.inputNumber{
+    width: 50px;
+}
+
+.inputPostal{
+    width: 80px;
+}
+
+
+.block {
+    background-color: #f4f4f4;
+    width: 80%;
+    height: 30%;
+    border-radius: 0 0 20px 20px;
+    padding: 0 5% 2% 5%;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    column-gap: 50px;
+}
+
+.blockForm {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 80%;
+}
+
+.formInputs {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.topBlock{
+    margin-top: 5%;
+    padding-left: 5%;
+    padding-right: 5%;
+    color: black;
+    font-family: Roboto serif;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #DEF2E6;
+    width: 80%;
+    height: 10%;
+    border-radius: 20px 20px 0 0;
+}
+
+.inputSection {
+
+}
+
+.inputHeader{
+    text-align: left;
+    font-weight: bold;
+    font-size: 20px;
+    color: black;
+    margin-bottom: 5%;
+    font-family: Roboto, serif;
+}
+
+/*.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}*/
+
+
+.formRow {
+    display: flex;
+    column-gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.formButtons {
+    display: flex;
+    column-gap: 10px;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.formButtons button {
+    display: block;
+}
+
+.submitButton {
+    padding: 10px;
+    border: 0;
+    border-radius: 5px;
+    background-color: #00A952;
+    color: white;
+    font-weight: bold;
+}
+
+.submitButton:hover {
+    background-color: #45a049;
+    cursor: pointer;
+}
+
+.cancelButton {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+    font-weight: bold;
+}
+
+.cancelButton:hover {
+    background-color: black;
+    color: white;
+    cursor: pointer;
+}
