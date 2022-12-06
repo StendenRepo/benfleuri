@@ -5,6 +5,7 @@
     box-shadow: 2px 0px 10px grey;
     overflow-y: auto;
     overflow-x: hidden;
+    display: inline-block;
 }
 
 .container::-webkit-scrollbar {

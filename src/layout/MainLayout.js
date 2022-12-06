@@ -1,16 +1,18 @@
-import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Layout.module.css';
-import Sidebar from '../components/Sidebar.js';
+import classNames from 'classnames';
+import Sidebar from '../components/sidebar';
 
-export default function MainLayout({ children }) {
+export default function MainLayout({ children, useContainer = true }) {
   return (
     <div className="flex">
-      <Head>
-        <title>BenFleuri</title>
-      </Head>
       <Sidebar />
-      <main>{children}</main>
+      <main
+        className={classNames(
+          useContainer && 'container',
+          'mx-auto flex flex-col min-h-screen'
+        )}
+      >
+        {children}
+      </main>
     </div>
   );
 }
