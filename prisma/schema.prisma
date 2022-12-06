@@ -15,7 +15,7 @@ model Customer {
   firstName    String
   lastName     String
   city         String?
-  phone_number String?
+  phone_number String
   email        String?
   postal_code  String? @db.VarChar(6)
   streetName   String?
@@ -53,7 +53,7 @@ model Order {
   extraInfo       String
   cardType        CardType
   includeDelivery Boolean
-  price           Int
+  price           Decimal       @db.Decimal(2, 2)
   dateOfDelivery  DateTime
   orderState      OrderState    @default(OPEN)
   orderDate       DateTime      @default(now())
