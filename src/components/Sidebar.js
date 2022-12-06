@@ -10,6 +10,7 @@ export default function Sidebar() {
           width={100}
           height={100}
           className={styles.logo}
+          alt="Benfleuri-icon"
         />
       </div>
       <div>
@@ -24,6 +25,7 @@ export default function Sidebar() {
             width={20}
             height={20}
             className={styles.heart}
+            alt="Icon"
           />
           <p className={styles.screenName}>Dashboard</p>
         </div>
@@ -33,6 +35,7 @@ export default function Sidebar() {
             width={20}
             height={20}
             className={styles.heart}
+            alt="Icon"
           />
           <p className={styles.screenName}>Nieuwe Bestelling</p>
         </div>
@@ -42,6 +45,7 @@ export default function Sidebar() {
             width={20}
             height={20}
             className={styles.heart}
+            alt="Icon"
           />
           <p className={styles.screenName}>Bestellingen</p>
         </div>
@@ -51,6 +55,7 @@ export default function Sidebar() {
             width={20}
             height={20}
             className={styles.heart}
+            alt="Icon"
           />
           <p className={styles.screenName}>Gebruikerbeheer</p>
         </div>
@@ -60,6 +65,7 @@ export default function Sidebar() {
             width={20}
             height={20}
             className={styles.heart}
+            alt="Icon"
           />
           <p className={styles.screenName}>Klanten</p>
         </div>
