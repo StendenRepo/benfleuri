@@ -3,8 +3,8 @@ import Image from 'next/image';
 
 export default function Sidebar() {
   return (
-    <div className={styles.container}>
-      <div className={styles.imagecontainer}>
+    <div className="z-1 bg-white w-60 h-screen shadow-lg shadow-black ">
+      <div className="flex justify-center">
         <Image
           src="/Logo.svg"
           width={100}
