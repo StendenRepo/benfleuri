@@ -33,6 +33,7 @@
   color: black;
   width: 150px;
   height: 50px;
+  cursor: pointer;
 }
 
 /* Form card */
@@ -82,9 +83,19 @@
   justify-content: space-between;
 }
 
+.kaartSection {
+  margin-top: 90px;
+}
+
 .formRowRadio {
   display: flex;
   flex-direction: column;
+}
+
+.formRowRadioExtra {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
 }
 
 .label {
@@ -119,6 +130,12 @@
   flex-direction: column;
 }
 
+.labelInputDropdown {
+  margin-top: 50px;
+  display: flex;
+  width: 100%;
+}
+
 .labelInputMedium {
   display: flex;
   width: 55%;
@@ -141,14 +158,21 @@
 
 .dropdown {
   background-color: white;
+  margin-left: 4%;
   color: black;
+  width: 65%;
   height: 20px;
-  width: 150px;
-  margin-top: 4%;
 }
 
 .section {
   width: 45%;
+}
+
+.annuleerSection {
+  display: flex;
+  flex-direction: row-reverse;
+  margin-top: 30%;
+  width: 100%;
 }
 
 .changeStatusButtons {
@@ -205,6 +229,14 @@
   border-radius: 2px;
   background-color: #00a952;
   color: white;
+}
+
+.buttonAnnuleren {
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 4px 20px 4px 20px;
 }
 
 /* phonesize */

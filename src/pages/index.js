@@ -414,7 +414,81 @@ export default function AddOrder() {
             </div>
           </div>
 
-          <div className={styles.section}></div>
+          <div className={styles.section}>
+            <div className={styles.kaartSection}>
+              <div className={styles.formRowRadioExtra}>
+                <input
+                  className={styles.inputRadio}
+                  type="radio"
+                  name="bezorgkosten"
+                  id="gratis"
+                  value="Gratis kaartje"
+                />
+                <label
+                  className={styles.label}
+                  for="gratis"
+                >
+                  Gratis Kaartje
+                </label>
+                <input
+                  className={styles.inputRadio}
+                  type="radio"
+                  name="bezorgkosten"
+                  id="wenslintje"
+                  value="Speciaal wenslintje"
+                />
+                <label
+                  className={styles.label}
+                  for="nee"
+                >
+                  Speciaal wenslintje
+                </label>
+              </div>
+              <div className={styles.formRowRadioExtra}>
+                <input
+                  className={styles.inputRadio}
+                  type="radio"
+                  name="bezorgkosten"
+                  id="geen"
+                  value="Geen kaartje"
+                />
+                <label
+                  className={styles.label}
+                  for="geen"
+                >
+                  Geen kaartje
+                </label>
+                <input
+                  className={styles.inputRadio}
+                  type="radio"
+                  name="bezorgkosten"
+                  id="wenslintje"
+                  value="Speciaal wenslintje"
+                />
+                <label
+                  className={styles.label}
+                  for="wenslintje"
+                >
+                  Speciaal wenskaartje
+                </label>
+              </div>
+              <div className={styles.formRow}>
+                <div className={styles.labelInputDropdown}>
+                  <label for="aangenomen">Aangenomen door:</label>
+                  <select className={styles.dropdown}>
+                    <option value="Bernhardus Annen">Bernhardus Annen</option>
+                    <option value="Medewerker1">Medewerker1</option>
+                    <option value="Medewerker2">Medewerker2</option>
+                  </select>
+                </div>
+              </div>
+              <div className={styles.annuleerSection}>
+                <div className={styles.formRow}>
+                  <button className={styles.buttonAnnuleren}>Annuleren</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
