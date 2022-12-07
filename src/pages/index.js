@@ -1,11 +1,10 @@
 import MainLayout from '../layout/mainLayout';
+import CreateUser from './admin/createUser';
 
 export default function Home() {
   return (
-    <>
-      <MainLayout>
-        <h1>Dashboard</h1>
-      </MainLayout>
-    </>
+    <MainLayout>
+      <CreateUser />
+    </MainLayout>
   );
 }
