@@ -1,8 +1,9 @@
+import MainLayout from '../../../layout/MainLayout';
 import styles from '../../../styles/createUser.module.css';
 
 export default function CreateUser() {
   return (
-    <>
+    <MainLayout>
       <div className={styles.container}>
         <div className={styles.navbar}>
           <a href="index.js">
@@ -72,6 +73,6 @@ export default function CreateUser() {
           </div>
         </div>
       </div>
-    </>
+    </MainLayout>
   );
 }
