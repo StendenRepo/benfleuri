@@ -1,8 +1,19 @@
+import MainLayout from '../layout/MainLayout';
 import styles from '../styles/EditCustomer.module.css'
 
 export default function EditCustomerPage() {
     return (
+        <MainLayout>
+            <div className={styles.header}>
+                <div className={styles.navigation}>
+                    <a href={"#"}>Klantoverzicht</a>
+                </div>
+                <div className={styles.title}>
+                    Klanten
+                </div>
+            </div>
         <div className={styles.container}>
+
             <div className={styles.topBlock}>
                 <div>
                     <p>Klantgegevens</p>
@@ -55,12 +66,13 @@ export default function EditCustomerPage() {
                 </div>
 
                 <div className={styles.formButtons}>
-                    <button className={styles.submitButton} type="submit">Plaats Bestelling</button>
-                    <button className={styles.cancelButton} type="submit">Annuleren</button>
+                    <button className={styles.submitButton} type="submit">Wijzig klant</button>
+                    <a href={"#"}><button className={styles.cancelButton} type="button">Annuleren</button></a>
                 </div>
             </form>
             </div>
         </div>
+        </MainLayout>
     )
 }
 
