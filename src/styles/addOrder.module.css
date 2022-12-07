@@ -39,6 +39,7 @@
 /* Form card */
 .formCard {
   background-color: white;
+  border-radius: 10px 10px 0 0;
   display: flex;
   flex-direction: column;
   width: 70%;
@@ -157,6 +158,11 @@
 }
 
 .dropdown {
+  background-color: white;
+  color: black;
+}
+
+.dropdownAangenomen {
   background-color: white;
   margin-left: 4%;
   color: black;
@@ -309,6 +315,30 @@
     background-color: white;
     color: black;
     height: 20px;
+    width: 100%;
+  }
+
+  .dropdownAangenomen {
+    width: 100%;
+    margin: 0;
+  }
+
+  .labelInputDropdown {
+    margin-top: 50px;
+    display: flex;
+    width: 100%;
+  }
+
+  .formRowRadioExtra {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .labelInputDropdown {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
     width: 100%;
   }
 }

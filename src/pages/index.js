@@ -475,7 +475,7 @@ export default function AddOrder() {
               <div className={styles.formRow}>
                 <div className={styles.labelInputDropdown}>
                   <label for="aangenomen">Aangenomen door:</label>
-                  <select className={styles.dropdown}>
+                  <select className={styles.dropdownAangenomen}>
                     <option value="Bernhardus Annen">Bernhardus Annen</option>
                     <option value="Medewerker1">Medewerker1</option>
                     <option value="Medewerker2">Medewerker2</option>
