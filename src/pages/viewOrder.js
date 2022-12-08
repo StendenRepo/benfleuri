@@ -25,6 +25,10 @@ export default function viewOrder() {
           </button>
         </div>
       </div>
+      <div className={`border-[1px] border-red-400 flex mt-10 w-2/3 ml-[15%]`}>
+        {/*container*/}
+        <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}></div>
+      </div>
     </MainLayout>
 
     // {/* <div className={styles.formCard}>
