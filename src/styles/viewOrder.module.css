@@ -4,15 +4,14 @@
   height: 100%;
 }
 
-.header {
+/* .header {
   display: flex;
   flex-direction: column;
   width: 100%;
   justify-content: space-between;
   border-style: solid;
-  border-color: #fafafa;
-  border-bottom-color: rgb(200, 200, 200);
-}
+  border: 1px solid red;
+} */
 
 .goBack,
 .h1 {
@@ -25,7 +24,7 @@
   width: 100%;
 }
 
-.exportButton {
+/* .exportButton {
   margin-top: 20px;
   margin-right: 5%;
   border: 1px solid lightgray;
@@ -34,7 +33,7 @@
   width: 150px;
   height: 50px;
   cursor: pointer;
-}
+} */
 
 /* Form card */
 .formCard {
