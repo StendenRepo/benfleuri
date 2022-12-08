@@ -81,7 +81,7 @@ export default function Sidebar() {
           </p>
         </div>
       </div>
-      <div className="flex justify-center content-center h-2/4 items-end">
+      <div className="flex justify-center content-center h-[calc(100vh-500px)] items-end mt-5">
         <button className="bg-primary-green hover:bg-hover-green rounded-3xl h-8 w-20 text-white">
           Logout
         </button>
