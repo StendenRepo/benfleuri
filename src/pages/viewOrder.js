@@ -7,7 +7,7 @@ export default function viewOrder() {
     <MainLayout>
       {/* <div className={styles.container}> */}
       <div
-        className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px]`}
+        className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px] w-[90%]`}
       >
         <div className={`font-['Roboto'] ml-[2%] mb-[1%]`}>
           <a href={'#'}>Dashboard</a>
@@ -25,9 +25,93 @@ export default function viewOrder() {
           </button>
         </div>
       </div>
-      <div className={`border-[1px] border-red-400 flex mt-10 w-2/3 ml-[15%]`}>
-        {/*container*/}
-        <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}></div>
+      <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
+        <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}>
+          <p className={`ml-5 mt-2`}>Bestelling gegevens</p>
+        </div>
+        <div className={`border-[1px] border-green-400 w-[100%]`}>
+          {/*content card*/}
+          <div className={` w-[100%] mt-10`}>
+            {/*First row section card*/}
+            <div
+              className={`flex-col border-[1px] border-orange-400 w-[45%] ml-[2%]`}
+            >
+              {/*Besteller section*/}
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Besteller
+              </div>
+              <form
+                className={`mt-1`}
+                method="POST"
+                action=""
+              >
+                <div className={`flex flex-col`}>
+                  <label for="opdrachtgever">Naam opdrachtgever</label>
+                  <input
+                    className={`h-[25px] w-[40%]`}
+                    type="text"
+                    name="opdrachtgever"
+                    id="opdrachtgever"
+                  ></input>
+                </div>
+                <div className={`flex justify-between`}>
+                  <div className={`flex flex-col`}>
+                    <label for="voornaamContactPersoon">
+                      Voornaam contactpersoon
+                    </label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="voornaamContactPersoon"
+                      id="voornaamContactPersoon"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="achternaamContactPersoon">
+                      Achternaam contactpersoon
+                    </label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="achternaamContactPersoon"
+                      id="achternaamContactPersoon"
+                    ></input>
+                  </div>
+                </div>
+                <div className={`flex justify-between`}>
+                  <div className={`flex flex-col`}>
+                    <label for="straatnaam">Straatnaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="straatnaam"
+                      id="straatnaam"
+                    ></input>
+                  </div>
+
+                  <div className={`flex flex-col`}>
+                    <label for="nummer">Nummer</label>
+                    <input
+                      className={`h-[25px] w-[50%]`}
+                      type="text"
+                      name="nummer"
+                      id="nummer"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="postcode">Postcode</label>
+                    <input
+                      className={`h-[25px] w-[50%]`}
+                      type="text"
+                      name="postcode"
+                      id="postcode"
+                    ></input>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </MainLayout>
 
