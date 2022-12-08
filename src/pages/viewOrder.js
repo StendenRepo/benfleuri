@@ -31,11 +31,9 @@ export default function viewOrder() {
         </div>
         <div className={`border-[1px] border-green-400 w-[100%]`}>
           {/*content card*/}
-          <div className={` w-[100%] mt-10`}>
+          <div className={`w-[100%] mt-10 flex justify-between`}>
             {/*First row section card*/}
-            <div
-              className={`flex-col border-[1px] border-orange-400 w-[45%] ml-[2%]`}
-            >
+            <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
               {/*Besteller section*/}
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
@@ -48,13 +46,13 @@ export default function viewOrder() {
                 <div className={`flex flex-col`}>
                   <label for="opdrachtgever">Naam opdrachtgever</label>
                   <input
-                    className={`h-[25px] w-[40%]`}
+                    className={`h-[25px] w-[100%]`}
                     type="text"
                     name="opdrachtgever"
                     id="opdrachtgever"
                   ></input>
                 </div>
-                <div className={`flex justify-between`}>
+                <div className={`flex justify-between mt-[3%]`}>
                   <div className={`flex flex-col`}>
                     <label for="voornaamContactPersoon">
                       Voornaam contactpersoon
@@ -78,7 +76,7 @@ export default function viewOrder() {
                     ></input>
                   </div>
                 </div>
-                <div className={`flex justify-between`}>
+                <div className={`flex justify-between mt-[3%]`}>
                   <div className={`flex flex-col`}>
                     <label for="straatnaam">Straatnaam</label>
                     <input
@@ -88,23 +86,168 @@ export default function viewOrder() {
                       id="straatnaam"
                     ></input>
                   </div>
-
+                  <div className={`flex w-[40%] justify-between`}>
+                    <div className={`flex flex-col`}>
+                      <label for="nummer">Nummer</label>
+                      <input
+                        className={`h-[25px] w-[95%]`}
+                        type="text"
+                        name="nummer"
+                        id="nummer"
+                      ></input>
+                    </div>
+                    <div className={`flex flex-col`}>
+                      <label for="postcode">Postcode</label>
+                      <input
+                        className={`h-[25px] w-[100%]`}
+                        type="text"
+                        name="postcode"
+                        id="postcode"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="plaats">Plaats</label>
+                  <input
+                    className={`h-[25px] w-[100%]`}
+                    type="text"
+                    name="plaats"
+                    id="plaats"
+                  ></input>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label className={`mt-[3%]`}>Bezorgkosten</label>
+                  <div className={`flex w-[20%] justify-between`}>
+                    <div className={`flex w-[35%] justify-between`}>
+                      <input
+                        className={`accent-[#009A42]`}
+                        type="radio"
+                        name="bezorgkosten"
+                        id="ja"
+                        value="ja"
+                      ></input>
+                      <label for="ja">ja</label>
+                    </div>
+                    <div className={`flex w-[35%] justify-between`}>
+                      <input
+                        className={`accent-[#009A42]`}
+                        type="radio"
+                        name="bezorgkosten"
+                        id="nee"
+                        value="nee"
+                      ></input>
+                      <label for="nee">Nee</label>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
                   <div className={`flex flex-col`}>
-                    <label for="nummer">Nummer</label>
+                    <label for="datumBezorging">Datum van bezorging</label>
                     <input
-                      className={`h-[25px] w-[50%]`}
-                      type="text"
-                      name="nummer"
-                      id="nummer"
+                      className={`h-5`}
+                      type="date"
+                      name="datumBezorging"
+                      id="datumBezorging"
                     ></input>
                   </div>
                   <div className={`flex flex-col`}>
-                    <label for="postcode">Postcode</label>
+                    <label>Verzending</label>
+                    <select className={`border-[1px] border-gray-200`}>
+                      <option value="Bernhardus Annen">Bernhardus Annen</option>
+                      <option value="Medewerker1">Medewerker 1</option>
+                      <option value="Medewerker2">Medewerker 2</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className={`border-[1px]flex-col w-[45%] mr-[2%]`}>
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Ontvanger
+              </div>
+              <form
+                className={`mt-1`}
+                method="POST"
+                action=""
+              >
+                <div className={`flex justify-between`}>
+                  <div className={`flex flex-col`}>
+                    <label for="opdrachtgever">Naam ontvanger</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="opdrachtgever"
+                      id="opdrachtgever"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="opdrachtgever">Achternaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="opdrachtgever"
+                      id="opdrachtgever"
+                    ></input>
+                  </div>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="straatnaam">Straatnaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="straatnaam"
+                      id="straatnaam"
+                    ></input>
+                  </div>
+                  <div className={`flex w-[40%] justify-between`}>
+                    <div className={`flex flex-col`}>
+                      <label for="nummer">Nummer</label>
+                      <input
+                        className={`h-[25px] w-[95%]`}
+                        type="text"
+                        name="nummer"
+                        id="nummer"
+                      ></input>
+                    </div>
+                    <div className={`flex flex-col`}>
+                      <label for="postcode">Postcode</label>
+                      <input
+                        className={`h-[25px] w-[100%]`}
+                        type="text"
+                        name="postcode"
+                        id="postcode"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="plaats">Plaats</label>
+                  <input
+                    className={`h-[25px] w-[100%]`}
+                    type="text"
+                    name="plaats"
+                    id="plaats"
+                  ></input>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="prijsBestelling">Prijs bestelling</label>
                     <input
                       className={`h-[25px] w-[50%]`}
                       type="text"
-                      name="postcode"
-                      id="postcode"
+                      name="prijsBestelling"
+                      id="prijsBestelling"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="prijsTotaal">Prijs totaal</label>
+                    <input
+                      className={`h-[25px] w-[50%]`}
+                      type="text"
+                      name="prijsTotaal"
+                      id="prijsTotaal"
                     ></input>
                   </div>
                 </div>
