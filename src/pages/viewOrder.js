@@ -29,7 +29,7 @@ export default function viewOrder() {
         <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}>
           <p className={`ml-5 mt-2`}>Bestelling gegevens</p>
         </div>
-        <div className={`border-[1px] border-green-400 w-[100%]`}>
+        <div className={` w-[100%]`}>
           {/*content card*/}
           <div className={`w-[100%] mt-10 flex justify-between`}>
             {/*First row section card*/}
@@ -145,7 +145,7 @@ export default function viewOrder() {
                   <div className={`flex flex-col`}>
                     <label for="datumBezorging">Datum van bezorging</label>
                     <input
-                      className={`h-5`}
+                      className={`h-6`}
                       type="date"
                       name="datumBezorging"
                       id="datumBezorging"
@@ -251,7 +251,134 @@ export default function viewOrder() {
                     ></input>
                   </div>
                 </div>
+                <button
+                  className={`rounded bg-[#00A952] text-white px-2.5 py-0.5 mt-28`}
+                >
+                  Order wijzigen
+                </button>
               </form>
+            </div>
+          </div>
+          <div
+            className={`w-[100%] mt-20 flex justify-between border-t-gray-400 border-t-[1px]`}
+          >
+            <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[5%]`}>
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Product
+              </div>
+              <form>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="omschrijvingBestelling"
+                  >
+                    Omschrijving bestelling
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="omschrijvingBestelling"
+                    id="omschrijvingBestelling"
+                  ></textarea>
+                </div>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="tekstKaartje"
+                  >
+                    Optioneel tekst voor op het kaartje
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="tekstKaartje"
+                    id="tekstKaartje"
+                  ></textarea>
+                </div>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="bijzonderheden"
+                  >
+                    Bijzonderheden
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="bijzonderheden"
+                    id="bijzonderheden"
+                  ></textarea>
+                </div>
+              </form>
+              <button
+                className={`rounded bg-[#EA0101] text-white px-2.5 py-0.5 mt-7`}
+              >
+                Order verwijderen
+              </button>
+            </div>
+            <div className={`border-[1px]flex-col w-[45%] mr-[2%] mt-[5%]`}>
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Afhandeling
+              </div>
+              <form>
+                <div className={`flex w-[80%] justify-between mt-7`}>
+                  <label for="aangenomenDoor">Aangenomen door:</label>
+                  <select
+                    className={`border-[1px] border-black w-[180px] h-[30px]`}
+                    name="aangenomenDoor"
+                    id="aangenomenDoor"
+                  >
+                    <option value="Bernhardus Annen">Bernhardus Annen</option>
+                    <option value="Medewerker1">Medewerker1</option>
+                    <option value="Medewerker2">Medewerker2</option>
+                  </select>
+                </div>
+                <div className={`flex w-[80%] justify-between mt-5`}>
+                  <label for="behandelingDoor">In behandeling door:</label>
+                  <select
+                    className={`border-[1px] border-black w-[180px] h-[30px]`}
+                    name="behandelingDoor"
+                    id="behandelingDoor"
+                  >
+                    <option value="Bernhardus Annen">Bernhardus Annen</option>
+                    <option value="Medewerker1">Medewerker1</option>
+                    <option value="Medewerker2">Medewerker2</option>
+                  </select>
+                </div>
+              </form>
+              <div className={`flex justify-between w-[80%] mt-14`}>
+                <button
+                  className={`bg-[#FFCA3F] rounded text-white  px-2.5 py-0.5`}
+                >
+                  Markeren als verzonden
+                </button>
+                <button
+                  className={`bg-[#EF790C] rounded text-white  px-2.5 py-0.5`}
+                >
+                  Geleverd maar niet thuis
+                </button>
+              </div>
+              <div className={`mt-5`}>
+                <button
+                  className={`bg-[#00A952] rounded text-white  px-2.5 py-0.5`}
+                >
+                  Markeren als voltooid
+                </button>
+              </div>
+              <div
+                className={`flex flex-col w-[40%] mt-11 h-[75px] justify-between`}
+              >
+                <button
+                  className={`bg-[#5DA4E4] rounded text-white  px-2.5 py-0.5`}
+                >
+                  Tekst kaartje uitprinten
+                </button>
+                <button
+                  className={`bg-[#5DA4E4] rounded text-white  px-2.5 py-0.5`}
+                >
+                  Adres uitprinten
+                </button>
+              </div>
             </div>
           </div>
         </div>
