@@ -1,5 +1,5 @@
 import MainLayout from '../layout/mainLayout';
-import CreateUser from './admin/createUser';
+import CreateUser from './admin/createUser/createUser';
 
 export default function Home() {
   return (
