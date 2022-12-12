@@ -35,7 +35,7 @@ export default function ChangeUser() {
         <hr class="border-0 bg-[#DEF2E6] h-px w-full mt-[100px] mb-5"></hr>
         <div class="flex flex-col items-center justify-center h-full w-9/10 mx-0 my-auto">
           <div class="text-left mb-5 bg-[#def2e6] rounded-t-[25px] h-[50px] w-[90%] pl-[50px] mt-[-100px]">
-            <p>Gebruiker wijzigen</p>
+            <p class="mt-4">Gebruiker wijzigen</p>
           </div>
           <form class="w-[30%] mt-[50px]">
             <label>Naam gebruiker</label>
