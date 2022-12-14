@@ -12,7 +12,7 @@ export default function viewOrder() {
         <div className={`font-['Roboto'] ml-[2%] mb-[1%]`}>
           <a href={'#'}>Dashboard</a>
         </div>
-        <div className={`flex justify-between w-11/12 mb-3`}>
+        <div className={`flex justify-between w-12/12 mb-3`}>
           <div className={`font-['Roboto'] text-2xl font-bold`}>
             Bestelling 1
           </div>
