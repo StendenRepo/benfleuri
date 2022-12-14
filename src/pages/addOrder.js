@@ -107,13 +107,13 @@ export default function viewOrder() {
                   <div className={`flex flex-col`}>
                     <label for="straatnaam">Straatnaam</label>
                     <input
-                      className={`h-[25px] w-[100%]`}
+                      className={`h-[25px] w-[105%]`}
                       type="text"
                       name="straatnaam"
                       id="straatnaam"
                     ></input>
                   </div>
-                  <div className={`flex w-[40%] justify-between`}>
+                  <div className={`flex w-[48%] justify-between`}>
                     <div className={`flex flex-col`}>
                       <label for="nummer">Nummer</label>
                       <input
@@ -146,7 +146,7 @@ export default function viewOrder() {
                 <div className={`flex flex-col  mt-[3%]`}>
                   <label className={`mt-[3%]`}>Bezorgkosten</label>
                   <div className={`flex w-[20%] justify-between`}>
-                    <div className={`flex w-[35%] justify-between`}>
+                    <div className={`flex justify-between`}>
                       <input
                         className={`accent-[#009A42]`}
                         type="radio"
@@ -154,9 +154,14 @@ export default function viewOrder() {
                         id="ja"
                         value="ja"
                       ></input>
-                      <label for="ja">ja</label>
+                      <label
+                        className={`ml-1`}
+                        for="ja"
+                      >
+                        ja
+                      </label>
                     </div>
-                    <div className={`flex w-[35%] justify-between`}>
+                    <div className={`flex justify-between`}>
                       <input
                         className={`accent-[#009A42]`}
                         type="radio"
@@ -164,7 +169,12 @@ export default function viewOrder() {
                         id="nee"
                         value="nee"
                       ></input>
-                      <label for="nee">Nee</label>
+                      <label
+                        className={`ml-1`}
+                        for="nee"
+                      >
+                        Nee
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -238,7 +248,7 @@ export default function viewOrder() {
                       id="straatnaam"
                     ></input>
                   </div>
-                  <div className={`flex w-[40%] justify-between`}>
+                  <div className={`flex w-[45%] justify-between`}>
                     <div className={`flex flex-col`}>
                       <label for="nummer">Nummer</label>
                       <input
@@ -371,12 +381,12 @@ export default function viewOrder() {
                       className={`accent-[#009A42]`}
                       type="radio"
                       name="extra"
-                      id="wenslintje"
-                      value="wenslintje"
+                      id="geenKaartje"
+                      value="geenKaartje"
                     ></input>
                     <label
                       className={`ml-[5px]`}
-                      for="wenslintje"
+                      for="geenKaartje"
                     >
                       Geen kaartje
                     </label>
@@ -388,12 +398,12 @@ export default function viewOrder() {
                       className={`accent-[#009A42]`}
                       type="radio"
                       name="extra"
-                      id="geenKaartje"
-                      value="geenKaartje"
+                      id="wenslintje"
+                      value="wenslintje"
                     ></input>
                     <label
                       className={`ml-[5px]`}
-                      for="geenKaartje"
+                      for="wenslintje"
                     >
                       Speciaal wenslintje
                     </label>
@@ -417,7 +427,7 @@ export default function viewOrder() {
               </div>
 
               <div
-                className={`flex flex-col w-[80%] justify-between mt-[70px]`}
+                className={`flex flex-col w-[80%] justify-between mt-[45px]`}
               >
                 <label for="aangenomenDoor">Aangenomen door:</label>
                 <select
