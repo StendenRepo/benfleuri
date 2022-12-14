@@ -1,496 +1,404 @@
-import Head from 'next/head';
 import Image from 'next/image';
-import styles from '../styles/addOrder.module.css';
+import MainLayout from '../layout/MainLayout';
 
-export default function AddOrder() {
+export default function viewOrder() {
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.goBack}>
-          <p>
-            <a href="#">Dashboard</a>
-          </p>
+    <MainLayout>
+      {/* <div className={styles.container}> */}
+      <div
+        className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px] w-[90%]`}
+      >
+        <div className={`font-['Roboto'] ml-[2%] mb-[1%]`}>
+          <a href={'#'}>Dashboard</a>
         </div>
-        <div className={styles.title}>
-          <h1 className={styles.h1}>Bestelling 1</h1>
+        <div className={`flex justify-between w-12/12 mb-3`}>
+          <div className={`font-['Roboto'] text-2xl font-bold`}>
+            Voeg order toe
+          </div>
           <button
-            className={styles.exportButton}
+            className={`text-sm border-[1px] border-black rounded py-[8px] px-[20px] 
+                  font-['Roboto'] bg-white text-black cursor-pointer`}
             type="button"
           >
             Exporteer bestellingen
           </button>
         </div>
       </div>
-
-      <div className={styles.formCard}>
-        <div className={styles.cardHeader}>
-          <p className={styles.cardTitle}>Bestelling gegevens</p>
+      <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
+        <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}>
+          <p className={`ml-5 mt-2`}>Klant gegevens</p>
         </div>
-        <div className={styles.orderData}>
-          <div className={styles.section}>
-            <h3>Besteller</h3>
-            <form
-              action=""
-              method="POST"
-            >
-              <div className={styles.formRow}>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="naamOpdrachtgever"
-                  >
-                    Naam opdrachtgever
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="naamOpdrachtgever"
-                    id="naamOpdrachtgever"
-                  />
-                </div>
+        <div className={` w-[100%]`}>
+          {/*content card*/}
+          <div className={`w-[100%] mt-10 flex justify-between`}>
+            {/*First row section card*/}
+            <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
+              {/*Besteller section*/}
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Besteller
               </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="naamContactpersoon"
-                  >
-                    Naam contactpersoon
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="naamContactpersoon"
-                    id="naamContactpersoon"
-                  />
-                </div>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="naamContactpersoon"
-                  >
-                    Achternaam
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="naamContactpersoon"
-                    id="naamContactpersoon"
-                  />
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputMedium}>
-                  <label
-                    className={styles.label}
-                    for="straatnaam"
-                  >
-                    Straatnaam
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="straatnaam"
-                    id="straatnaam"
-                  />
-                </div>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="nummer"
-                  >
-                    Nummer
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="nummer"
-                    id="nummer"
-                  />
-                </div>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="postcode"
-                  >
-                    Postcode
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="postcode"
-                    id="postcode"
-                  />
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputLong}>
-                  <label
-                    className={styles.label}
-                    for="plaatsnaam"
-                  >
-                    Plaatsnaam
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="plaatsnaam"
-                    id="plaatsnaam"
-                  />
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputLong}>
-                  <label
-                    className={styles.label}
-                    for="telefoonnummer"
-                  >
-                    Telefoonnummer
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="telefoonnummer"
-                    id="telefoonnummer"
-                  />
-                </div>
-              </div>
-              <div className={styles.formRowRadio}>
-                <label className={styles.label}>Bezorgkosten</label>
-                <div className={styles.radio}>
-                  <input
-                    className={styles.inputRadio}
-                    type="radio"
-                    name="bezorgkosten"
-                    id="ja"
-                    value="ja"
-                  />
-                  <label
-                    className={styles.label}
-                    for="ja"
-                  >
-                    ja
-                  </label>
-                  <input
-                    className={styles.inputRadio}
-                    type="radio"
-                    name="bezorgkosten"
-                    id="nee"
-                    value="nee"
-                  />
-                  <label
-                    className={styles.label}
-                    for="nee"
-                  >
-                    nee
-                  </label>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="datumBezorging"
-                  >
-                    Datum van bezorging
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="date"
-                    name="datumBezorging"
-                    id="datumBezorging"
-                  ></input>
-                </div>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="verzending"
-                  >
-                    Type verzending
-                  </label>
-                  <select
-                    className={styles.dropdown}
-                    name="verzending"
-                    id="verzending"
-                  >
-                    <option value="bezorging">Bezorging</option>
-                    <option value="afhalen">Afhalen</option>
-                  </select>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div className={styles.section}>
-            <h3>Ontvanger</h3>
-            <form
-              action=""
-              method="POST"
-            >
-              <div className={styles.formRow}>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="naamOpdrachtgever"
-                  >
-                    Naam opdrachtgever
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="naamOpdrachtgever"
-                    id="naamOpdrachtgever"
-                  ></input>
-                </div>
-                <div className={styles.labelInput}>
-                  <label
-                    className={styles.label}
-                    for="naamContactpersoon"
-                  >
-                    Naam contactpersoon
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="naamContactpersoon"
-                    id="naamContactpersoon"
-                  ></input>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputMedium}>
-                  <label
-                    className={styles.label}
-                    for="straatnaam"
-                  >
-                    Straatnaam
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="straatnaam"
-                    id="straatnaam"
-                  ></input>
-                </div>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="nummer"
-                  >
-                    Nummer
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="nummer"
-                    id="nummer"
-                  ></input>
-                </div>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="postcode"
-                  >
-                    Postcode
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="postcode"
-                    id="postcode"
-                  ></input>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputLong}>
-                  <label
-                    className={styles.label}
-                    for="plaatsnaam"
-                  >
-                    Plaatsnaam
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="plaatsnaam"
-                    id="plaatsnaam"
-                  ></input>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputLong}>
-                  <label
-                    className={styles.label}
-                    for="telefoonnummer"
-                  >
-                    Telefoonnummer
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="telefoonnummer"
-                    id="telefoonnummer"
-                  ></input>
-                </div>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="prijs"
-                  >
-                    Prijs bestelling
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="prijs"
-                    id="prijs"
-                  ></input>
-                </div>
-                <div className={styles.labelInputShort}>
-                  <label
-                    className={styles.label}
-                    for="prijsTotaal"
-                  >
-                    Prijs totaal
-                  </label>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    name="prijsTotaal"
-                    id="prijsTotaal"
-                  ></input>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        <div className={styles.orderData}>
-          <div className={styles.section}>
-            <h3>Product</h3>
-            <div className={styles.labelInputLong}>
-              <label
-                className={styles.label}
-                for="omschrijvingBestelling"
+              <form
+                className={`mt-1`}
+                method="POST"
+                action=""
               >
-                Omschrijving bestelling
-              </label>
-              <textarea
-                className={styles.textarea}
-                type="text"
-                name="omschrijvingBestelling"
-                id="omschrijvingBestelling"
-              ></textarea>
+                <div className={`flex flex-col`}>
+                  <label for="opdrachtgever">Naam opdrachtgever</label>
+                  <input
+                    className={`h-[25px] w-[100%]`}
+                    type="text"
+                    name="opdrachtgever"
+                    id="opdrachtgever"
+                  ></input>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="voornaamContactPersoon">
+                      Voornaam contactpersoon
+                    </label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="voornaamContactPersoon"
+                      id="voornaamContactPersoon"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="achternaamContactPersoon">
+                      Achternaam contactpersoon
+                    </label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="achternaamContactPersoon"
+                      id="achternaamContactPersoon"
+                    ></input>
+                  </div>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="straatnaam">Straatnaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="straatnaam"
+                      id="straatnaam"
+                    ></input>
+                  </div>
+                  <div className={`flex w-[40%] justify-between`}>
+                    <div className={`flex flex-col`}>
+                      <label for="nummer">Nummer</label>
+                      <input
+                        className={`h-[25px] w-[95%]`}
+                        type="text"
+                        name="nummer"
+                        id="nummer"
+                      ></input>
+                    </div>
+                    <div className={`flex flex-col`}>
+                      <label for="postcode">Postcode</label>
+                      <input
+                        className={`h-[25px] w-[100%]`}
+                        type="text"
+                        name="postcode"
+                        id="postcode"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="plaats">Plaats</label>
+                  <input
+                    className={`h-[25px] w-[100%]`}
+                    type="text"
+                    name="plaats"
+                    id="plaats"
+                  ></input>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label className={`mt-[3%]`}>Bezorgkosten</label>
+                  <div className={`flex w-[20%] justify-between`}>
+                    <div className={`flex w-[35%] justify-between`}>
+                      <input
+                        className={`accent-[#009A42]`}
+                        type="radio"
+                        name="bezorgkosten"
+                        id="ja"
+                        value="ja"
+                      ></input>
+                      <label for="ja">ja</label>
+                    </div>
+                    <div className={`flex w-[35%] justify-between`}>
+                      <input
+                        className={`accent-[#009A42]`}
+                        type="radio"
+                        name="bezorgkosten"
+                        id="nee"
+                        value="nee"
+                      ></input>
+                      <label for="nee">Nee</label>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="datumBezorging">Datum van bezorging</label>
+                    <input
+                      className={`h-6`}
+                      type="date"
+                      name="datumBezorging"
+                      id="datumBezorging"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label>Verzending</label>
+                    <select className={`border-[1px] border-gray-200`}>
+                      <option value="Bernhardus Annen">Bernhardus Annen</option>
+                      <option value="Medewerker1">Medewerker 1</option>
+                      <option value="Medewerker2">Medewerker 2</option>
+                    </select>
+                  </div>
+                </div>
+              </form>
             </div>
-            <div className={styles.labelInputLong}>
-              <label
-                className={styles.label}
-                for="tekstKaartje"
+            <div className={`border-[1px]flex-col w-[45%] mr-[2%]`}>
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Ontvanger
+              </div>
+              <form
+                className={`mt-1`}
+                method="POST"
+                action=""
               >
-                Optionele tekst voor op het kaartje
-              </label>
-              <textarea
-                className={styles.textarea}
-                type="text"
-                name="tekstKaartje"
-                id="tekstKaartje"
-              ></textarea>
-            </div>
-            <div className={styles.labelInputLong}>
-              <label
-                className={styles.label}
-                for="bijzonderheden"
-              >
-                Bijzonderheden
-              </label>
-              <textarea
-                className={styles.textarea}
-                type="text"
-                name="bijzonderheden"
-                id="bijzonderheden"
-              ></textarea>
+                <div className={`flex justify-between`}>
+                  <div className={`flex flex-col`}>
+                    <label for="opdrachtgever">Naam ontvanger</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="opdrachtgever"
+                      id="opdrachtgever"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="opdrachtgever">Achternaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="opdrachtgever"
+                      id="opdrachtgever"
+                    ></input>
+                  </div>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="straatnaam">Straatnaam</label>
+                    <input
+                      className={`h-[25px] w-[100%]`}
+                      type="text"
+                      name="straatnaam"
+                      id="straatnaam"
+                    ></input>
+                  </div>
+                  <div className={`flex w-[40%] justify-between`}>
+                    <div className={`flex flex-col`}>
+                      <label for="nummer">Nummer</label>
+                      <input
+                        className={`h-[25px] w-[95%]`}
+                        type="text"
+                        name="nummer"
+                        id="nummer"
+                      ></input>
+                    </div>
+                    <div className={`flex flex-col`}>
+                      <label for="postcode">Postcode</label>
+                      <input
+                        className={`h-[25px] w-[100%]`}
+                        type="text"
+                        name="postcode"
+                        id="postcode"
+                      ></input>
+                    </div>
+                  </div>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="plaats">Plaats</label>
+                  <input
+                    className={`h-[25px] w-[100%]`}
+                    type="text"
+                    name="plaats"
+                    id="plaats"
+                  ></input>
+                </div>
+                <div className={`flex justify-between mt-[3%]`}>
+                  <div className={`flex flex-col`}>
+                    <label for="prijsBestelling">Prijs bestelling</label>
+                    <input
+                      className={`h-[25px] w-[50%]`}
+                      type="text"
+                      name="prijsBestelling"
+                      id="prijsBestelling"
+                    ></input>
+                  </div>
+                  <div className={`flex flex-col`}>
+                    <label for="prijsTotaal">Prijs totaal</label>
+                    <input
+                      className={`h-[25px] w-[50%]`}
+                      type="text"
+                      name="prijsTotaal"
+                      id="prijsTotaal"
+                    ></input>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
+          <div
+            className={`w-[100%] mt-20 flex justify-between border-t-gray-400 border-t-[1px]`}
+          >
+            <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[5%]`}>
+              <div className={`font-['Roboto'] text-1xl font-bold`}>
+                Product
+              </div>
+              <form>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="omschrijvingBestelling"
+                  >
+                    Omschrijving bestelling
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="omschrijvingBestelling"
+                    id="omschrijvingBestelling"
+                  ></textarea>
+                </div>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="tekstKaartje"
+                  >
+                    Optioneel tekst voor op het kaartje
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="tekstKaartje"
+                    id="tekstKaartje"
+                  ></textarea>
+                </div>
+                <div className={`flex flex-col`}>
+                  <label
+                    className={`mt-3`}
+                    for="bijzonderheden"
+                  >
+                    Bijzonderheden
+                  </label>
+                  <textarea
+                    className={`h-[80px] resize-none`}
+                    type="text"
+                    name="bijzonderheden"
+                    id="bijzonderheden"
+                  ></textarea>
+                </div>
+              </form>
+            </div>
+            <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
+              <div className={` flex`}>
+                <div class={`w-[82%] flex flex-col`}>
+                  <div class={` w-[115px] `}>
+                    <input
+                      className={`accent-[#009A42]`}
+                      type="radio"
+                      name="extra"
+                      id="gratisKaartje"
+                      value="gratisKaartje"
+                    ></input>
+                    <label
+                      className={`ml-[5px]`}
+                      for="gratisKaartje"
+                    >
+                      Gratis kaartje
+                    </label>
+                  </div>
+                  <div class={`w-[115px]`}>
+                    <input
+                      className={`accent-[#009A42]`}
+                      type="radio"
+                      name="extra"
+                      id="wenslintje"
+                      value="wenslintje"
+                    ></input>
+                    <label
+                      className={`ml-[5px]`}
+                      for="wenslintje"
+                    >
+                      Geen kaartje
+                    </label>
+                  </div>
+                </div>
+                <div class={` w-[90%] flex flex-col`}>
+                  <div class={` w-[165px] flex`}>
+                    <input
+                      className={`accent-[#009A42]`}
+                      type="radio"
+                      name="extra"
+                      id="geenKaartje"
+                      value="geenKaartje"
+                    ></input>
+                    <label
+                      className={`ml-[5px]`}
+                      for="geenKaartje"
+                    >
+                      Speciaal wenslintje
+                    </label>
+                  </div>
+                  <div class={` w-[165px] flex`}>
+                    <input
+                      className={`accent-[#009A42]`}
+                      type="radio"
+                      name="extra"
+                      id="wensKaartje"
+                      value="wensKaartje"
+                    ></input>
+                    <label
+                      className={`ml-[5px]`}
+                      for="wensKaartje"
+                    >
+                      Speciaal wenskaartje
+                    </label>
+                  </div>
+                </div>
+              </div>
 
-          <div className={styles.section}>
-            <div className={styles.kaartSection}>
-              <div className={styles.formRowRadioExtra}>
-                <input
-                  className={styles.inputRadio}
-                  type="radio"
-                  name="bezorgkosten"
-                  id="gratis"
-                  value="Gratis kaartje"
-                />
-                <label
-                  className={styles.label}
-                  for="gratis"
+              <div
+                className={`flex flex-col w-[80%] justify-between mt-[70px]`}
+              >
+                <label for="aangenomenDoor">Aangenomen door:</label>
+                <select
+                  className={`border-[1px] border-black w-[100%] h-[30px]`}
+                  name="aangenomenDoor"
+                  id="aangenomenDoor"
                 >
-                  Gratis Kaartje
-                </label>
-                <input
-                  className={styles.inputRadio}
-                  type="radio"
-                  name="bezorgkosten"
-                  id="wenslintje"
-                  value="Speciaal wenslintje"
-                />
-                <label
-                  className={styles.label}
-                  for="nee"
-                >
-                  Speciaal wenslintje
-                </label>
+                  <option value="Bernhardus Annen">Bernhardus Annen</option>
+                  <option value="Medewerker1">Medewerker1</option>
+                  <option value="Medewerker2">Medewerker2</option>
+                </select>
               </div>
-              <div className={styles.formRowRadioExtra}>
-                <input
-                  className={styles.inputRadio}
-                  type="radio"
-                  name="bezorgkosten"
-                  id="geen"
-                  value="Geen kaartje"
-                />
-                <label
-                  className={styles.label}
-                  for="geen"
+              <div className={`flex flex-row-reverse mt-[120px] w-[82%]`}>
+                <button
+                  className={`border-[1px] border-black rounded py-[5px] px-[25px] 
+                  font-['Roboto'] bg-white text-black cursor-pointer`}
                 >
-                  Geen kaartje
-                </label>
-                <input
-                  className={styles.inputRadio}
-                  type="radio"
-                  name="bezorgkosten"
-                  id="wenslintje"
-                  value="Speciaal wenslintje"
-                />
-                <label
-                  className={styles.label}
-                  for="wenslintje"
-                >
-                  Speciaal wenskaartje
-                </label>
-              </div>
-              <div className={styles.formRow}>
-                <div className={styles.labelInputDropdown}>
-                  <label for="aangenomen">Aangenomen door:</label>
-                  <select className={styles.dropdownAangenomen}>
-                    <option value="Bernhardus Annen">Bernhardus Annen</option>
-                    <option value="Medewerker1">Medewerker1</option>
-                    <option value="Medewerker2">Medewerker2</option>
-                  </select>
-                </div>
-              </div>
-              <div className={styles.annuleerSection}>
-                <div className={styles.formRow}>
-                  <button className={styles.buttonAnnuleren}>Annuleren</button>
-                </div>
+                  Annuleren
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }
