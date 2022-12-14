@@ -32,7 +32,7 @@ export default function ChangeUser() {
           </a>
           <h1 class="text-3xl m-4 mt-0 w-fit">Wijzigen</h1>
         </div>
-        <hr class="border-0 bg-[#DEF2E6] h-px w-full mt-[100px] mb-5"></hr>
+        <hr class="border-0 bg-[#DEF2E6] h-px w-full mt-[5%] mb-5"></hr>
         <div class="flex flex-col items-center justify-center h-full w-9/10 mx-0 my-auto">
           <div class="text-left mb-5 bg-[#def2e6] rounded-t-[25px] h-[50px] w-[90%] pl-[50px] mt-[-100px]">
             <p class="mt-4">Gebruiker wijzigen</p>
@@ -64,19 +64,19 @@ export default function ChangeUser() {
           <div class=" bg-white bg-opacity-0 flex justify-end w-full mt-[7rem] h-0">
             <button
               type="button"
-              class="flex items-center bg-[#ff0000] border-0 text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]"
+              class="flex items-center bg-[#ff0000] border-2 border-[#ff0000] text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]"
             >
-              gebruiker verwijderen
+              Gebruiker verwijderen
             </button>
             <button
               type="submit"
-              class="flex items-center bg-[#009a42] border-0 text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]"
+              class="flex items-center bg-[#009a42] border-2 border-[#009a42] text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]"
             >
               Wijzigen
             </button>
             <button
               type="button"
-              class="flex items-center bg-white text-black px-[5px] py-[16px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer border-2 border-[black] rounded-[5px] mr-[90px]"
+              class="flex items-center bg-white text-black px-[5px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer border-2 border-[black] rounded-[5px] mr-[90px]"
             >
               Annuleren
             </button>
