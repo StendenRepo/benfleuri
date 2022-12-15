@@ -16,7 +16,7 @@ mailparser.simpleParser(emlFile, (error, parsedMail) => {
     const filteredMailLines = splitUpMailLines.map(element => element.toLowerCase())
 
   // gets the standard email header data
-    const fromEmail = parsedMail.from['value'][0]['adress']
+    const fromEmail = parsedMail.from['value'][0]['address']
     const from = parsedMail.from['value'][0]['name']
     const orderDate = parsedMail.date
     const subject = parsedMail.subject
