@@ -52,7 +52,9 @@ export default function viewOrder() {
         </div>
         <div className={` w-[100%]`}>
           {/*content card*/}
-          <div className={`w-[100%] mt-10 flex justify-between`}>
+          <div
+            className={`w-[100%] mt-10 flex flex-col sm:flex-row justify-between`}
+          >
             {/*First row section card*/}
             <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
               {/*Besteller section*/}
@@ -210,7 +212,9 @@ export default function viewOrder() {
                 </div>
               </form>
             </div>
-            <div className={`border-[1px]flex-col w-[45%] mr-[2%]`}>
+            <div
+              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] border-[1px] flex-col w-[45%] mr-[2%]`}
+            >
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
               </div>
@@ -289,7 +293,7 @@ export default function viewOrder() {
                 <div className={`flex justify-between mt-[3%]`}>
                   <div className={`flex flex-col`}>
                     <label
-                      className={'w-[139px]'}
+                      className={'w-[122px]'}
                       for="prijsBestelling"
                     >
                       Prijs bestelling
@@ -303,7 +307,7 @@ export default function viewOrder() {
                   </div>
                   <div className={`flex flex-col`}>
                     <label
-                      className={'w-[150px]'}
+                      className={'w-[130px]'}
                       for="prijsTotaal"
                     >
                       Prijs totaal
