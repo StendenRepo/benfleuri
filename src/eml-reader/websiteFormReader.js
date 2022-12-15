@@ -45,5 +45,23 @@ mailparser.simpleParser(emlFile, (error, parsedMail) => {
   // takes all elements that belong to aanvullingen/opmerkingen and joins them to a string
     const comments = filteredMailLines.slice(commentsIndex + 1, -1).join(' ')
 
+    const extractedData = {
+        'from': from,
+        'fromEmail': fromEmail,
+        'orderDate': orderDate,
+        'subject': subject,
+        'deliveryDate': deliveryDate,
+        'reciever': reciever,
+        'deliveryAdress': deliveryAdress,
+        'deliveryPostalCode': deliveryPostalCode,
+        'city': city,
+        'description': description,
+        'price': price,
+        'withCard': withCard,
+        'cardText': cardText,
+        'comments': comments
+    }
+
+    console.log(extractedData)
 })
 
