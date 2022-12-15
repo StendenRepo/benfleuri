@@ -244,7 +244,9 @@ export default function viewOrder() {
                     ></input>
                   </div>
                 </div>
-                <div className={`flex justify-between mt-[3%]`}>
+                <div
+                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
+                >
                   <div className={`flex flex-col`}>
                     <label for="straatnaam">Straatnaam</label>
                     <input
@@ -254,7 +256,7 @@ export default function viewOrder() {
                       id="straatnaam"
                     ></input>
                   </div>
-                  <div className={`flex w-[45%] justify-between`}>
+                  <div className={`flex w-[100%] lg:w-[45%] justify-between`}>
                     <div className={`flex flex-col`}>
                       <label for="nummer">Nummer</label>
                       <input
@@ -287,7 +289,7 @@ export default function viewOrder() {
                 <div className={`flex justify-between mt-[3%]`}>
                   <div className={`flex flex-col`}>
                     <label
-                      className={'w-[150px]'}
+                      className={'w-[139px]'}
                       for="prijsBestelling"
                     >
                       Prijs bestelling
