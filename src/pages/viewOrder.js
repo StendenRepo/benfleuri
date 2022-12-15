@@ -327,7 +327,7 @@ export default function viewOrder() {
             </div>
           </div>
           <div
-            className={`w-[100%] mt-20 flex justify-between border-t-gray-400 border-t-[1px]`}
+            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px]`}
           >
             <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[50px]`}>
               <div className={`font-['Roboto'] text-1xl font-bold`}>
@@ -383,12 +383,17 @@ export default function viewOrder() {
                 Order verwijderen
               </button>
             </div>
-            <div className={`border-[1px]flex-col w-[45%] mr-[2%] mt-[5%]`}>
+            <div className={`border-[1px]flex-col w-[45%] mr-[2%] mt-[50px]`}>
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Afhandeling
               </div>
-              <form>
-                <div className={`flex w-[80%] justify-between mt-7`}>
+              <form
+                method="POST"
+                action=""
+              >
+                <div
+                  className={`flex flex-col lg:flex-row w-[80%] justify-between mt-7`}
+                >
                   <label for="aangenomenDoor">Aangenomen door:</label>
                   <select
                     className={`border-[1px] border-black w-[180px] h-[30px]`}
@@ -400,7 +405,9 @@ export default function viewOrder() {
                     <option value="Medewerker2">Medewerker2</option>
                   </select>
                 </div>
-                <div className={`flex w-[80%] justify-between mt-5`}>
+                <div
+                  className={`flex flex-col lg:flex-row w-[80%] justify-between mt-5`}
+                >
                   <label for="behandelingDoor">In behandeling door:</label>
                   <select
                     className={`border-[1px] border-black w-[180px] h-[30px]`}
@@ -413,7 +420,9 @@ export default function viewOrder() {
                   </select>
                 </div>
               </form>
-              <div className={`flex justify-between w-[80%] mt-14`}>
+              <div
+                className={`flex flex-col sm:flex-row justify-between w-[80%] mt-14`}
+              >
                 <button
                   className={`bg-[#FFCA3F] rounded text-white  px-2.5 py-0.5`}
                 >
