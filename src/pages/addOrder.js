@@ -290,7 +290,9 @@ export default function viewOrder() {
                     id="plaats"
                   ></input>
                 </div>
-                <div className={`sm:flex-row flex-col justify-between mt-[3%]`}>
+                <div
+                  className={`flex flex-col sm:flex-row justify-between mt-[3%]`}
+                >
                   <div className={`flex flex-col`}>
                     <label
                       className={'w-[122px]'}
