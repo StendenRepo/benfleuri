@@ -4,7 +4,6 @@ import MainLayout from '../layout/MainLayout';
 export default function viewOrder() {
   return (
     <MainLayout>
-      {/* <div className={styles.container}> */}
       <div
         className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px] w-[90%]`}
       >
@@ -51,13 +50,10 @@ export default function viewOrder() {
           <p className={`ml-5 mt-2`}>Klant gegevens</p>
         </div>
         <div className={` w-[100%]`}>
-          {/*content card*/}
           <div
             className={`w-[100%] mt-10 flex flex-col sm:flex-row justify-between`}
           >
-            {/*First row section card*/}
             <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
-              {/*Besteller section*/}
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
               </div>
@@ -203,10 +199,13 @@ export default function viewOrder() {
                   </div>
                   <div className={`flex flex-col`}>
                     <label>Verzending</label>
-                    <select className={`border-[1px] border-gray-500`}>
-                      <option value="Bernhardus Annen">Bernhardus Annen</option>
-                      <option value="Medewerker1">Medewerker 1</option>
-                      <option value="Medewerker2">Medewerker 2</option>
+                    <select
+                      className={`border-[1px] border-gray-500`}
+                      name="verzending"
+                      id="verzending"
+                    >
+                      <option value="afhalen">Afhalen</option>
+                      <option value="bezorging">Bezorging</option>
                     </select>
                   </div>
                 </div>
