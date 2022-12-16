@@ -199,10 +199,13 @@ export default function viewOrder() {
                   </div>
                   <div className={`flex flex-col`}>
                     <label>Verzending</label>
-                    <select className={`border-[1px] border-gray-500`}>
-                      <option value="Bernhardus Annen">Bernhardus Annen</option>
-                      <option value="Medewerker1">Medewerker 1</option>
-                      <option value="Medewerker2">Medewerker 2</option>
+                    <select
+                      className={`border-[1px] border-gray-500`}
+                      name="verzending"
+                      id="verzending"
+                    >
+                      <option value="afhalen">Afhalen</option>
+                      <option value="bezorging">Bezorging</option>
                     </select>
                   </div>
                 </div>
