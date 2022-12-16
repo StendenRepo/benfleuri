@@ -1,77 +1,90 @@
-import styles from '../styles/Sidebar.module.css';
 import Image from 'next/image';
 
 export default function Sidebar() {
   return (
-    <div className="z-1 bg-white w-60 h-screen shadow-lg shadow-black ">
+    <div className="z-1 bg-white w-72 h-screen shadow-lg shadow-black ">
       <div className="flex justify-center">
         <Image
           src="/Logo.svg"
           width={100}
           height={100}
-          className={styles.logo}
+          className="mt-8"
           alt="Benfleuri-icon"
         />
       </div>
       <div>
-        <p className={styles.welcomeText}>Goedemorgen, Bernhardus</p>
-        <p className={styles.admin}>Admin</p>
+        <p className="text-base text-black mt-6 ml-3">
+          Goedemorgen, Bernhardus
+        </p>
+        <p className="text-sm text-gray-500 ml-3 mb-5">Admin</p>
       </div>
-      <hr className={styles.hr}></hr>
-      <div className={styles.pages}>
-        <div className={styles.screenBox}>
+      <hr></hr>
+      <div className="flex flex-col">
+        <div className="flex content-center p-2 group hover:bg-hover-green ">
           <Image
             src="/heart.svg"
             width={20}
             height={20}
-            className={styles.heart}
+            className="grayscale group-hover:grayscale-0"
             alt="Icon"
           />
-          <p className={styles.screenName}>Dashboard</p>
+          <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+            Dashboard
+          </p>
         </div>
-        <div className={styles.screenBox}>
+        <div className="flex content-center p-2 group hover:bg-hover-green">
           <Image
             src="/heart.svg"
             width={20}
             height={20}
-            className={styles.heart}
+            className="grayscale group-hover:grayscale-0"
             alt="Icon"
           />
-          <p className={styles.screenName}>Nieuwe Bestelling</p>
+          <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+            Nieuwe Bestelling
+          </p>
         </div>
-        <div className={styles.screenBox}>
+        <div className="flex content-center p-2 group hover:bg-hover-green">
           <Image
             src="/heart.svg"
             width={20}
             height={20}
-            className={styles.heart}
+            className="grayscale group-hover:grayscale-0"
             alt="Icon"
           />
-          <p className={styles.screenName}>Bestellingen</p>
+          <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+            Bestellingen
+          </p>
         </div>
-        <div className={styles.screenBox}>
+        <div className="flex content-center p-2 group hover:bg-hover-green">
           <Image
             src="/heart.svg"
             width={20}
             height={20}
-            className={styles.heart}
+            className="grayscale group-hover:grayscale-0"
             alt="Icon"
           />
-          <p className={styles.screenName}>Gebruikerbeheer</p>
+          <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+            Gebruikerbeheer
+          </p>
         </div>
-        <div className={styles.screenBox}>
+        <div className="flex content-center p-2 group hover:bg-hover-green">
           <Image
             src="/heart.svg"
             width={20}
             height={20}
-            className={styles.heart}
+            className="grayscale group-hover:grayscale-0"
             alt="Icon"
           />
-          <p className={styles.screenName}>Klanten</p>
+          <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+            Klanten
+          </p>
         </div>
       </div>
-      <div className={styles.logoutContainer}>
-        <button className={styles.logoutButton}>Logout</button>
+      <div className="flex justify-center content-center h-[calc(100vh-500px)] items-end mt-5">
+        <button className="bg-primary-green hover:bg-hover-green rounded-3xl h-8 w-20 text-white">
+          Logout
+        </button>
       </div>
     </div>
   );
