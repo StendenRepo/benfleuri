@@ -3,7 +3,7 @@ const mailparser = require('mailparser')
 
 
 function extractPimmSolutionsFormData() {
-  const emlFile = fs.readFileSync('sample2.eml', 'utf8')
+  const emlFile = fs.readFileSync('sample3.eml', 'utf8')
 
   mailparser.simpleParser(emlFile, (error, parsedMail) => {
       if(error) {
@@ -27,7 +27,6 @@ function extractPimmSolutionsFormData() {
       const orderDate = parsedMail.date
       const subject = parsedMail.subject
 
-
       const companyName = filteredMailLines[1]
       const name = filteredMailLines[2]
 
@@ -39,15 +38,18 @@ function extractPimmSolutionsFormData() {
 
       const telNumber = filteredMailLines[5].trim()
     
-      const columnOneIndex = filteredMailLines.indexOf("1 x")
-      const description = filteredMailLines.slice(columnOneIndex, columnOneIndex + 4).join(" ")
+      const descriptionIndex = filteredMailLines.indexOf("1 x")
+      const description = filteredMailLines.slice(descriptionIndex, descriptionIndex + 4).join(" ")
 
-      const price = filteredMailLines[columnOneIndex + 1].split("-")[1].trim().split(" ")[1]
+      const price = filteredMailLines[descriptionIndex + 1].split("-")[1].trim().split(" ")[1]
+
+      var cardTextAsString = ""
 
       const withCard = tableRowCount > 2 ? true : false
-      if(tableRowCount > 2) {
-        
-
+      if(withCard) {
+          const removeableContentIndex = filteredMailLines.lastIndexOf("1 x")
+          var cardText = filteredMailLines.slice(descriptionIndex, removeableContentIndex - 1)
+          cardTextAsString = cardText.slice(cardText.lastIndexOf("1 x") + 2).join("\n")
       }
 
       const amountOfTableRows = tableRowCount
@@ -60,7 +62,7 @@ function extractPimmSolutionsFormData() {
         'orderDate': orderDate,
         'subject': subject
       }
-      console.log(filteredMailLines)
+      console.log(cardTextAsString)
   })
 }
 
