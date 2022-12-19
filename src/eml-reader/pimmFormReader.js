@@ -45,7 +45,7 @@ function extractPimmSolutionsFormData() {
     
       // The order description follows after the first occurance of "1 x". 
       const descriptionIndex = filteredMailLines.indexOf("1 x")
-      const description = filteredMailLines.slice(descriptionIndex, descriptionIndex + 4).join(" ")
+      const description = filteredMailLines.slice(descriptionIndex, descriptionIndex +  4).join(" ")
 
       const price = filteredMailLines[descriptionIndex + 1].split("-")[1].trim().split(" ")[1]
 
@@ -77,7 +77,7 @@ function extractPimmSolutionsFormData() {
         'cardText': cardTextAsString,
         'comments': ''
       }
-      console.log(description)
+      console.log(extractedData)
   })
 }
 
