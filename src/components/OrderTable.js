@@ -47,8 +47,8 @@ function TableCell({children, center}) {
 export function GreenButton({children}) {
     return (
         <a href={"#"}>
-            <button className={`text-sm border-[1px] py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#00A952] text-white font-bold border-[#45a049] rounded hover:bg-[#45a049]`} type="button">{children}
+            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button">{children}
             </button>
         </a>
     )
@@ -57,7 +57,7 @@ export function GreenButton({children}) {
 export function WhiteButton({children}) {
     return (
         <a href={"#"}>
-            <button className={`text-sm font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
+            <button className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">{children}
             </button>
         </a>
@@ -86,12 +86,36 @@ export function TableRow({data}){
 export function OrderTable({children}){
     return (
         <div>
-        <div className={"bg-white flex flex-row gap-x-4"}>
-            <input className={`w-[45%]`} type="text" placeholder="Search.."></input>
+        <div className={"bg-slate-100 flex flex-row p-2 gap-x-4 rounded-t-lg"}>
+            <input className={`grow rounded-lg`} type="text" placeholder="Search.."></input>
             <GreenButton>Zoek</GreenButton>
-            <WhiteButton>Status</WhiteButton>
-            <WhiteButton>Gemaakt op</WhiteButton>
-            <WhiteButton>Sorteer op</WhiteButton>
+            <div>
+                <select className="text-sm h-full font-bold border-[1px] border-black rounded-l py-[8px] px-[20px]
+                font-['Roboto'] bg-white text-black ">
+                    <option selected="selected" disabled="disabled">Status</option>
+                    <option>Verzonden</option>
+                    <option>Voltooid</option>
+                    <option>Open</option>
+                    <option>In behandeling</option>
+                    <option>Geleverd maar niet thuis</option>
+                </select>
+                <select className="text-sm h-full font-bold border-[1px] border-y-black border-r-black rounded-r py-[8px] px-[20px]
+                font-['Roboto'] bg-white text-black ">
+                    <option selected="selected" disabled="disabled">Gemaakt op</option>
+                </select>
+            </div>
+            <div>
+            <select className="text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px]
+                font-['Roboto'] bg-white text-black ">
+                <option selected="selected" disabled="disabled">Sorteer op</option>
+                <option>ID</option>
+                <option>Bestelling</option>
+                <option>Datum</option>
+                <option>Betaling</option>
+                <option>Status</option>
+                <option>Totaal</option>
+            </select>
+            </div>
             <WhiteButton>R</WhiteButton>
         </div>
         <table className="min-w-full ">
