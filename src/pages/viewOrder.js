@@ -37,7 +37,7 @@ export default function viewOrder() {
             Bestelling 1
           </div>
           <button
-            className={`text-sm border-[1px] border-black rounded py-[8px] px-[20px] 
+            className={`text-sm border-[1px] border-black rounded py-[12px] px-[8px] 
                   font-['Roboto'] bg-white text-black cursor-pointer`}
             type="button"
           >
@@ -471,7 +471,7 @@ export default function viewOrder() {
                 </button>
               </div>
               <div
-                className={`flex flex-col w-[40%] mt-9 h-[75px] justify-between`}
+                className={`flex flex-col w-[40%] mt-10 h-[75px] justify-between`}
               >
                 <button
                   className={`bg-[#5DA4E4] rounded text-white text-[15px]  px-2.5 py-0.5 w-[185px]`}
