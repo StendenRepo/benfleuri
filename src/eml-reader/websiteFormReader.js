@@ -2,10 +2,10 @@ const fs = require('fs')
 const mailparser = require('mailparser')
 
 
-function extractOrderFormData() {
-  const emlFile = fs.readFileSync('sample.eml', 'utf8')
+function extractOrderFormData(emlFile) {
+  const emlFileReader = fs.readFileSync(emlFile, 'utf8')
 
-  mailparser.simpleParser(emlFile, (error, parsedMail) => {
+  mailparser.simpleParser(emlFileReader, (error, parsedMail) => {
       if(error) {
           console.log(error)
           return
@@ -26,12 +26,12 @@ function extractOrderFormData() {
 
     // gets adress data by looking for specific text like 'bezorgingsadres', and returns the array element after it
       const deliveryAdress = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 1]
-      const deliveryPostalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7)
+      const deliveryPostalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7).trim()
       const city = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(7)
       const description = filteredMailLines[filteredMailLines.lastIndexOf('GEGEVENS BESTELLING') + 1]
 
     // first finds the element that contains the word 'bedrag', then splits it into two at the : and replaces unnecessary characters
-      const price = filteredMailLines.find(word => word.includes('Bedrag')).split(':')[1].replaceAll(" ", "").replace("€", "")
+      const price = parseFloat(filteredMailLines.find(word => word.includes('Bedrag')).split(':')[1].replaceAll(" ", "").replaceAll("€", "").replace(",", "."))
 
       const findWithCard = filteredMailLines.find(word => word.includes('Kaartje toevoegen:')).split(':')[1].replace(" ", "")
       const withCard = findWithCard == 'ja' ? true : false
@@ -63,3 +63,4 @@ function extractOrderFormData() {
       return extractedData
   })
 }
+extractOrderFormData('sample.eml')
