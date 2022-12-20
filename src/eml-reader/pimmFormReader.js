@@ -5,14 +5,10 @@ const mailparser = require('mailparser')
  * This function take a eml file and reads all data that is needed from it by using string manipulation
  * This function is solely useable for mails from pimm solutions as the format is very specific
  */
-function extractPimmSolutionsFormData(emlFile) {
-  const emlFileReader = fs.readFileSync(emlFile, 'utf8')
-
-  mailparser.simpleParser(emlFileReader, (error, parsedMail) => {
-      if(error) {
-          console.log(error)
-          return
-      }
+async function extractPimmSolutionsFormData(emlFile) {
+  try {
+      const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
+      const parsedMail = await mailparser.simpleParser(emlFileReader)
 
       // splits at every new line of the mail, putting the data in an array it then filters all unnecesary data out of the array
       var filteredMailLines = parsedMail.text.split('\n').filter(element => element != "" && !element.includes("https") && !element.includes("Klik voor"))
@@ -21,12 +17,12 @@ function extractPimmSolutionsFormData(emlFile) {
       filteredMailLines = filteredMailLines.slice(0, filteredMailLines.lastIndexOf("1 x") - 1)
       
       // counts the amount of table rows so that that it is possible to decide if there is a card with text in the order
-      var tableRowCount = 0;
+      var tableRowCount = 0
       filteredMailLines.forEach(element => {
           if(element == "1 x") {
             tableRowCount++
           }
-      });
+      })
 
       // gets the standard email header data
       const fromEmail = parsedMail.from['value'][0]['address']
@@ -85,7 +81,14 @@ function extractPimmSolutionsFormData(emlFile) {
       }
       console.log(extractedData)
       return extractedData
-  })
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
-extractPimmSolutionsFormData('sample2.eml')
+(async () => {
+  const extractedData = await extractPimmSolutionsFormData('sample3.eml')
+})()
+
+  
