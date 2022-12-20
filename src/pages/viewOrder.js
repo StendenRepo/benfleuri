@@ -390,7 +390,7 @@ export default function viewOrder() {
                 action=""
               >
                 <div
-                  className={`flex flex-col lg:flex-row w-[80%] justify-between mt-7`}
+                  className={`flex flex-col lg:flex-row w-[90%] justify-between mt-7`}
                 >
                   <label for="aangenomenDoor">Aangenomen door:</label>
                   <select
@@ -404,7 +404,7 @@ export default function viewOrder() {
                   </select>
                 </div>
                 <div
-                  className={`flex flex-col lg:flex-row w-[80%] justify-between mt-5`}
+                  className={`flex flex-col lg:flex-row w-[90%] justify-between mt-5`}
                 >
                   <label for="behandelingDoor">In behandeling door:</label>
                   <select
@@ -419,36 +419,36 @@ export default function viewOrder() {
                 </div>
               </form>
               <div
-                className={`flex flex-col sm:flex-row justify-between w-[80%] mt-14`}
+                className={`flex flex-col sm:flex-row justify-between w-[90%] mt-14`}
               >
                 <button
-                  className={`bg-[#FFCA3F] rounded text-white  px-2.5 py-0.5`}
+                  className={`bg-[#FFCA3F] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
                 >
                   Markeren als verzonden
                 </button>
                 <button
-                  className={`bg-[#EF790C] rounded text-white  px-2.5 py-0.5`}
+                  className={`bg-[#EF790C] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
                 >
                   Geleverd maar niet thuis
                 </button>
               </div>
               <div className={`mt-5`}>
                 <button
-                  className={`bg-[#00A952] rounded text-white  px-2.5 py-0.5`}
+                  className={`bg-[#00A952] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
                 >
                   Markeren als voltooid
                 </button>
               </div>
               <div
-                className={`flex flex-col w-[40%] mt-11 h-[75px] justify-between`}
+                className={`flex flex-col w-[40%] mt-9 h-[75px] justify-between`}
               >
                 <button
-                  className={`bg-[#5DA4E4] rounded text-white  px-2.5 py-0.5`}
+                  className={`bg-[#5DA4E4] rounded text-white text-[15px]  px-2.5 py-0.5 w-[185px]`}
                 >
                   Tekst kaartje uitprinten
                 </button>
                 <button
-                  className={`bg-[#5DA4E4] rounded text-white  px-2.5 py-0.5`}
+                  className={`bg-[#5DA4E4] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
                 >
                   Adres uitprinten
                 </button>
