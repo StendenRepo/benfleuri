@@ -146,6 +146,15 @@ export default function viewOrder() {
                   ></input>
                 </div>
                 <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="telefoonnummer">Telefoonnummer</label>
+                  <input
+                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                    type="text"
+                    name="telefoonnummer"
+                    id="telefoonnummer"
+                  ></input>
+                </div>
+                <div className={`flex flex-col  mt-[3%]`}>
                   <label className={`mt-[3%]`}>Bezorgkosten</label>
                   <div className={`flex w-[30%] justify-between lg:w-[20%]`}>
                     <div className={`flex justify-between`}>
@@ -289,6 +298,15 @@ export default function viewOrder() {
                     id="plaats"
                   ></input>
                 </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label for="telefoonnummer">Telefoonnummer</label>
+                  <input
+                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                    type="text"
+                    name="telefoonnummer"
+                    id="telefoonnummer"
+                  ></input>
+                </div>
                 <div
                   className={`flex flex-col sm:flex-row justify-between mt-[3%]`}
                 >
@@ -321,6 +339,11 @@ export default function viewOrder() {
                     ></input>
                   </div>
                 </div>
+                <button
+                  className={`bg-[#00A952] rounded text-white text-[15px] px-2.5 py-0.5 w-[120px] mt-12`}
+                >
+                  Order wijzigen
+                </button>
               </form>
             </div>
           </div>
@@ -418,8 +441,16 @@ export default function viewOrder() {
                   </select>
                 </div>
               </form>
+              <div className={`flex w-[59%] mt-3 justify-between`}>
+                <p>Status bestelling:</p>
+                <p
+                  className={`border-[1px] border-red-500 rounded px-1 bg-red-500 h-[25px]`}
+                >
+                  Open
+                </p>
+              </div>
               <div
-                className={`flex flex-col sm:flex-row justify-between w-[90%] mt-14`}
+                className={`flex flex-col sm:flex-row justify-between w-[91%] mt-3`}
               >
                 <button
                   className={`bg-[#FFCA3F] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
