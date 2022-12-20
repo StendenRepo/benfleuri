@@ -1,27 +1,33 @@
 const fs = require('fs')
 const mailparser = require('mailparser')
 
+/**
+ * This function take a eml file and reads all data that is needed from it by using string manipulation
+ * This function is solely useable for mails from pimm solutions as the format is very specific
+ */
+function extractPimmSolutionsFormData(emlFile) {
+  const emlFileReader = fs.readFileSync(emlFile, 'utf8')
 
-function extractPimmSolutionsFormData() {
-  const emlFile = fs.readFileSync('sample2.eml', 'utf8')
-
-  mailparser.simpleParser(emlFile, (error, parsedMail) => {
+  mailparser.simpleParser(emlFileReader, (error, parsedMail) => {
       if(error) {
           console.log(error)
           return
       }
 
       // splits at every new line of the mail, putting the data in an array it then filters all unnecesary data out of the array
-      const filteredMailLines = parsedMail.text.split('\n').filter(element => element != "" && !element.includes("https") && !element.includes("Klik voor"))
+      var filteredMailLines = parsedMail.text.split('\n').filter(element => element != "" && !element.includes("https") && !element.includes("Klik voor"))
 
-      // counts the amount of table rows so that that information can be used later on
+      // remove the last table row because it contains unnecessary content
+      filteredMailLines = filteredMailLines.slice(0, filteredMailLines.lastIndexOf("1 x") - 1)
+      
+      // counts the amount of table rows so that that it is possible to decide if there is a card with text in the order
       var tableRowCount = 0;
       filteredMailLines.forEach(element => {
           if(element == "1 x") {
             tableRowCount++
           }
       });
-      
+
       // gets the standard email header data
       const fromEmail = parsedMail.from['value'][0]['address']
       const from = parsedMail.from['value'][0]['name']
@@ -45,19 +51,19 @@ function extractPimmSolutionsFormData() {
     
       // The order description follows after the first occurance of "1 x". 
       const descriptionIndex = filteredMailLines.indexOf("1 x")
-      const description = filteredMailLines.slice(descriptionIndex, descriptionIndex +  4).join(" ")
+      var description = filteredMailLines.slice(descriptionIndex).join(" ")
 
-      const price = filteredMailLines[descriptionIndex + 1].split("-")[1].trim().split(" ")[1]
+      // Gets the price, replaces the comma with a period so that it can be parsed into a float
+      const price = parseFloat(filteredMailLines[descriptionIndex + 1].split("-")[1].trim().split(" ")[1].replace(",", "."))
 
       var cardTextAsString = ""
 
-      const withCard = tableRowCount > 2 ? true : false
+      // checks if there is a card included in the order, gets information accordingly
+      const withCard = tableRowCount > 1 ? true : false
       if(withCard) {
-          const removeableContentIndex = filteredMailLines.lastIndexOf("1 x")
-          var cardText = filteredMailLines.slice(descriptionIndex, removeableContentIndex - 1)
-          cardTextAsString = cardText.slice(cardText.lastIndexOf("1 x") + 2).join("\n")
+          cardTextAsString = filteredMailLines.slice(filteredMailLines.lastIndexOf("1 x") + 2).join("\n")
+          description = filteredMailLines.slice(descriptionIndex, filteredMailLines.lastIndexOf("1 x") - 1).join(" ")
       }
-
 
       const extractedData = {
         'fromEmail': fromEmail,
@@ -81,4 +87,4 @@ function extractPimmSolutionsFormData() {
   })
 }
 
-extractPimmSolutionsFormData()
+extractPimmSolutionsFormData('sample2.eml')
