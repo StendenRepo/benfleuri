@@ -1,13 +1,23 @@
+// import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api"; // Supports ESM
+const WooCommerceRestApi = require('@woocommerce/woocommerce-rest-api').default;
+
+const WooCommerce = new WooCommerceRestApi({
+  url: 'https://example.com',
+  consumerKey: 'consumer_key',
+  consumerSecret: 'consumer_secret',
+  version: 'wc/v3',
+});
+
 //Authentication rest api (lay-out)
 const querystring = require('querystring');
 
 const store_url = 'http://example.com';
 const endpoint = '/wc-auth/v1/authorize';
 const params = {
-  app_name: 'My App Name',
-  scope: 'read_write',
+  app_name: 'BenFleuri',
+  scope: 'read',
   user_id: 123,
-  return_url: 'http://app.com/return-page',
+  return_url: 'http://localhost:3000/addOrder',
   callback_url: 'https://app.com/callback-endpoint',
 };
 const query_string = querystring.stringify(params).replace(/%20/g, '+');
@@ -16,6 +26,15 @@ const query_string = querystring.stringify(params).replace(/%20/g, '+');
 console.log(store_url + endpoint + '?' + query_string);
 
 WooCommerce.get('orders')
+  .then((response) => {
+    console.log(response.data);
+  })
+  .catch((error) => {
+    console.log(error.response.data);
+  });
+
+//Get order data from a specific order (lay-out)
+WooCommerce.get('orders/727')
   .then((response) => {
     console.log(response.data);
   })
