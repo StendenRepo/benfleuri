@@ -1,7 +1,10 @@
 const fs = require('fs')
 const mailparser = require('mailparser')
 
-
+/**
+ * This function take a eml file and reads all data that is needed from it by using string manipulation
+ * This function is solely useable for mails from BenFleuri's own order form as the format is very specific
+ */
 async function extractOrderFormData(emlFile) {
   try {
       const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
