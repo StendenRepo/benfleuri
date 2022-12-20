@@ -212,7 +212,7 @@ export default function viewOrder() {
               </form>
             </div>
             <div
-              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] border-[1px] flex-col w-[45%] mr-[2%]`}
+              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%]`}
             >
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
