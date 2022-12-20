@@ -84,6 +84,7 @@ function extractPimmSolutionsFormData(emlFile) {
         'comments': ''
       }
       console.log(extractedData)
+      return extractedData
   })
 }
 
