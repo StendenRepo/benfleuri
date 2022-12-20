@@ -22,25 +22,29 @@ function extractOrderFormData(emlFile) {
 
     // uses regex to extract the deliveryDate from the text
       const deliveryDate = parsedMail.text.match(/([0-9]+(\/[0-9]+)+)/i)[0]
-      const reciever = filteredMailLines[filteredMailLines.indexOf('GEGEVENS ONTVANGER') + 1]
+      const name = filteredMailLines[filteredMailLines.indexOf('GEGEVENS ONTVANGER') + 1]
 
     // gets adress data by looking for specific text like 'bezorgingsadres', and returns the array element after it
-      const deliveryAdress = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 1]
-      const deliveryPostalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7).trim()
+      const adress = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 1]
+      const postalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7).trim()
       const city = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(7)
       const description = filteredMailLines[filteredMailLines.lastIndexOf('GEGEVENS BESTELLING') + 1]
+
+      const telNumber = filteredMailLines.find(word => word.includes("@")).split("/")[1].trim()
 
     // first finds the element that contains the word 'bedrag', then splits it into two at the : and replaces unnecessary characters
       const price = parseFloat(filteredMailLines.find(word => word.includes('Bedrag')).split(':')[1].replaceAll(" ", "").replaceAll("€", "").replace(",", "."))
 
-      const findWithCard = filteredMailLines.find(word => word.includes('Kaartje toevoegen:')).split(':')[1].replace(" ", "")
+      const findWithCard = filteredMailLines.find(word => word.includes('Kaartje toevoegen:')).split(':')[1].trim().toLowerCase()
       const withCard = findWithCard == 'ja' ? true : false
 
-      const cardText = filteredMailLines.find(word => word.includes('Tekst kaartje:')).split(':')[1]
-
-    //finds index of the element where the aanvullingen/opmerkingen beginnen
+    // finds index of the element where the aanvullingen/opmerkingen beginnen
       const commentsIndex = filteredMailLines.indexOf(filteredMailLines.find(word => word.includes('AANVULLINGEN')))
       const comments = filteredMailLines.slice(commentsIndex + 1, -1).join(' ') // Joins all comments to a string
+
+    // finds index of the element where the card text starts
+      const cardTextIndex = filteredMailLines.indexOf(filteredMailLines.find(word => word.includes('Tekst kaartje:')))
+      const cardText = filteredMailLines.slice(cardTextIndex, commentsIndex).join(" ").split(":")[1].trim()
 
       const extractedData = {
           'from': from,
@@ -48,9 +52,10 @@ function extractOrderFormData(emlFile) {
           'orderDate': orderDate,
           'subject': subject,
           'deliveryDate': deliveryDate,
-          'reciever': reciever,
-          'deliveryAdress': deliveryAdress,
-          'deliveryPostalCode': deliveryPostalCode,
+          'name': name,
+          'adress': adress,
+          'postalCode': postalCode,
+          'telNumber': telNumber,
           'city': city,
           'description': description,
           'price': price,
@@ -63,4 +68,4 @@ function extractOrderFormData(emlFile) {
       return extractedData
   })
 }
-extractOrderFormData('sample.eml')
+extractOrderFormData('sample4.eml')
