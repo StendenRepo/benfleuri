@@ -2,14 +2,10 @@ const fs = require('fs')
 const mailparser = require('mailparser')
 
 
-function extractOrderFormData(emlFile) {
-  const emlFileReader = fs.readFileSync(emlFile, 'utf8')
-
-  mailparser.simpleParser(emlFileReader, (error, parsedMail) => {
-      if(error) {
-          console.log(error)
-          return
-      }
+async function extractOrderFormData(emlFile) {
+  try {
+      const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
+      const parsedMail = await mailparser.simpleParser(emlFileReader)
 
     // splits at every new line of the mail, putting the data in an array it then filters all of the empty entries out of the array
       const filteredMailLines = parsedMail.text.split('\n').filter(element => element != "")
@@ -66,6 +62,12 @@ function extractOrderFormData(emlFile) {
 
       console.log(extractedData)
       return extractedData
-  })
+
+  } catch (error) {
+    console.log(error)
+  }
 }
-extractOrderFormData('sample4.eml')
+
+(async () => {
+  const extractedData = await extractOrderFormData('sample.eml')
+})()
