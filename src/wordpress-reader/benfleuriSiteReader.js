@@ -3,15 +3,15 @@ const WooCommerceRestApi = require('@woocommerce/woocommerce-rest-api').default;
 
 const WooCommerce = new WooCommerceRestApi({
   url: 'https://example.com',
-  consumerKey: 'consumer_key',
-  consumerSecret: 'consumer_secret',
+  consumerKey: '',
+  consumerSecret: '',
   version: 'wc/v3',
 });
 
 //Authentication rest api (lay-out)
 const querystring = require('querystring');
 
-const store_url = 'http://example.com';
+const store_url = 'https://benfleuri.nl/';
 const endpoint = '/wc-auth/v1/authorize';
 const params = {
   app_name: 'BenFleuri',
