@@ -1,3 +1,4 @@
+import Sidebar from '../components/Sidebar';
 import MainLayout from '../layout/MainLayout';
 import {GreenButton, OrderTable, TableRow, WhiteButton} from '../components/OrderTable'
 import {ArrowLeftIcon, ArrowPathIcon, ArrowRightIcon} from '@heroicons/react/20/solid'
