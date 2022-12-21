@@ -1,10 +1,12 @@
 import { ApolloServer } from 'apollo-server-micro';
+import { createContext } from '../../../graphql/context';
 import { typeDefs } from '../../../graphql/schema';
-import resolver from '../../../graphql/resolvers';
+import { CustomerResolver } from '../../../graphql/resolvers/CustomerResolver';
 
 const apolloServer = new ApolloServer({
   typeDefs,
-  resolvers: [resolver],
+  resolvers: [CustomerResolver],
+  context: createContext,
 });
 
 const startServer = apolloServer.start();
