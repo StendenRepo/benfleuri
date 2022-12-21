@@ -2,13 +2,17 @@ import MainLayout from '../../../layout/MainLayout';
 
 export default function CustomerOverview() {
   return (
-    <div class="bg-white bg-opacity-0 mt-1 ml-0.5">
-      <div class="flex text-black  flex-col justify-between items-start w-[9/10] mx-0 my-auto">
+    <div className={'bg-white bg-opacity-0 mt-1 ml-0.5'}>
+      <div
+        className={
+          'flex text-black  flex-col justify-between items-start w-[9/10] mx-0 my-auto'
+        }
+      >
         <a
           href="index.js"
-          class="text-black no-underline text-base m-4 w-fit"
+          className={'text-black no-underline text-base m-4 w-fit'}
         >
-          <h3 class="flex flex-row justify-between items-center">
+          <h3 className={'flex flex-row justify-between items-center'}>
             <div class="mr-[5px]">
               <svg
                 width="12"
@@ -18,25 +22,31 @@ export default function CustomerOverview() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M11.4729 2.80625L9.41663 0.75L0.666626 9.5L9.41663 18.25L11.4729 16.1938L4.79371 9.5L11.4729 2.80625Z"
                   fill="black"
-                  fill-opacity="0.87"
+                  fillOpacity="0.87"
                 />
               </svg>
             </div>
             Beheer
           </h3>
         </a>
-        <h1 class="text-3xl m-4 mt-0 w-fit">Klanten</h1>
+        <h1 className={'text-3xl m-4 mt-0 w-fit'}>Klanten</h1>
       </div>
-      <hr class="border-0 bg-[#DEF2E6] h-px w-full mt-[5%] mb-5"></hr>
-      <div class="flex flex-col items-center justify-center h-full w-9/10 mx-0 my-auto">
-        <div class="flex flex-col items-center justify-center">
+      <hr className={'border-0 bg-[#DEF2E6] h-px w-full mt-[5%] mb-5'}></hr>
+      <div
+        className={
+          'flex flex-col items-center justify-center h-full w-9/10 mx-0 my-auto'
+        }
+      >
+        <div className={'flex flex-col items-center justify-center'}>
           <h2>Aantal klanten op pagina:</h2>
           <form>
-            <select class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded">
+            <select
+              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
+            >
               <option value="10">5</option>
               <option value="20">10</option>
               <option value="30">15</option>
@@ -45,14 +55,16 @@ export default function CustomerOverview() {
             <input
               type="text"
               placeholder="&#x1F50E;&#xFE0E; Zoek naar klanten"
-              class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded"
+              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
             ></input>
             <input
               type="button"
               value="Zoek"
-              class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded"
+              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
             ></input>
-            <select class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded">
+            <select
+              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
+            >
               <option value="Sort">Sorteer op</option>
               <option value="name">Naam A-Z</option>
               <option value="name2">Naam Z-A</option>
@@ -64,43 +76,51 @@ export default function CustomerOverview() {
             <input
               type="button"
               value="&#128472;"
-              class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded"
+              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
             ></input>
           </form>
         </div>
-        <form class="w-[90%]">
-          <table class="table-auto w-[90%]">
+        <form className={'w-[90%]'}>
+          <table className={'table-auto w-[90%]'}>
             <thead>
               <tr>
-                <th class="px-4 py-2">ID</th>
-                <th class="px-4 py-2">Naam</th>
-                <th class="px-4 py-2">Achternaam</th>
-                <th class="px-4 py-2">Telefoon</th>
-                <th class="px-4 py-2">E-mail</th>
-                <th class="px-4 py-2">Bekijk</th>
+                <th className={'px-4 py-2'}>ID</th>
+                <th className={'px-4 py-2'}>Naam</th>
+                <th className={'px-4 py-2'}>Achternaam</th>
+                <th className={'px-4 py-2'}>Telefoon</th>
+                <th className={'px-4 py-2'}>E-mail</th>
+                <th className={'px-4 py-2'}>Bekijk</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="text-center">
-                <td class="border-y px-4 py-2">1</td>
-                <td class="border-y px-4 py-2">Mark</td>
-                <td class="border-y px-4 py-2">Otto</td>
-                <td class="border-y px-4 py-2">123456789</td>
-                <td class="border-y px-4 py-2">Test@test.com</td>
-                <td class="border-y px-4 py-2">
-                  <button class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded">
+              <tr className={'text-center'}>
+                <td className={'border-y px-4 py-2'}>1</td>
+                <td className={'border-y px-4 py-2'}>Mark</td>
+                <td className={'border-y px-4 py-2'}>Otto</td>
+                <td className={'border-y px-4 py-2'}>123456789</td>
+                <td className={'border-y px-4 py-2'}>Test@test.com</td>
+                <td className={'border-y px-4 py-2'}>
+                  <button
+                    className={
+                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
+                    }
+                  >
                     Bekijk
                   </button>
                 </td>
               </tr>
-              <tr class="bg-gray-100 text-center">
-                <td class="border-y px-4 py-2">2</td>
-                <td class="border-y px-4 py-2">Jacob</td>
-                <td class="border-y px-4 py-2">Thornton</td>
-                <td class="border-y px-4 py-2">123456789</td>
-                <td class="border-y px-4 py-2">Test@test.com</td>
-                <td class="border-y px-4 py-2">
-                  <button class="bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded">
+              <tr className={'bg-gray-100 text-center'}>
+                <td className={'border-y px-4 py-2'}>2</td>
+                <td className={'border-y px-4 py-2'}>Jacob</td>
+                <td className={'border-y px-4 py-2'}>Thornton</td>
+                <td className={'border-y px-4 py-2'}>123456789</td>
+                <td className={'border-y px-4 py-2'}>Test@test.com</td>
+                <td className={'border-y px-4 py-2'}>
+                  <button
+                    className={
+                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
+                    }
+                  >
                     Bekijk
                   </button>
                 </td>
