@@ -41,17 +41,21 @@ export default function CustomerOverview() {
           'flex flex-col items-center justify-center h-full w-9/10 mx-0 my-auto'
         }
       >
-        <div className={'flex flex-col items-center justify-center'}>
-          <h2>Aantal klanten op pagina:</h2>
-          <form>
+        <div className={'flex w-[90%]'}>
+          <div className={'flex flex-row align-middle justify-start'}>
+            <p className={'text-lg font-bold'}>Aantal klanten op pagina: </p>
             <select
-              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
+              className={
+                'bg-white border text-black font-bold py-1 px-3 rounded ml-1'
+              }
             >
               <option value="10">5</option>
               <option value="20">10</option>
               <option value="30">15</option>
               <option value="40">20</option>
             </select>
+          </div>
+          <form>
             <input
               type="text"
               placeholder="&#x1F50E;&#xFE0E; Zoek naar klanten"
@@ -84,6 +88,9 @@ export default function CustomerOverview() {
           <table className={'table-auto w-[90%]'}>
             <thead>
               <tr>
+                <th className={'px-4 py-2'}>
+                  <input type="checkbox"></input>
+                </th>
                 <th className={'px-4 py-2'}>ID</th>
                 <th className={'px-4 py-2'}>Naam</th>
                 <th className={'px-4 py-2'}>Achternaam</th>
@@ -94,6 +101,9 @@ export default function CustomerOverview() {
             </thead>
             <tbody>
               <tr className={'text-center'}>
+                <td className={'border-y px-4 py-2'}>
+                  <input type="checkbox"></input>
+                </td>
                 <td className={'border-y px-4 py-2'}>1</td>
                 <td className={'border-y px-4 py-2'}>Mark</td>
                 <td className={'border-y px-4 py-2'}>Otto</td>
@@ -110,11 +120,33 @@ export default function CustomerOverview() {
                 </td>
               </tr>
               <tr className={'bg-gray-100 text-center'}>
+                <td className={'border-y px-4 py-2'}>
+                  <input type="checkbox"></input>
+                </td>
                 <td className={'border-y px-4 py-2'}>2</td>
                 <td className={'border-y px-4 py-2'}>Jacob</td>
                 <td className={'border-y px-4 py-2'}>Thornton</td>
                 <td className={'border-y px-4 py-2'}>123456789</td>
                 <td className={'border-y px-4 py-2'}>Test@test.com</td>
+                <td className={'border-y px-4 py-2'}>
+                  <button
+                    className={
+                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
+                    }
+                  >
+                    Bekijk
+                  </button>
+                </td>
+              </tr>
+              <tr className={'text-center'}>
+                <td className={'border-y px-4 py-2'}>
+                  <input type="checkbox"></input>
+                </td>
+                <td className={'border-y px-4 py-2'}></td>
+                <td className={'border-y px-4 py-2'}></td>
+                <td className={'border-y px-4 py-2'}></td>
+                <td className={'border-y px-4 py-2'}></td>
+                <td className={'border-y px-4 py-2'}></td>
                 <td className={'border-y px-4 py-2'}>
                   <button
                     className={
