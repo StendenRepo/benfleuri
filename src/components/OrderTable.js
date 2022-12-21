@@ -110,11 +110,14 @@ export function OrderTable({children}) {
         { name: 'Totaal geld', disabled: false },
     ]
     return (
-        <div>
-            <div className={"bg-slate-100 flex flex-row p-2 gap-x-4 rounded-t-lg"}>
+        <div className="inline-block min-w-full">
+            <div className={"bg-slate-100 flex max-lg:flex-col flex-row p-2 gap-x-4 rounded-t-lg"}>
+                <div className="flex flex-grow gap-y-[5px]">
                 <input className={`grow rounded-lg`} type="text" placeholder="Search.."></input>
                 <GreenButton>Zoek</GreenButton>
-                <div className="items-stretch flex flex-row">
+                </div>
+                <div className="gap-x-[5px] flex inline-block">
+                <div className="items-stretch flex flex-row ">
                     <Dropdown listValues={status} roundCorners="left"/>
                     <Dropdown listValues={sort} roundCorners="right"/>
                 </div>
@@ -122,6 +125,7 @@ export function OrderTable({children}) {
                     <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
                 </div>
                 <WhiteButton><ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></WhiteButton>
+                </div>
             </div>
             <table className="min-w-full ">
                 <thead className="border-b border-t">
