@@ -32,7 +32,7 @@ export default function Sidebar() {
       </div>
       <div className={close}>
         <div className="z-1 bg-white w-64 h-full max-sm:h-screen shadow-lg max-sm:w-screen shadow-black">
-          <div className="sm:fixed">
+          <div className="sm:fixed w-64">
             <div className="flex justify-center">
               <Image
                 src="/Logo.svg"
