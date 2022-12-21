@@ -55,34 +55,20 @@ export default function CustomerOverview() {
               <option value="40">20</option>
             </select>
           </div>
-          <form>
-            <input
-              type="text"
-              placeholder="&#x1F50E;&#xFE0E; Zoek naar klanten"
-              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
-            ></input>
-            <input
-              type="button"
-              value="Zoek"
-              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
-            ></input>
-            <select
-              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
-            >
-              <option value="Sort">Sorteer op</option>
-              <option value="name">Naam A-Z</option>
-              <option value="name2">Naam Z-A</option>
-              <option value="surname">Achternaam A-Z</option>
-              <option value="surname2">Achternaam Z-A</option>
-              <option value="phone">Telefoon</option>
-              <option value="email">E-mail</option>
-            </select>
-            <input
-              type="button"
-              value="&#128472;"
-              className={'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'}
-            ></input>
-          </form>
+        </div>
+        <div className={'flex flex-row align-middle justify-start w-[90%]'}>
+          <input
+            type="text"
+            className={'border rounded w-1/2 mr-2'}
+            placeholder="Zoek naar klanten"
+          ></input>
+          <button
+            className={
+              'bg-[#009a42] border border-[#009a42] text-white py-1 px-3 rounded'
+            }
+          >
+            Zoek
+          </button>
         </div>
         <form className={'w-[90%]'}>
           <table className={'table-auto w-[90%]'}>
@@ -111,9 +97,7 @@ export default function CustomerOverview() {
                 <td className={'border-y px-4 py-2'}>Test@test.com</td>
                 <td className={'border-y px-4 py-2'}>
                   <button
-                    className={
-                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
-                    }
+                    className={'bg-white border uppercase text-black py-1 px-3'}
                   >
                     Bekijk
                   </button>
@@ -130,9 +114,7 @@ export default function CustomerOverview() {
                 <td className={'border-y px-4 py-2'}>Test@test.com</td>
                 <td className={'border-y px-4 py-2'}>
                   <button
-                    className={
-                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
-                    }
+                    className={'bg-white border uppercase text-black py-1 px-3'}
                   >
                     Bekijk
                   </button>
