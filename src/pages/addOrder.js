@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
 
-export default function viewOrder() {
+export default function AddOrder() {
   return (
     <MainLayout>
       <div
@@ -57,7 +57,7 @@ export default function viewOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
               </div>
-              <form
+              <formHtml
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -72,34 +72,28 @@ export default function viewOrder() {
                   ></input>
                 </div>
                 <div
-                  className={`flex flex-col lg:flex-row justify-between mt-[3%] `}
+                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
                 >
                   <div className={`flex flex-col`}>
-                    <label
-                      className={'w-[210px]'}
-                      htmlFor="voornaamContactPersoon"
-                    >
+                    <label htmlFor="voornaamContactpersoon">
                       Voornaam contactpersoon
                     </label>
                     <input
                       className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
                       type="text"
-                      name="voornaamContactPersoon"
-                      id="voornaamContactPersoon"
+                      name="voornaamContactpersoon"
+                      id="voornaamContactpersoon"
                     ></input>
                   </div>
                   <div className={`flex flex-col`}>
-                    <label
-                      className={'w-[210px]'}
-                      htmlFor="achternaamContactPersoon"
-                    >
+                    <label htmlFor="achternaamContactpersoon">
                       Achternaam contactpersoon
                     </label>
                     <input
                       className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
                       type="text"
-                      name="achternaamContactPersoon"
-                      id="achternaamContactPersoon"
+                      name="achternaamContactpersoon"
+                      id="achternaamContactpersoon"
                     ></input>
                   </div>
                 </div>
@@ -136,13 +130,24 @@ export default function viewOrder() {
                     </div>
                   </div>
                 </div>
-                <div className={`flex flex-col  mt-[3%]`}>
+                <div className={`flex flex-col mt-[3%]`}>
                   <label htmlFor="plaats">Plaats</label>
                   <input
                     className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
                     type="text"
                     name="plaats"
                     id="plaats"
+                  ></input>
+                </div>
+                <div className={`flex flex-col mt-[3%]`}>
+                  <label htmlFor="telefoonnummerBesteller">
+                    Telefoonnummer
+                  </label>
+                  <input
+                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                    type="text"
+                    name="telefoonnummerBesteller"
+                    id="telefoonnummerBesteller"
                   ></input>
                 </div>
                 <div className={`flex flex-col  mt-[3%]`}>
@@ -160,7 +165,7 @@ export default function viewOrder() {
                         className={`ml-1`}
                         htmlFor="ja"
                       >
-                        ja
+                        Ja
                       </label>
                     </div>
                     <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
@@ -198,7 +203,7 @@ export default function viewOrder() {
                     ></input>
                   </div>
                   <div className={`flex flex-col`}>
-                    <label>Verzending</label>
+                    <label htmlFor="verzending">Verzending</label>
                     <select
                       className={`border-[1px] border-gray-500`}
                       name="verzending"
@@ -209,15 +214,15 @@ export default function viewOrder() {
                     </select>
                   </div>
                 </div>
-              </form>
+              </formHtml>
             </div>
             <div
-              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] border-[1px] flex-col w-[45%] mr-[2%]`}
+              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}
             >
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
               </div>
-              <form
+              <formHtml
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -289,6 +294,17 @@ export default function viewOrder() {
                     id="plaats"
                   ></input>
                 </div>
+                <div className={`flex flex-col  mt-[3%]`}>
+                  <label htmlFor="telefoonnummerOntvanger">
+                    Telefoonnummer
+                  </label>
+                  <input
+                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                    type="text"
+                    name="telefoonnummerOntvanger"
+                    id="telefoonnummerOntvanger"
+                  ></input>
+                </div>
                 <div
                   className={`flex flex-col sm:flex-row justify-between mt-[3%]`}
                 >
@@ -321,17 +337,17 @@ export default function viewOrder() {
                     ></input>
                   </div>
                 </div>
-              </form>
+              </formHtml>
             </div>
           </div>
           <div
-            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px]`}
+            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px] pb-5`}
           >
             <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[50px]`}>
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Product
               </div>
-              <form>
+              <formHtml>
                 <div className={`flex flex-col`}>
                   <label
                     className={`mt-3`}
@@ -374,13 +390,12 @@ export default function viewOrder() {
                     id="bijzonderheden"
                   ></textarea>
                 </div>
-              </form>
+              </formHtml>
             </div>
-
             <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
-              <div className={`flex flex-col sm:flex-row sm:ml-[0px] ml-[5%]`}>
+              <div className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
                 <div className={`w-[82%] flex flex-col`}>
-                  <div className={` w-[115px] `}>
+                  <div className={` w-[100%] `}>
                     <input
                       className={`accent-[#009A42]`}
                       type="radio"
@@ -395,7 +410,7 @@ export default function viewOrder() {
                       Gratis kaartje
                     </label>
                   </div>
-                  <div className={`w-[115px]`}>
+                  <div className={`w-[100%]`}>
                     <input
                       className={`accent-[#009A42]`}
                       type="radio"
@@ -412,7 +427,7 @@ export default function viewOrder() {
                   </div>
                 </div>
                 <div className={` w-[90%] flex flex-col`}>
-                  <div className={` w-[165px] flex`}>
+                  <div className={` w-[100%] flex`}>
                     <input
                       className={`accent-[#009A42]`}
                       type="radio"
@@ -427,7 +442,7 @@ export default function viewOrder() {
                       Speciaal wenslintje
                     </label>
                   </div>
-                  <div className={` w-[165px] flex`}>
+                  <div className={` w-[100%] flex`}>
                     <input
                       className={`accent-[#009A42]`}
                       type="radio"
@@ -444,7 +459,6 @@ export default function viewOrder() {
                   </div>
                 </div>
               </div>
-
               <div
                 className={`flex flex-col sm:w-[80%] w-[100%] justify-between mt-[45px]`}
               >
@@ -460,7 +474,7 @@ export default function viewOrder() {
                 </select>
               </div>
               <div
-                className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[105px] w-[82%]`}
+                className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
               >
                 <button
                   className={`rounded py-[5px] px-[25px] 
