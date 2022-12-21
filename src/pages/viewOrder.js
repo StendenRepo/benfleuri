@@ -441,16 +441,16 @@ export default function viewOrder() {
                   </select>
                 </div>
               </form>
-              <div className={`flex w-[59%] mt-3 justify-between`}>
+              <div className={`flex w-[60%] mt-3 justify-between`}>
                 <p>Status bestelling:</p>
-                <p
-                  className={`border-[1px] border-red-500 rounded px-1 bg-red-500 h-[25px]`}
+                <div
+                  className={`border-[1px] border-red-500 bg-red-500 rounded w-[52px] h-[26px]`}
                 >
-                  Open
-                </p>
+                  <p className={`px-1 h-[20px] align-bottom`}>Open</p>
+                </div>
               </div>
               <div
-                className={`flex flex-col sm:flex-row justify-between w-[91%] mt-3`}
+                className={`flex flex-col sm:flex-row justify-between w-[91%] mt-2`}
               >
                 <button
                   className={`bg-[#FFCA3F] rounded text-white text-[15px] px-2.5 py-0.5 w-[185px]`}
