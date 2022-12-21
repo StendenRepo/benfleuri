@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
 
-export default function viewOrder() {
+export default function AddOrder() {
   return (
     <MainLayout>
       <div
