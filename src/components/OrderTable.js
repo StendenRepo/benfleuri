@@ -34,7 +34,7 @@ function PillLabel({type}) {
     } else if (type === "not-delivered") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Geleverd maar niet thuis"
-    }
+    } //TODO
 
     return <div className={colorStyle}>
         {text}
@@ -114,11 +114,11 @@ export function OrderTable({children}) {
             <div className={"bg-slate-100 flex flex-row p-2 gap-x-4 rounded-t-lg"}>
                 <input className={`grow rounded-lg`} type="text" placeholder="Search.."></input>
                 <GreenButton>Zoek</GreenButton>
-                <div className="relative items-stretch flex flex-row">
+                <div className="items-stretch flex flex-row">
                     <Dropdown listValues={status} roundCorners="left"/>
                     <Dropdown listValues={sort} roundCorners="right"/>
                 </div>
-                <div className="relative items-stretch flex flex-row">
+                <div className="items-stretch flex flex-row">
                     <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
                 </div>
                 <WhiteButton><ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></WhiteButton>
@@ -154,19 +154,22 @@ function Dropdown({listValues, roundCorners}) {
         <div className="items-stretch">
             <Listbox value={selected} onChange={setSelected}>
 
-                <div className="relative h-full">
+                <div className="h-full">
+                    <div className="relative h-full">
                     <Listbox.Button className={corners + " h-full border-black w-full cursor-default " +
                         "text-sm font-['Roboto'] bg-white text-black py-2 pl-3 pr-10 text-left"}>
                         <span className="block truncate">{selected.name}</span>
                         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
                   className="h-5 w-5 text-gray-400" aria-hidden="true"/></span></Listbox.Button>
+                    </div>
                     <Transition as={Fragment}
                         leave="transition ease-in duration-100"
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0">
                         <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto
-                        rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        rounded-md bg-white py-1 text-base shadow-lg ring-1
+                         ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                             {listValues.map((listValue, listValueIdx) => (
                                 <Listbox.Option
                                     key={listValueIdx}
