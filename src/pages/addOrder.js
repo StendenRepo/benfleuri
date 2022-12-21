@@ -72,7 +72,7 @@ export default function AddOrder() {
                   ></input>
                 </div>
                 <div
-                  className={`flex flex-col lg:flex-row justify-between mt-3`}
+                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
                 >
                   <div className={`flex flex-col`}>
                     <label htmlFor="voornaamContactpersoon">
@@ -165,7 +165,7 @@ export default function AddOrder() {
                         className={`ml-1`}
                         htmlFor="ja"
                       >
-                        ja
+                        Ja
                       </label>
                     </div>
                     <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>

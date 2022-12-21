@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
-import styles from '../styles/viewOrder.module.css';
 
 export default function viewOrder() {
   return (
