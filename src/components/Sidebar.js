@@ -18,7 +18,8 @@ export default function Sidebar() {
         </button>
       </div>
       <div className={visible}>
-        <div className="z-1 bg-white w-64 h-screen shadow-lg fixed max-sm:w-screen shadow-black">
+        <div className="z-1 bg-white w-64 h-full h-screen shadow-lg max-sm:w-screen shadow-black">
+          <div className="fixed">
           <div className="flex justify-center">
             <Image
               src="/Logo.svg"
@@ -113,6 +114,7 @@ export default function Sidebar() {
               Logout
             </button>
           </div>
+        </div>
         </div>
       </div>
     </>
