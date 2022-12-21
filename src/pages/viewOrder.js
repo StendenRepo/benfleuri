@@ -16,7 +16,7 @@ export default function viewOrder() {
             Bestelling 1
           </div>
           <button
-            className={`text-sm border-[1px] border-black rounded py-[8px] px-[20px] 
+            className={`text-sm border-[1px] border-black rounded py-[8px] px-[20px]
                   font-['Roboto'] bg-white text-black cursor-pointer`}
             type="button"
           >
