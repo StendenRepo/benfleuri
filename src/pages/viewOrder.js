@@ -71,7 +71,9 @@ export default function ViewOrder() {
                     id="opdrachtgever"
                   ></input>
                 </div>
-                <div className={`flex flex-col lg:flex-row justify-between`}>
+                <div
+                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
+                >
                   <div className={`flex flex-col`}>
                     <label htmlFor="voornaamContactpersoon">
                       Voornaam contactpersoon
@@ -161,7 +163,7 @@ export default function ViewOrder() {
                         className={`ml-1`}
                         htmlFor="ja"
                       >
-                        ja
+                        Ja
                       </label>
                     </div>
                     <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
@@ -341,7 +343,7 @@ export default function ViewOrder() {
             </div>
           </div>
           <div
-            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px]`}
+            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px] pb-3`}
           >
             <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[50px]`}>
               <div className={`font-['Roboto'] text-1xl font-bold`}>
