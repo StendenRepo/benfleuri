@@ -31,7 +31,7 @@ export default function Home() {
                     </div>
                     <div className="pt-5 text-3xl">Maandag 5 december 2022</div>
                 </div>
-                <div className="mt-[5%] overflow-scroll items-center justify-center w-[95%]">
+                <div className="mt-[5%] overflow-auto items-center justify-center w-[95%]">
                     <OrderTable>
                         <TableRow data={[1, "Brian Hoogerwerf", "23 rooie tulpen met gratis kaartje", "Brian Hoogerwerf", "Factuur", "send", "29,45"]}/>
                         <TableRow data={[1, "Brian Hoogerwerf", "23 rooie tulpen met gratis kaartje", "Brian Hoogerwerf", "Factuur", "send", "29,45"]}/>

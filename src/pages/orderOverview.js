@@ -25,7 +25,7 @@ export default function OrderOverview() {
             <Header/>
 
             <div className={`h-full flex flex-col items-center py-0 px-8`}>
-                <div className="mt-[3%] overflow-scroll items-center justify-center w-[95%]">
+                <div className="mt-[3%] overflow-auto items-center justify-center w-[95%]">
                     <div className={`font-['Roboto'] items-start text-2xl font-bold w-1/2 pb-4`}>
                         Aantal orders op pagina:
                         <select className="text-sm h-full font-bold border-[1px] border-black rounded ml-5 py-[8px] px-[20px]
