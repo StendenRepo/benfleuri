@@ -13,7 +13,7 @@ export default function CustomerOverview() {
           className={'text-black no-underline text-base m-4 w-fit'}
         >
           <h3 className={'flex flex-row justify-between items-center'}>
-            <div class="mr-[5px]">
+            <div className={'mr-[5px]'}>
               <svg
                 width="12"
                 height="19"
