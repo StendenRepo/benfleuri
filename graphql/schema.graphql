@@ -1,0 +1,58 @@
+type Customer {
+  id: Int
+  firsname: String
+  lastname: String
+  city: String
+  phone_number: String
+  email: String
+  postcal_code: String
+  street_name: String
+  house_number: String
+  order: [Order]
+}
+
+type Reciever {
+  id: Int
+  name: String
+  isAdmin: boolean
+  password: String
+  order: [Order]
+}
+
+type Order {
+  id: Int
+  customerId: Int
+  employeeId: Int
+  recieverId: Int
+  productInfo: String
+  message: String
+  extraInfo: String
+  cardType: CardType
+  includeDelivery: boolean
+  price: currency
+  dateOfDelivery: DateTime
+  PaymentMethod: PaymentMethod
+  customer: [Customer]
+  reciever: Reciever
+  employee: Employee
+}
+
+enum CardType {
+  NONE
+  BASIC_CARD
+  RIBBON
+  SPECIAL_CARD
+}
+
+enum OrderState {
+  OPEN
+  CLOSED
+  IN_PROGRESS
+  DELIVERED
+}
+
+enum PaymentMethod {
+  CASH
+  PIN
+  BY_INVOICE
+}
