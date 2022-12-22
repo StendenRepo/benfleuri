@@ -1,7 +1,12 @@
 import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
+import labelTemplate from '../assets/labelTemplate';
 
 export default function viewOrder() {
+  function onClickHandler() {
+    const xml = labelTemplate('Delano', '7824LC', 'Hulsackers 15', 'Emmen');
+  }
+
   return (
     <MainLayout>
       {/* <div className={styles.container}> */}
@@ -384,6 +389,7 @@ export default function viewOrder() {
                 </button>
                 <button
                   className={`bg-[#5DA4E4] rounded text-white  px-2.5 py-0.5`}
+                  onClick={() => onClickHandler()}
                 >
                   Adres uitprinten
                 </button>
