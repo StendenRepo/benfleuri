@@ -10,6 +10,8 @@
     "migrate": "npx prisma migrate dev"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.7",
+    "@heroicons/react": "^2.0.13",
     "@apollo/client": "^3.7.3",
     "@mui/icons-material": "^5.10.16",
     "@prisma/client": "^4.7.0",
@@ -17,6 +19,7 @@
     "classnames": "^2.3.2",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
+    "mailparser": "^3.6.2",
     "graphql": "^16.6.0",
     "material-icons": "^1.13.1",
     "micro-cors": "^0.1.1",
