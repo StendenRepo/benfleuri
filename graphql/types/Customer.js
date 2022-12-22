@@ -62,6 +62,7 @@ export const CustomerMutation = extendType({
     t.field('updateCustomer', {
       type: Customer,
       args: {
+        id: nonNull(intArg()),
         firstName: nonNull(stringArg()),
         lastName: nonNull(stringArg()),
         city: stringArg(),
@@ -72,7 +73,8 @@ export const CustomerMutation = extendType({
         houseNumber: stringArg(),
       },
       async resolve(_parent, args, ctx) {
-        return await ctx.prisma.customer.create({
+        return await ctx.prisma.customer.update({
+          where: { id: args.id },
           data: { ...args },
         });
       },
