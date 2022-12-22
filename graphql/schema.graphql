@@ -21,10 +21,20 @@ type Customer {
   streetName: String
 }
 
+type Employee {
+  id: Int
+  isAdmin: Boolean
+  name: String
+  password: String
+}
+
 type Mutation {
   createCustomer(city: String, email: String, firstName: String!, houseNumber: String, lastName: String!, phone_number: String!, postal_code: String, streetName: String): Customer
+  createEmployee(isAdmin: Boolean = false, name: String!, password: String!): Employee
   deleteCustomer(id: Int!): Customer
-  updateCustomer(city: String, email: String, firstName: String!, houseNumber: String, lastName: String!, phone_number: String!, postal_code: String, streetName: String): Customer
+  deleteEmployee(id: Int!): Employee
+  updateCustomer(city: String, email: String, firstName: String!, houseNumber: String, id: Int!, lastName: String!, phone_number: String!, postal_code: String, streetName: String): Customer
+  updateEmployee(id: Int!, isAdmin: Boolean, name: String, password: String): Employee
 }
 
 type Order {
@@ -59,5 +69,7 @@ enum PaymentMethod {
 
 type Query {
   findAllCustomers: [Customer]
+  findAllEmployees: [Employee]
   findCustomerById(id: Int!): Customer
+  findEmployeeById(id: Int!): Employee
 }
