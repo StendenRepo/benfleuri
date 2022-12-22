@@ -16,8 +16,6 @@ function Header() {
     </div>
 }
 
-
-
 export default function Home() {
     return (
         <MainLayout>
