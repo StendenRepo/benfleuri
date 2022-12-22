@@ -11,6 +11,7 @@ async function parsePdf(filePath) {
     const filteredPdfLines = parsedPdf.text.trim();
     const dataArray = filteredPdfLines.split("\n")
     const deliveryData = dataArray.slice(3, dataArray.indexOf(" "))
+    // const opdr = dataArray.slice(-1)
 
     const recieverName = deliveryData[2]
     const deliveryAdress = deliveryData[3] 
@@ -19,6 +20,17 @@ async function parsePdf(filePath) {
     const cardText = deliveryData.slice(5, deliveryData.length - 1).join("\n")
     const subject = deliveryData[deliveryData.length - 1]
 
+    const orderData = dataArray.slice(dataArray.indexOf(" ") + 1)
+    const bouquet = orderData[0].substring(12).split("€")[0]
+    const bouquetPrice = parseFloat(orderData[0].substring(12).split("€")[1].trim())
+
+    const cardIndex = orderData.indexOf(orderData.find(word => word.includes("kaartje")))
+    const card = orderData[cardIndex]
+    
+    const color = orderData.slice(orderData.indexOf(" ") + 1, cardIndex)
+
+    const deliveryCostIndex = orderData.indexOf(orderData.find(word => word.includes("Bezorgkosten")))
+    
 
     const extractedData = {
         "subject": subject,
@@ -29,7 +41,7 @@ async function parsePdf(filePath) {
         "cardText": cardText,
     }
 
-    console.log(deliveryData);
+    console.log(card);
   } catch (error) {
     console.error(error);
   }
