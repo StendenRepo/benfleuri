@@ -10,6 +10,7 @@
     "migrate": "npx prisma migrate dev"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.3",
     "@mui/icons-material": "^5.10.16",
     "@prisma/client": "^4.7.0",
     "apollo-server-micro": "^3.11.1",
