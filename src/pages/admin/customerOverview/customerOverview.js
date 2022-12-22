@@ -1,4 +1,9 @@
 import MainLayout from '../../../layout/MainLayout';
+import {
+  ArrowLeftIcon,
+  ArrowPathIcon,
+  ArrowRightIcon,
+} from '@heroicons/react/20/solid';
 
 export default function CustomerOverview() {
   return (
@@ -56,18 +61,28 @@ export default function CustomerOverview() {
             </select>
           </div>
         </div>
-        <div className={'flex flex-row align-middle justify-start w-[90%]'}>
+        <div className={'flex flex-row align-middle justify-between w-[90%]'}>
           <input
             type="text"
-            className={'border rounded w-1/2 mr-2'}
+            className={'border rounded w-[60%] mr-2'}
             placeholder="Zoek naar klanten"
           ></input>
           <button
             className={
-              'bg-[#009a42] border border-[#009a42] text-white py-1 px-3 rounded'
+              'bg-[#009a42] border border-[#009a42] text-white py-1 px-8 rounded'
             }
           >
             Zoek
+          </button>
+          <select className={'border border-gray rounded'}>
+            <option value="">Sorteer op</option>
+            <option value="name">Naam</option>
+            <option value="sirname">Achternaam</option>
+            <option value="phone">Telefoon</option>
+            <option value="mail">E-mail</option>
+          </select>
+          <button className={'border border-gray rounded mr-[10%] px-2.5'}>
+            <ArrowPathIcon className={'h-5 w-5'} />
           </button>
         </div>
         <form className={'w-[90%]'}>
@@ -131,9 +146,7 @@ export default function CustomerOverview() {
                 <td className={'border-y px-4 py-2'}></td>
                 <td className={'border-y px-4 py-2'}>
                   <button
-                    className={
-                      'bg-[#DEF2E6] text-black font-bold py-2 px-4 rounded'
-                    }
+                    className={'bg-white border uppercase text-black py-1 px-3'}
                   >
                     Bekijk
                   </button>
