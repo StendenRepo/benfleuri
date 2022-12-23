@@ -1,4 +1,3 @@
-const { data } = require('autoprefixer');
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
@@ -21,16 +20,21 @@ async function parsePdf(filePath) {
     const subject = deliveryData[deliveryData.length - 1]
 
     const orderData = dataArray.slice(dataArray.indexOf(" ") + 1)
-    const bouquet = orderData[0].substring(12).split("€")[0]
+    const bouquet = orderData[0].substring(12).split("€")[0].toString()
     const bouquetPrice = parseFloat(orderData[0].substring(12).split("€")[1].trim())
 
     const cardIndex = orderData.indexOf(orderData.find(word => word.includes("kaartje")))
     const card = orderData[cardIndex]
-    
-    const color = orderData.slice(orderData.indexOf(" ") + 1, cardIndex)
+
+    const color = orderData.slice(orderData.indexOf(" ") + 1, cardIndex).toString()
+    const description = bouquet + "\n" + color
 
     const deliveryCostIndex = orderData.indexOf(orderData.find(word => word.includes("Bezorgkosten")))
-    
+    const cardPrice = parseFloat(orderData[deliveryCostIndex + 1].replace(",", "."))
+    const deliveryPrice = parseFloat(orderData[deliveryCostIndex + 2])
+    const totalPrice = bouquetPrice + cardPrice + deliveryPrice
+
+    // const comments =  
 
     const extractedData = {
         "subject": subject,
@@ -38,10 +42,10 @@ async function parsePdf(filePath) {
         "adress": deliveryAdress,
         "postalCode": postalCode,
         "city": city,
-        "cardText": cardText,
+        "cardText": cardText
     }
 
-    console.log(card);
+    console.log(description);
   } catch (error) {
     console.error(error);
   }
