@@ -21,6 +21,7 @@ model Customer {
   streetName  String?
   houseNumber String? @db.VarChar(6)
   order       Order[]
+  Order       Order[] @relation(name: "recievers")
 }
 
 model Employee {
@@ -29,18 +30,6 @@ model Employee {
   isAdmin  Boolean @default(value: false)
   password String
   orders   Order[]
-}
-
-model Reciever {
-  id          Int     @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  city        String
-  phoneNumber String
-  postaleCode String  @db.VarChar(6)
-  streetName  String
-  houseNumber String  @db.VarChar(6)
-  Order       Order[]
 }
 
 model Order {
@@ -58,8 +47,8 @@ model Order {
   orderState      OrderState    @default(OPEN)
   orderDate       DateTime      @default(now())
   paymentMethod   PaymentMethod
-  customer        Customer[]
-  reciever        Reciever      @relation(fields: [recieverId], references: [id])
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  reciever        Customer      @relation(fields: [recieverId], references: [id], name: "recievers")
   employee        Employee      @relation(fields: [employeeId], references: [id])
 }
 
