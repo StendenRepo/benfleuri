@@ -1,7 +1,7 @@
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
-async function parsePdf(filePath) {
+async function extractWebbloemenData(filePath) {
   try {
     const readFile = await fs.promises.readFile(filePath);
     const parsedPdf = await pdfParse(readFile);
@@ -115,4 +115,6 @@ async function parsePdf(filePath) {
   }
 }
 
-parsePdf('webbloemen.pdf');
+(async () => {
+  const extractedData = await extractWebbloemenData('webbloemen.pdf')
+})()
