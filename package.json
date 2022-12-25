@@ -13,14 +13,17 @@
     "@heroicons/react": "^2.0.13",
     "@mui/icons-material": "^5.10.16",
     "@prisma/client": "^4.7.0",
+    "@woocommerce/woocommerce-rest-api": "^1.0.1",
     "classnames": "^2.3.2",
+    "dotenv": "^16.0.3",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
     "mailparser": "^3.6.2",
     "material-icons": "^1.13.1",
     "next": "13.0.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "woocommerce-api": "^1.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
