@@ -24,10 +24,26 @@ async function extractEurofloristData(filePath) {
     const adress = recieverData[1].split(":")[1]
     const postalCode = recieverData[2].split(":")[1]
     const city = recieverData[3].split(":")[1]
-    const phoneNumber = recieverData[5].split(":")[1]
+    // const phoneNumber = recieverData[5].split(":")[1]
 
-
-    console.log()
+    const descriptionIndex = dataArray.slice(7).findIndex(word => word.includes("Telefoon:"))
+    const description = dataArray.slice(8).slice(descriptionIndex, dataArray.slice(8).findIndex(word => word.includes("Speciale instructies")))
+    
+    const extractedData = {
+        "subject": "Order euroflorist",
+        "deliveryDate": deliveryDate,
+        "name": recieverName,
+        "adress": adress,
+        "postalCode": postalCode,
+        "city": city,
+        "client": {
+            "name": clientName,
+            "phoneNumber": clientPhone,
+            "fax": clientFax,
+            "email": clientEmail
+        }
+    }
+    console.log(description)
   } catch (error) {
     console.error(error);
   }
