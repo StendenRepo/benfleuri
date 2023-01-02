@@ -28,14 +28,40 @@ async function extractEurofloristData(filePath) {
 
     const descriptionIndex = dataArray.slice(7).findIndex(word => word.includes("Telefoon:"))
     const description = dataArray.slice(8).slice(descriptionIndex, dataArray.slice(8).findIndex(word => word.includes("Speciale instructies")))
+    const descriptionAsString = description.join("\n")
     
+    const commentsIndex = dataArray.indexOf("Speciale instructies") + 1
+    const productIndex = dataArray.findIndex(word => word.includes("Stukken"))
+    const comments = dataArray.slice(commentsIndex, productIndex).join("\n")
+
+    const priceIndex = dataArray.findIndex(word => word.includes("Totaal:"))
+    const price = parseFloat(dataArray[priceIndex].split(":")[1].split(" ")[0].replace(",", "."))
+    const withDeliveryCosts = true
+
+    const cardIndex = dataArray.lastIndexOf(dataArray.find(word => word.includes("0528"))) + 1
+    
+    var withCard = false
+    var cardText = ""
+
+    if(cardIndex != dataArray.length) {
+      withCard = true
+      cardText = dataArray.slice(cardIndex).join("\n")
+    }
+    
+
     const extractedData = {
-        "subject": "Order euroflorist",
+        "subject": "Euroflorist",
         "deliveryDate": deliveryDate,
         "name": recieverName,
         "adress": adress,
         "postalCode": postalCode,
         "city": city,
+        "description": descriptionAsString,
+        "comments": comments,
+        "price": price,
+        "withDeliveryCosts": true,
+        "withCard": withCard,
+        "cardText": cardText,
         "client": {
             "name": clientName,
             "phoneNumber": clientPhone,
@@ -43,7 +69,7 @@ async function extractEurofloristData(filePath) {
             "email": clientEmail
         }
     }
-    console.log(description)
+    console.log(extractedData)
   } catch (error) {
     console.error(error);
   }

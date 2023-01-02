@@ -14,13 +14,13 @@ async function extractOrderFormData(emlFile) {
       const filteredMailLines = parsedMail.text.split('\n').filter(element => element != "")
 
     // gets the standard email header data
-      const fromEmail = parsedMail.from['value'][0]['address']
-      const from = parsedMail.from['value'][0]['name']
+      const clientEmail = parsedMail.from['value'][0]['address']
+      const clientName = parsedMail.from['value'][0]['name']
       const orderDate = parsedMail.date
       const subject = parsedMail.subject
 
     // uses regex to extract the deliveryDate from the text
-      const deliveryDate = parsedMail.text.match(/([0-9]+(\/[0-9]+)+)/i)[0]
+      const deliveryDate = parsedMail.text.match(/([0-9]+(\/[0-9]+)+)/i)[0].replaceAll("/", "-")
       const name = filteredMailLines[filteredMailLines.indexOf('GEGEVENS ONTVANGER') + 1]
 
     // gets adress data by looking for specific text like 'bezorgingsadres', and returns the array element after it
@@ -29,6 +29,7 @@ async function extractOrderFormData(emlFile) {
       const city = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(7)
       const description = filteredMailLines[filteredMailLines.lastIndexOf('GEGEVENS BESTELLING') + 1]
 
+    // gets the info of the client, the person who placed the order
       const telNumber = filteredMailLines.find(word => word.includes("@")).split("/")[1].trim()
 
     // first finds the element that contains the word 'bedrag', then splits it into two at the : and replaces unnecessary characters
@@ -46,21 +47,23 @@ async function extractOrderFormData(emlFile) {
       const cardText = filteredMailLines.slice(cardTextIndex, commentsIndex).join(" ").split(":")[1].trim()
 
       const extractedData = {
-          'from': from,
-          'fromEmail': fromEmail,
           'orderDate': orderDate,
           'subject': subject,
           'deliveryDate': deliveryDate,
           'name': name,
           'adress': adress,
           'postalCode': postalCode,
-          'telNumber': telNumber,
           'city': city,
           'description': description,
           'price': price,
           'withCard': withCard,
           'cardText': cardText,
-          'comments': comments
+          'comments': comments,
+          'client': {
+            'name': clientName,
+            'email': clientEmail,
+            'telNumber': telNumber
+          }
       }
 
       console.log(extractedData)
@@ -72,5 +75,5 @@ async function extractOrderFormData(emlFile) {
 }
 
 (async () => {
-  const extractedData = await extractOrderFormData('sample.eml')
+  const extractedData = await extractOrderFormData('sample4.eml')
 })()

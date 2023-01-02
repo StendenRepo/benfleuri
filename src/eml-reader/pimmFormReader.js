@@ -25,8 +25,8 @@ async function extractPimmSolutionsFormData(emlFile) {
       })
 
       // gets the standard email header data
-      const fromEmail = parsedMail.from['value'][0]['address']
-      const from = parsedMail.from['value'][0]['name']
+      const clientEmail = parsedMail.from['value'][0]['address']
+      const clientName = parsedMail.from['value'][0]['name']
       const orderDate = parsedMail.date
       const subject = parsedMail.subject
 
@@ -62,8 +62,6 @@ async function extractPimmSolutionsFormData(emlFile) {
       }
 
       const extractedData = {
-        'fromEmail': fromEmail,
-        'from': from,
         'orderDate': orderDate,
         'subject': subject,
         'deliveryDate': deliveryDate,
@@ -72,12 +70,16 @@ async function extractPimmSolutionsFormData(emlFile) {
         'adress': adress,
         'city': city,
         'postalCode': postalCode,
-        'telNumber': telNumber,
         'description': description,
         'price': price,
         'withCard': withCard,
         'cardText': cardTextAsString,
-        'comments': ''
+        'comments': '',
+        'client': {
+          'name': clientName,
+          'email': clientEmail,
+          'telNumber': telNumber
+        }
       }
       console.log(extractedData)
       return extractedData
@@ -88,7 +90,7 @@ async function extractPimmSolutionsFormData(emlFile) {
 }
 
 (async () => {
-  const extractedData = await extractPimmSolutionsFormData('sample3.eml')
+  const extractedData = await extractPimmSolutionsFormData('sample2.eml')
 })()
 
   
