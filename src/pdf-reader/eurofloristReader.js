@@ -64,7 +64,7 @@ async function extractEurofloristData(filePath) {
         "cardText": cardText,
         "client": {
             "name": clientName,
-            "phoneNumber": clientPhone,
+            "telNumber": clientPhone,
             "fax": clientFax,
             "email": clientEmail
         }
