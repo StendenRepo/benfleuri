@@ -13,6 +13,13 @@ async function extractWyBloemistenData(filePath) {
 
 
     const benFleuriNumberIndex = dataArray.indexOf("0528-750619")
+    const extraInfo = () => {
+      var info = ""
+      if (dataArray.slice(0, benFleuriNumberIndex).length >= 5) {
+          info = dataArray[benFleuriNumberIndex - 4]
+      } 
+      return info
+    }
 
     const postalCodeAndCity = dataArray[benFleuriNumberIndex - 1].split("7905GZ")[0].split(" ")
     const city = postalCodeAndCity.pop()
@@ -35,12 +42,15 @@ async function extractWyBloemistenData(filePath) {
     const price = parseFloat(dataArray[totalPriceIndex + 1].split(" ")[1])
 
     const commentsIndex = dataArray.findIndex(word => word == "OntvangerBesteller")
-    const comments = dataArray.slice(totalPriceIndex + 2, commentsIndex - 1).join("\n")
+    var comments = extraInfo()
+    comments += "\n" + dataArray.slice(totalPriceIndex + 2, commentsIndex - 1).join("\n")
 
     const clientPhone = dataArray.pop()
     const clientPostalCodeAndCity = dataArray.pop().trim().split(postalCodeAndCityAsString)[1].trim()
     const clientPostalCode = clientPostalCodeAndCity.split(" ")[0]
     const clientCity = clientPostalCodeAndCity.split(" ")[1]
+    const clientAdress = dataArray.pop().split(adress)[1]
+    const clientName = dataArray.pop().split(recieverName)[1]
 
     const deliveryDate = () => {
         const monthInNumbers = {
@@ -61,36 +71,29 @@ async function extractWyBloemistenData(filePath) {
         const date = deliveryData.join("-")
         return date
       }
-     
-    const extraInfo = () => {
-        var info = ""
-        if (dataArray.slice(0, benFleuriNumberIndex).length >= 6) {
-            info = dataArray[benFleuriNumberIndex - 4]
-        } 
-        return info
-    }
 
-    // const extractedData = {
-    //     "subject": "Wybloemisten",
-    //     "deliveryDate": deliveryDate(),
-    //     "name": recieverName,
-    //     "adress": adress,
-    //     "postalCode": postalCode,
-    //     "city": city,
-    //     "description": description,
-    //     "comments": comments,
-    //     "price": price,
-    //     "withDeliveryCosts": true,
-    //     "withCard": withCard,
-    //     "cardText": cardText,
-    //     // "client": {
-    //     //     "name": clientName,
-    //     //     "telNumber": clientPhone,
-    //     //     "fax": clientFax,
-    //     //     "email": clientEmail
-    //     // }
-    // }
-    console.log(clientCity)
+    const extractedData = {
+        "subject": "Wybloemisten",
+        "deliveryDate": deliveryDate(),
+        "name": recieverName,
+        "adress": adress,
+        "postalCode": postalCode,
+        "city": city,
+        "description": description,
+        "comments": comments,
+        "price": price,
+        "withDeliveryCosts": true,
+        "withCard": withCard,
+        "cardText": cardText,
+        "client": {
+            "name": clientName,
+            "telNumber": clientPhone,
+            "city": clientCity,
+            "adress": clientAdress,
+            "postalCode": clientPostalCode
+        }
+    }
+    console.log(extractedData)
   } catch (error) {
     console.error(error);
   }
