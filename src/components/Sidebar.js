@@ -121,7 +121,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  <Link href="/admin/customerOverview">Klanten</Link>
+                  <Link href="/admin/customerOverview/customerOverview">Klanten</Link>
                 </p>
               </div>
             </div>
