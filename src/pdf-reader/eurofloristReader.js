@@ -74,7 +74,3 @@ async function extractEurofloristData(filePath) {
     console.error(error);
   }
 }
-
-(async () => {
-  const extractedData = await extractEurofloristData('euroflorist.pdf')
-})()
