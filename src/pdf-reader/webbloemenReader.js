@@ -114,7 +114,3 @@ async function extractWebbloemenData(filePath) {
     console.error(error);
   }
 }
-
-(async () => {
-  const extractedData = await extractWebbloemenData('webbloemen.pdf')
-})()
