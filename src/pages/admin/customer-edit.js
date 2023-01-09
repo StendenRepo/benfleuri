@@ -1,4 +1,4 @@
-import MainLayout from '../layout/MainLayout';
+import MainLayout from '../../layout/MainLayout';
 
 function Header() {
     return <div className={`font-['Roboto'] ml-[5%] mt-[2%]`}>
@@ -67,7 +67,7 @@ export default function EditCustomerPage() {
                 </div>
                 <div id={`block`} className={`bg-[#f4f4f4] w-[80%] rounded-b-lg flex gap-x-[50px] max-w-[900px]
                  pt-0 pb-[2%] px-[5%] items-center justify-center max-[900px]:py-[2%] max-[900px]:px-0`}>
-                    <form action='' method='post' className={`flex flex-col gap-y-[20px] w-[80%] max-w-[900px] pt-5
+                    <form action='src/pages' method='post' className={`flex flex-col gap-y-[20px] w-[80%] max-w-[900px] pt-5
                      max-[900px]:gap-y-0 max-[900px]:pt-0`}>
                         <FormRow>
                             <InputField name="client-name" size="full" label="Naam opdrachtgever (optioneel)"/>
