@@ -1,7 +1,39 @@
 import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
+import {useState} from 'react'
+
 
 export default function AddOrder() {
+  // const [file, setFile] = useState(null)
+  
+  const uploadToClient = (event) => {
+    if(!event.target.files && !event.target.files[0]) {
+      return
+    }
+
+    const file = event.target.files[0]
+    if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
+      alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden")
+      document.getElementById("file-uploader").value = null
+      return
+    }
+    console.log(file)
+
+    // setFile(file)  
+    uploadToServer(file)
+  }
+
+  const uploadToServer = async (file) => {
+    const body = new FormData();
+    body.append("file", file)
+    console.log(file.name)
+    const response = await fetch("api/file", {
+      method: "POST",
+      body
+    })
+  }
+
+
   return (
     <MainLayout>
       <div
@@ -36,13 +68,17 @@ export default function AddOrder() {
           <div className={`font-['Roboto'] text-2xl font-bold`}>
             Voeg order toe
           </div>
-          <button
-            className={`text-sm border-[1px] border-black rounded py-[8px] px-[20px] 
-                  font-['Roboto'] bg-white text-black cursor-pointer`}
-            type="button"
+          <input type="file" 
+          id="file-uploader"
+          className={`file:mr-5 file:py-2 file:px-6
+          file:rounded file:border
+          file:text-sm file:font-medium hover:file:bg-[#DEF2E6] 
+          file:bg-green file:text-black-700 border-none`}
+          onChange={uploadToClient}
           >
-            Exporteer bestellingen
-          </button>
+
+          </input>
+          
         </div>
       </div>
       <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
