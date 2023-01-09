@@ -98,7 +98,3 @@ async function extractWyBloemistenData(filePath) {
     console.error(error);
   }
 }
-
-(async () => {
-  const extractedData = await extractWyBloemistenData('wybloemisten1.pdf')
-})()
