@@ -9,7 +9,7 @@ export default function CustomerOverview() {
         }
       >
         <a
-          href="index.js"
+          href="src/pages/index.js"
           className={'text-black no-underline text-base m-4 w-fit'}
         >
           <h3 className={'flex flex-row justify-between items-center'}>
