@@ -65,10 +65,10 @@ export async function extractOrderFormData(emlFile) {
           'telNumber': telNumber
         }
     }
-    console.log(extractedData)
+    // console.log(extractedData)
     return extractedData
   } catch (error) {
-    console.log(error)
-    return error
+    // console.log(error)
+    return null
   }
 }

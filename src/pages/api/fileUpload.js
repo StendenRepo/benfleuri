@@ -1,7 +1,6 @@
 import fs from "fs"
 import formidable from "formidable"
-import path, { resolve } from "path"
-import { extractWebbloemenData } from '../../file-readers/pdf-reader/webbloemenReader'
+import { fileReader } from "../../file-readers/reader"
 
 export const config = {
     api: {
@@ -12,12 +11,10 @@ export const config = {
 const extractData = async (req, res) => {
     const form = new formidable.IncomingForm()
     form.parse(req, async function (err, fields, files) {
-        // if(err) resolve(err)
-        await extractWebbloemenData(files.file.filepath)
+        const data = await fileReader(files.file)
     })
-    return res.status(201).send("Success")
+    return res.status(201).send("")
 }
-
 
 export default (req, res) => {
       if(req.method === "POST") {

@@ -69,10 +69,10 @@ export async function extractEurofloristData(filePath) {
             "email": clientEmail
         }
     }
-    console.log(extractedData)
+    // console.log(extractedData)
     return extractedData
   } catch (error) {
-    console.error(error);
-    return error
+    // console.error(error);
+    return null
   }
 }

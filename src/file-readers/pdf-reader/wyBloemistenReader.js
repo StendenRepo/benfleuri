@@ -93,10 +93,10 @@ export async function extractWyBloemistenData(filePath) {
             "postalCode": clientPostalCode
         }
     }
-    console.log(extractedData)
+    // console.log(extractedData)
     return extractedData
   } catch (error) {
-    console.error(error);
-    return error
+    // console.error(error);
+    return null
   }
 }

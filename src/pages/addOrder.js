@@ -5,7 +5,6 @@ import {useState} from 'react'
 
 export default function AddOrder() {
   // const [file, setFile] = useState(null)
-  
   const uploadToClient = (event) => {
     if(!event.target.files && !event.target.files[0]) {
       return
@@ -18,6 +17,14 @@ export default function AddOrder() {
       return
     }
 
+    const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
+    const originalFileName = file.name.toString().toLowerCase()
+    if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
+      alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
+      document.getElementById("file-uploader").value = null
+      return
+    }
+
     uploadToServer(file)
   }
 
@@ -25,7 +32,7 @@ export default function AddOrder() {
     const body = new FormData();
     body.append("file", file)
     console.log(file)
-    const response = await fetch("api/file", {
+    const response = await fetch("api/fileUpload", {
       method: "POST",
       body
     })
