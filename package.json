@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
     "@mui/icons-material": "^5.10.16",
     "@prisma/client": "^4.7.0",
@@ -19,6 +20,7 @@
     "mailparser": "^3.6.2",
     "material-icons": "^1.13.1",
     "next": "13.0.3",
+    "pdf-parse": "^1.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
