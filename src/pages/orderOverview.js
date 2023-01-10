@@ -121,6 +121,7 @@ async function importWooCommerceOrder() {
   const query_string = querystring.stringify(params).replace(/%20/g, '+');
   console.log(store_url + endpoint + '?' + query_string);
 
+  //order: 39527
   WooCommerce.get('orders/39527').then((response) => {
     //the data from the customer who ordered
     const first_name = response.data.billing.first_name;
@@ -175,6 +176,7 @@ async function importWooCommerceOrder() {
     const product = response.data.line_items[0].name;
     const productQuantity = response.data.line_items[0].quantity;
     const deliveryDate = response.data.meta_data[2].value;
+    const cardText = response.data.line_items[0].meta_data[1].value[0].value;
 
     const productInfo = {
       product: product,
@@ -185,11 +187,14 @@ async function importWooCommerceOrder() {
       shippingCost: shippingCost,
       totalOrderPrice: totalOrderPrice,
       deliveryDate: deliveryDate,
+      cardText: cardText,
     };
 
-    console.log(ordererData);
-    console.log(shippingData);
-    console.log(productInfo);
+    // console.log(ordererData);
+    // console.log(shippingData);
+    // console.log(productInfo);
+
+    console.log(response.data.line_items[0].meta_data[5].display_value);
   });
 }
 
