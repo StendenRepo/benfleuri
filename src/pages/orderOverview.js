@@ -22,10 +22,7 @@ function Header() {
         </div>
         <div className={`flex justify-end w-1/2 gap-x-4`}>
           <GreenButton>Nieuwe Bestelling</GreenButton>
-          <select placeholder="Importeer Bestelling">
-            <option value="Woocommerce">WooCommerce</option>
-            <option value="pdf">PDF</option>
-          </select>
+          <WhiteButton>Importeer Bestelling</WhiteButton>
           <WhiteButton>Exporteer Bestelling</WhiteButton>
         </div>
       </div>
@@ -145,7 +142,7 @@ async function importWooCommerceOrder() {
       postcode: postcode,
       country: country,
       email: email,
-      phone: phone,
+      telNumber: phone,
     };
 
     //The data where the order should be shipped to
@@ -175,8 +172,9 @@ async function importWooCommerceOrder() {
     const shippingCost = response.data.shipping_total;
     const totalOrderPrice = response.data.total;
     const datePaid = response.data.date_paid;
-    const product = response.data.line_items.name;
-    const productQuantity = response.data.quantity;
+    const product = response.data.line_items[0].name;
+    const productQuantity = response.data.line_items[0].quantity;
+    const deliveryDate = response.data.meta_data[2].value;
 
     const productInfo = {
       product: product,
@@ -186,15 +184,13 @@ async function importWooCommerceOrder() {
       paymentMethod: paymentMethod,
       shippingCost: shippingCost,
       totalOrderPrice: totalOrderPrice,
+      deliveryDate: deliveryDate,
     };
 
-    console.log(product);
+    console.log(ordererData);
+    console.log(shippingData);
+    console.log(productInfo);
   });
 }
 
 importWooCommerceOrder();
-
-// const metaDataOrder = response.data.meta_data;
-
-// const datekey =
-//   key == 'Bezorgdatum' ? console.log(value) : console.log('nope');
