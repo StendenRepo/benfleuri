@@ -13,20 +13,18 @@ export default function AddOrder() {
 
     const file = event.target.files[0]
     if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
-      alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden")
+      alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
       document.getElementById("file-uploader").value = null
       return
     }
-    console.log(file)
 
-    // setFile(file)  
     uploadToServer(file)
   }
 
   const uploadToServer = async (file) => {
     const body = new FormData();
     body.append("file", file)
-    console.log(file.name)
+    console.log(file)
     const response = await fetch("api/file", {
       method: "POST",
       body
@@ -93,7 +91,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -250,7 +248,7 @@ export default function AddOrder() {
                     </select>
                   </div>
                 </div>
-              </formHtml>
+              </form>
             </div>
             <div
               className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}
@@ -258,7 +256,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -373,7 +371,7 @@ export default function AddOrder() {
                     ></input>
                   </div>
                 </div>
-              </formHtml>
+              </form>
             </div>
           </div>
           <div
@@ -383,7 +381,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Product
               </div>
-              <formHtml>
+              <form>
                 <div className={`flex flex-col`}>
                   <label
                     className={`mt-3`}
@@ -426,7 +424,7 @@ export default function AddOrder() {
                     id="bijzonderheden"
                   ></textarea>
                 </div>
-              </formHtml>
+              </form>
             </div>
             <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
               <div className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>

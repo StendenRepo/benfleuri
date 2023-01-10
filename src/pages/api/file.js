@@ -1,5 +1,7 @@
 import fs from "fs"
 import formidable from "formidable"
+import path, { resolve } from "path"
+import { extractWebbloemenData } from '../../file-readers/pdf-reader/webbloemenReader'
 
 export const config = {
     api: {
@@ -7,30 +9,20 @@ export const config = {
     }
 }
 
-const post = async (req, res) => {
+const extractData = async (req, res) => {
     const form = new formidable.IncomingForm()
     form.parse(req, async function (err, fields, files) {
-        await saveFile(files.file)
-        return res.status(201).send("")
+        // if(err) resolve(err)
+        await extractWebbloemenData(files.file.filepath)
     })
-}
-
-const saveFile = async (file) => {
-    const data = fs.readFileSync(file.name)
-    fs.writeFileSync(`../../files_to_scan/${file.name}`, data)
-    // await fs.unlinkSync(file.path)
-    return
+    return res.status(201).send("Success")
 }
 
 
 export default (req, res) => {
-    req.method === "POST"
-      ? post(req, res)
-      : req.method === "PUT"
-      ? console.log("PUT")
-      : req.method === "DELETE"
-      ? console.log("DELETE")
-      : req.method === "GET"
-      ? console.log("GET")
-      : res.status(404).send("");
+      if(req.method === "POST") {
+        extractData(req, res)
+      } else {
+        res.status(404).send("")
+      }
   }

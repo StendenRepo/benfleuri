@@ -16,6 +16,8 @@
     "classnames": "^2.3.2",
     "eslint": "8.27.0",
     "eslint-config-next": "13.0.3",
+    "formidable": "^2.1.1",
+    "fs": "^0.0.1-security",
     "mailparser": "^3.6.2",
     "material-icons": "^1.13.1",
     "next": "13.0.3",
