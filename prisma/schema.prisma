@@ -11,16 +11,17 @@ datasource db {
 }
 
 model Customer {
-  id           Int     @id @default(autoincrement())
-  firstName    String
-  lastName     String
-  city         String?
-  phone_number String
-  email        String?
-  postal_code  String? @db.VarChar(6)
-  streetName   String?
-  houseNumber  String? @db.VarChar(6)
-  order        Order[]
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  city        String?
+  phoneNumber String
+  email       String?
+  postalCode  String? @db.VarChar(6)
+  streetName  String?
+  houseNumber String? @db.VarChar(6)
+  order       Order[]
+  Order       Order[] @relation(name: "recievers")
 }
 
 model Employee {
@@ -29,18 +30,6 @@ model Employee {
   isAdmin  Boolean @default(value: false)
   password String
   orders   Order[]
-}
-
-model Reciever {
-  id           Int     @id @default(autoincrement())
-  firstName    String
-  lastName     String
-  city         String
-  phone_number String
-  postal_code  String  @db.VarChar(6)
-  streetName   String
-  houseNumber  String  @db.VarChar(6)
-  Order        Order[]
 }
 
 model Order {
@@ -53,14 +42,14 @@ model Order {
   extraInfo       String
   cardType        CardType
   includeDelivery Boolean
-  price           Decimal       @db.Decimal(2, 2)
+  price           Decimal       @db.Decimal(12, 2)
   dateOfDelivery  DateTime
   orderState      OrderState    @default(OPEN)
   orderDate       DateTime      @default(now())
   paymentMethod   PaymentMethod
-  customer        Customer[]
-  reciever        Reciever      @relation(fields: [recieverId], references: [id])
-  Employee        Employee      @relation(fields: [employeeId], references: [id])
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  reciever        Customer      @relation(fields: [recieverId], references: [id], name: "recievers")
+  employee        Employee      @relation(fields: [employeeId], references: [id])
 }
 
 enum CardType {
