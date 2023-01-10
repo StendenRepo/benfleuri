@@ -1,6 +1,7 @@
 import {Fragment} from 'react'
 import {Listbox, Menu, Transition} from '@headlessui/react'
 import {ChevronDownIcon} from '@heroicons/react/20/solid'
+import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
@@ -53,21 +54,21 @@ function TableCell({children, center}) {
 
 export function GreenButton({children, link}) {
     return (
-        <a href={link}>
+        <Link href={!link ? "" : link}>
             <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
         bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button">{children}
             </button>
-        </a>
+        </Link>
     )
 }
 
 export function WhiteButton({children, link}) {
     return (
-        <a href={link}>
+        <Link href={!link ? "" : link}>
             <button className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">{children}
             </button>
-        </a>
+        </Link>
     )
 }
 
