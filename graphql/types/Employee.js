@@ -5,7 +5,6 @@ import {
   stringArg,
   intArg,
   booleanArg,
-  idArg,
 } from 'nexus';
 /**
  * @TODO
