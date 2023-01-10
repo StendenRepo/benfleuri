@@ -16,8 +16,8 @@ type Customer {
   houseNumber: String
   id: Int
   lastName: String
-  phone_number: String
-  postcal_code: String
+  phoneNumber: String
+  postalCode: String
   streetName: String
 }
 
@@ -29,12 +29,15 @@ type Employee {
 }
 
 type Mutation {
-  createCustomer(city: String, email: String, firstName: String!, houseNumber: String, lastName: String!, phone_number: String!, postal_code: String, streetName: String): Customer
+  createCustomer(city: String, email: String, firstName: String!, houseNumber: String, lastName: String!, phoneNumber: String!, postalCode: String, streetName: String): Customer
   createEmployee(isAdmin: Boolean = false, name: String!, password: String!): Employee
+  createOrder(cardType: CardType = NONE, customerId: Int!, dateOfDelivery: String, employeeId: Int!, extraInfo: String, includeDelivery: Boolean, message: String, orderState: OrderState = OPEN, paymentMethod: PaymentMethod, price: Float, productInfo: String, recieverId: Int!): Order
   deleteCustomer(id: Int!): Customer
   deleteEmployee(id: Int!): Employee
-  updateCustomer(city: String, email: String, firstName: String!, houseNumber: String, id: Int!, lastName: String!, phone_number: String!, postal_code: String, streetName: String): Customer
+  deleteOrder(id: ID!): Order
+  updateCustomer(city: String, email: String, firstName: String!, houseNumber: String, id: Int!, lastName: String!, phoneNumber: String!, postalCode: String, streetName: String): Customer
   updateEmployee(id: Int!, isAdmin: Boolean, name: String, password: String): Employee
+  updateOrder(cardType: CardType, customerId: ID, dateOfDelivery: String, employeeId: ID, extraInfo: String, id: ID, includeDelivery: Boolean, message: String, orderState: OrderState, paymentMethod: PaymentMethod, price: Float, productInfo: String): Order
 }
 
 type Order {
@@ -49,7 +52,7 @@ type Order {
   orderDate: Boolean
   orderState: OrderState
   paymentMethod: PaymentMethod
-  price: Int
+  price: Float
   productInfo: String
   recieverId: Int
 }
@@ -70,6 +73,8 @@ enum PaymentMethod {
 type Query {
   findAllCustomers: [Customer]
   findAllEmployees: [Employee]
+  findAllOrders: [Order]
   findCustomerById(id: Int!): Customer
   findEmployeeById(id: Int!): Employee
+  findOrderById(id: ID!): Order
 }

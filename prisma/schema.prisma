@@ -17,7 +17,7 @@ model Customer {
   city        String?
   phoneNumber String
   email       String?
-  postcalCode String? @db.VarChar(6)
+  postalCode  String? @db.VarChar(6)
   streetName  String?
   houseNumber String? @db.VarChar(6)
   order       Order[]
@@ -42,7 +42,7 @@ model Order {
   extraInfo       String
   cardType        CardType
   includeDelivery Boolean
-  price           Decimal       @db.Decimal(2, 2)
+  price           Decimal       @db.Decimal(12, 2)
   dateOfDelivery  DateTime
   orderState      OrderState    @default(OPEN)
   orderDate       DateTime      @default(now())
