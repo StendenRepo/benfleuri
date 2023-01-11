@@ -114,15 +114,15 @@ async function importWooCommerceOrder() {
     app_name: 'BenFleuri',
     scope: 'read',
     user_id: 1,
-    return_url: 'http://localhost:3000/addOrder',
-    callback_url: 'https://app.com/callback-endpoint',
+    return_url: 'http://localhost:3000/orderOverview',
+    callback_url: 'http://localhost:3000/addOrder',
   };
 
   const query_string = querystring.stringify(params).replace(/%20/g, '+');
   console.log(store_url + endpoint + '?' + query_string);
 
   //order: 39527
-  WooCommerce.get('orders/39527').then((response) => {
+  WooCommerce.get('orders/39533').then((response) => {
     //the data from the customer who ordered
     const first_name = response.data.billing.first_name;
     const last_name = response.data.billing.last_name;
@@ -212,9 +212,9 @@ async function importWooCommerceOrder() {
       ribbonCheck: ribbonCheck,
     };
 
-    // console.log(ordererData);
-    // console.log(shippingData);
-    // console.log(productInfo);
+    console.log(ordererData);
+    console.log(shippingData);
+    console.log(productInfo);
   });
 }
 
