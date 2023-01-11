@@ -122,7 +122,7 @@ async function importWooCommerceOrder() {
   console.log(store_url + endpoint + '?' + query_string);
 
   //test order: 39527 or 39533
-  WooCommerce.get('orders/39533').then((response) => {
+  WooCommerce.get('orders/39527').then((response) => {
     //the data from the customer who ordered
     const first_name = response.data.billing.first_name;
     const last_name = response.data.billing.last_name;
@@ -179,15 +179,10 @@ async function importWooCommerceOrder() {
     const cardText = response.data.line_items[0].meta_data[1].value[0].value;
     const cardType =
       response.data.line_items[0].meta_data[5].value[0]?.[0].element.rules;
-    const mourningRibbon =
-      response.data.line_items[0].meta_data[5].value[0]?.[0].element.rules;
 
     //convert cardtype and mourning ribbon to json
     const jsonCardType = JSON.stringify(cardType);
     const typeCardData = JSON.parse(jsonCardType);
-
-    const jsonMourningRibbon = JSON.stringify(mourningRibbon);
-    const mournRibbonParse = JSON.parse(jsonMourningRibbon);
 
     //Card type data
     const noCard = typeCardData['Ik wil geen kaartje toevoegen_0'];
@@ -195,21 +190,11 @@ async function importWooCommerceOrder() {
     const specialCard = typeCardData['Speciaal wenskaartje_2'];
     const ribbon = typeCardData['Speciaal wenslintje_3'];
 
-    const wantMourningRibbonCheckData =
-      mournRibbonParse['Ik wil een rouwlint toevoegen_0'];
-    const noMourningRibbonCheckData =
-      mournRibbonParse['Ik wil geen rouwlint toevoegen_1'];
-
     //Card type check
     const noCardCheck = noCard == '1' ? true : false;
     const basicCardCheck = basicCard == '1' ? true : false;
     const specialCardCheck = specialCard == '1' ? true : false;
     const ribbonCheck = ribbon == '1' ? true : false;
-
-    const noMourningRibbonCheck =
-      noMourningRibbonCheckData == '' ? false : true;
-    const wantMourningRibbonCheck =
-      wantMourningRibbonCheckData == '' ? false : true;
 
     const productInfo = {
       product: product,
@@ -225,12 +210,10 @@ async function importWooCommerceOrder() {
       basicCard: basicCardCheck,
       specialCard: specialCardCheck,
       ribbonCheck: ribbonCheck,
-      wantsMourningRibbon: wantMourningRibbonCheck,
-      noMourningRibbon: noMourningRibbonCheck,
     };
 
-    // console.log(ordererData);
-    // console.log(shippingData);
+    console.log(ordererData);
+    console.log(shippingData);
     console.log(productInfo);
   });
 }
