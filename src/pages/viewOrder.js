@@ -57,7 +57,7 @@ export default function ViewOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -212,7 +212,7 @@ export default function ViewOrder() {
                     </select>
                   </div>
                 </div>
-              </formHtml>
+              </form>
             </div>
             <div
               className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%]`}
@@ -220,7 +220,7 @@ export default function ViewOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -339,7 +339,7 @@ export default function ViewOrder() {
                 >
                   Order wijzigen
                 </button>
-              </formHtml>
+              </form>
             </div>
           </div>
           <div
@@ -349,7 +349,7 @@ export default function ViewOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Product
               </div>
-              <formHtml
+              <form
                 method="POST"
                 action=""
               >
@@ -395,7 +395,7 @@ export default function ViewOrder() {
                     id="bijzonderheden"
                   ></textarea>
                 </div>
-              </formHtml>
+              </form>
               <button
                 className={`rounded bg-[#EA0101] text-white px-2.5 py-0.5 mt-7`}
               >
@@ -406,7 +406,7 @@ export default function ViewOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Afhandeling
               </div>
-              <formHtml
+              <form
                 method="POST"
                 action=""
               >
@@ -438,7 +438,7 @@ export default function ViewOrder() {
                     <option value="Medewerker2">Medewerker2</option>
                   </select>
                 </div>
-              </formHtml>
+              </form>
               <div
                 className={`flex flex-col lg:flex-row w-[90%] justify-between mt-10`}
               >

@@ -9,6 +9,41 @@ import {
 } from '../components/OrderTable';
 
 export default function AddOrder() {
+  // const [file, setFile] = useState(null)
+  const uploadToClient = (event) => {
+    if(!event.target.files && !event.target.files[0]) {
+      return
+    }
+
+    const file = event.target.files[0]
+    if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
+      alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
+      document.getElementById("file-uploader").value = null
+      return
+    }
+
+    const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
+    const originalFileName = file.name.toString().toLowerCase()
+    if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
+      alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
+      document.getElementById("file-uploader").value = null
+      return
+    }
+
+    uploadToServer(file)
+  }
+
+  const uploadToServer = async (file) => {
+    const body = new FormData();
+    body.append("file", file)
+    console.log(file)
+    const response = await fetch("api/fileUpload", {
+      method: "POST",
+      body
+    })
+  }
+
+
   return (
     <MainLayout>
       <div
@@ -32,7 +67,17 @@ export default function AddOrder() {
           <div className={`font-['Roboto'] text-2xl font-bold`}>
             Voeg order toe
           </div>
+          <input type="file" 
+          id="file-uploader"
+          className={`file:mr-5 file:py-2 file:px-6
+          file:rounded file:border
+          file:text-sm file:font-medium hover:file:bg-[#DEF2E6] 
+          file:bg-green file:text-black-700 border-none`}
+          onChange={uploadToClient}
+          >
 
+          </input>
+         
           <WhiteButton link="#">Exporteer bestellingen</WhiteButton>
         </div>
       </div>
@@ -48,7 +93,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Besteller
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -205,7 +250,7 @@ export default function AddOrder() {
                     </select>
                   </div>
                 </div>
-              </formHtml>
+              </form>
             </div>
             <div
               className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}
@@ -213,7 +258,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Ontvanger
               </div>
-              <formHtml
+              <form
                 className={`mt-1`}
                 method="POST"
                 action=""
@@ -328,7 +373,7 @@ export default function AddOrder() {
                     ></input>
                   </div>
                 </div>
-              </formHtml>
+              </form>
             </div>
           </div>
           <div
@@ -338,7 +383,7 @@ export default function AddOrder() {
               <div className={`font-['Roboto'] text-1xl font-bold`}>
                 Product
               </div>
-              <formHtml>
+              <form>
                 <div className={`flex flex-col`}>
                   <label
                     className={`mt-3`}
@@ -381,7 +426,7 @@ export default function AddOrder() {
                     id="bijzonderheden"
                   ></textarea>
                 </div>
-              </formHtml>
+              </form>
             </div>
             <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
               <div className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
