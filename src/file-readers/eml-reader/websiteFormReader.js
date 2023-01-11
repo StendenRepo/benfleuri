@@ -22,9 +22,14 @@ export async function extractOrderFormData(emlFile) {
   // uses regex to extract the deliveryDate from the text
     const deliveryDate = parsedMail.text.match(/([0-9]+(\/[0-9]+)+)/i)[0].replaceAll("/", "-")
     const name = filteredMailLines[filteredMailLines.indexOf('GEGEVENS ONTVANGER') + 1]
+    const firstName = name.split(" ")[0]
+    const lastName = name.split(" ")[1]
 
   // gets adress data by looking for specific text like 'bezorgingsadres', and returns the array element after it
     const adress = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 1]
+    const streetName = adress.split(" ")[0]
+    const houseNumber = adress.split(" ")[1]
+
     const postalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7).trim()
     const city = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(7)
     const description = filteredMailLines[filteredMailLines.lastIndexOf('GEGEVENS BESTELLING') + 1]
@@ -34,9 +39,10 @@ export async function extractOrderFormData(emlFile) {
 
   // first finds the element that contains the word 'bedrag', then splits it into two at the : and replaces unnecessary characters
     const price = parseFloat(filteredMailLines.find(word => word.includes('Bedrag')).split(':')[1].replaceAll(" ", "").replaceAll("€", "").replace(",", "."))
+    const withDeliveryCosts = price > 12.50 ? false : true
 
     const findWithCard = filteredMailLines.find(word => word.includes('Kaartje toevoegen:')).split(':')[1].trim().toLowerCase()
-    const withCard = findWithCard == 'ja' ? true : false
+    const withCard = findWithCard == 'ja' ? 'BASIC_CARD' : 'NONE'
 
   // finds index of the element where the aanvullingen/opmerkingen beginnen
     const commentsIndex = filteredMailLines.indexOf(filteredMailLines.find(word => word.includes('AANVULLINGEN')))
@@ -50,14 +56,17 @@ export async function extractOrderFormData(emlFile) {
         'orderDate': orderDate,
         'subject': subject,
         'deliveryDate': deliveryDate,
-        'name': name,
-        'adress': adress,
+        'firstName': firstName,
+        'lastName': lastName,
+        'streetName': streetName,
+        'houseNumber': houseNumber,
         'postalCode': postalCode,
         'city': city,
         'description': description,
         'price': price,
         'withCard': withCard,
         'cardText': cardText,
+        'withDeliveryCosts': withDeliveryCosts,
         'comments': comments,
         'client': {
           'name': clientName,

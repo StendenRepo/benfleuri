@@ -39,7 +39,13 @@ export async function extractWebbloemenData(filePath) {
 
     // Get all the data using string manipulation
     const recieverName = deliveryData[2]
+    const firstName = recieverName.split(" ")[0]
+    const lastName = recieverName.split(" ")[1]
+
     const deliveryAdress = deliveryData[3] 
+    const streetName = deliveryAdress.split(" ")[0]
+    const houseNumber = deliveryAdress.split(" ")[1]
+
     const postalCode = deliveryData[4].split(" ")[0]
     const city = deliveryData[4].split(" ")[1]
     const cardText = deliveryData.slice(5, deliveryData.length - 1).join("\n")
@@ -50,7 +56,11 @@ export async function extractWebbloemenData(filePath) {
     const bouquetPrice = parseFloat(orderData[0].substring(12).split("€")[1].trim())
 
     const cardIndex = orderData.indexOf(orderData.find(word => word.includes("kaartje")))
-    const cardType = orderData[cardIndex]
+    const cardType = orderData[cardIndex].toLowerCase()
+    var card = "NONE"
+    if(cardType.includes("kaartje")){
+        card = "BASIC_CARD"
+    } 
 
     const color = orderData.slice(orderData.indexOf(" ") + 1, cardIndex).toString()
     const description = bouquet + "\n" + color
@@ -88,12 +98,13 @@ export async function extractWebbloemenData(filePath) {
     const extractedData = {
         "subject": subject,
         "deliveryDate": deliveryDate(),
-        "firstName": recieverName.split(" ")[0],
-        "lastName": recieverName.split(" ")[1],
-        "adress": deliveryAdress,
+        "firstName": firstName,
+        "lastName": lastName,
+        "streetName": streetName,
+        "houseNumber": houseNumber,
         "postalCode": postalCode,
         "city": city,
-        "cardType": cardType,
+        "withCard": card,
         "cardText": cardText,
         "description": description,
         "price": totalPrice,

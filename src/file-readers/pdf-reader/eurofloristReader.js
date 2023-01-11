@@ -21,7 +21,14 @@ export async function extractEurofloristData(filePath) {
     const recieverIndex = dataArray.findIndex(word => word.includes("Orderdatum:")) + 1
     const recieverData = dataArray.slice(recieverIndex, recieverIndex + 6)
     const recieverName = recieverData[0].split(":")[1]
+    const firstName = recieverName.split(" ")[0]
+    const lastName = recieverName.split(" ")[1]
+
+
     const adress = recieverData[1].split(":")[1]
+    const streetName = adress.split(" ")[0]
+    const houseNumber = adress.split(" ")[1]
+
     const postalCode = recieverData[2].split(":")[1]
     const city = recieverData[3].split(":")[1]
     // const phoneNumber = recieverData[5].split(":")[1]
@@ -40,11 +47,11 @@ export async function extractEurofloristData(filePath) {
 
     const cardIndex = dataArray.lastIndexOf(dataArray.find(word => word.includes("0528"))) + 1
     
-    var withCard = false
+    var withCard = "NONE"
     var cardText = ""
 
     if(cardIndex != dataArray.length) {
-      withCard = true
+      withCard = "BASIC_CARD"
       cardText = dataArray.slice(cardIndex).join("\n")
     }
     
@@ -52,14 +59,16 @@ export async function extractEurofloristData(filePath) {
     const extractedData = {
         "subject": "Euroflorist",
         "deliveryDate": deliveryDate,
-        "name": recieverName,
-        "adress": adress,
+        "firstName": firstName,
+        "lastName": lastName,
+        "streetName": streetName,
+        "houseNumber": houseNumber,
         "postalCode": postalCode,
         "city": city,
         "description": descriptionAsString,
         "comments": comments,
         "price": price,
-        "withDeliveryCosts": true,
+        "withDeliveryCosts": withDeliveryCosts,
         "withCard": withCard,
         "cardText": cardText,
         "client": {

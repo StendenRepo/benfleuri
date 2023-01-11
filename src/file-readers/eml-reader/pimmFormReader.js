@@ -35,8 +35,12 @@ export async function extractPimmSolutionsFormData(emlFile) {
 
       const companyName = filteredMailLines[1]
       const name = filteredMailLines[2]
+      const firstName = name.split(" ")[0]
+      const lastName = name.split(" ")[1]
 
-      const adress = filteredMailLines[3]
+      const adress = filteredMailLines[3].toString()
+      const streetName = adress.split(/\s/i)[0]
+      const houseNumber = adress.split(/\s/i)[1]
 
       // City and postalcode are in the same array element, so it is split in two parts and city gets popped from the array. The remaining part is the postalCode
       const postalCodeAndCity = filteredMailLines[4].split(/\s+/)
@@ -55,10 +59,12 @@ export async function extractPimmSolutionsFormData(emlFile) {
       var cardTextAsString = ""
 
       // checks if there is a card included in the order, gets information accordingly
+      var card = "NONE"
       const withCard = tableRowCount > 1 ? true : false
       if(withCard) {
           cardTextAsString = filteredMailLines.slice(filteredMailLines.lastIndexOf("1 x") + 2).join("\n")
           description = filteredMailLines.slice(descriptionIndex, filteredMailLines.lastIndexOf("1 x") - 1).join(" ")
+          card = "BASIC_CARD"
       }
 
       const extractedData = {
@@ -66,15 +72,18 @@ export async function extractPimmSolutionsFormData(emlFile) {
         'subject': subject,
         'deliveryDate': deliveryDate,
         'companyName': companyName,
-        'name': name,
-        'adress': adress,
+        'firstName': firstName,
+        'lastName': lastName,
+        'streetName': streetName,
+        'houseNumber': houseNumber,
         'city': city,
         'postalCode': postalCode,
         'description': description,
         'price': price,
-        'withCard': withCard,
+        'withCard': card,
         'cardText': cardTextAsString,
         'comments': '',
+        'withDeliveryCosts': true,
         'client': {
           'name': clientName,
           'email': clientEmail,

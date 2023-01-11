@@ -27,11 +27,17 @@ export async function extractWyBloemistenData(filePath) {
     const postalCodeAndCityAsString = postalCodeAndCity.join(" ") + " " + city
 
     const adress = dataArray[benFleuriNumberIndex - 2].split("De Wielewaal")[0].trim()
+    const streetName = adress.split(" ")[0]
+    const houseNumber = adress.split(" ")[1]
+
     const recieverName = dataArray[benFleuriNumberIndex - 3].split("BenFleuri")[0].split(" ").slice(-2).join(" ")
+    const firstName = recieverName.split(" ")[0]
+    const lastName = recieverName.split(" ")[1]
 
     const cardTextIndex = dataArray.findIndex(element => element.includes("Ordernummer:"))
     const cardText = dataArray.slice(benFleuriNumberIndex + 1, cardTextIndex).join("\n").trim()
     const withCard = dataArray.includes(dataArray.find(element => element.includes("kaartje")))
+    const card = withCard == true ? "BASIC_CARD" : "NONE"
 
     const totalPriceIndex = dataArray.findIndex(word => word == "Totaal")
     var description = ""
@@ -75,15 +81,17 @@ export async function extractWyBloemistenData(filePath) {
     const extractedData = {
         "subject": "Wybloemisten",
         "deliveryDate": deliveryDate(),
-        "name": recieverName,
-        "adress": adress,
+        "firstName": firstName,
+        "lastName": lastName,
+        "streetName": streetName,
+        "houseNumber": houseNumber,
         "postalCode": postalCode,
         "city": city,
         "description": description,
         "comments": comments,
         "price": price,
         "withDeliveryCosts": true,
-        "withCard": withCard,
+        "withCard": card,
         "cardText": cardText,
         "client": {
             "name": clientName,
