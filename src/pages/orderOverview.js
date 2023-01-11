@@ -121,8 +121,8 @@ async function importWooCommerceOrder() {
   const query_string = querystring.stringify(params).replace(/%20/g, '+');
   console.log(store_url + endpoint + '?' + query_string);
 
-  //test order: 39527 or 39533
-  WooCommerce.get('orders/39527').then((response) => {
+  //test order: 39527 or 39685
+  WooCommerce.get('orders/39685').then((response) => {
     //the data from the customer who ordered
     const first_name = response.data.billing.first_name;
     const last_name = response.data.billing.last_name;
