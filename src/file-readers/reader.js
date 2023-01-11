@@ -8,25 +8,26 @@ export async function fileReader(file) {
 
     const fileName = file.originalFilename.toLowerCase()
     const filepath = file.filepath
-
+    var data;
     switch(true) {
         case fileName.includes("bestelformulier"):
-            extractOrderFormData(filepath).then((res) => {console.log(res)})
+            data = extractOrderFormData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("wybloem"):
-            extractWyBloemistenData(filepath).then((res) => {console.log(res)})
+            data = extractWyBloemistenData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("pimm"):
-            extractPimmSolutionsFormData(filepath).then((res) => {console.log(res)})
+            data = extractPimmSolutionsFormData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("webbloemen"):
-            extractWebbloemenData(filepath).then((res) => {console.log(res)})
+            data = extractWebbloemenData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("euroflorist"):
-            extractEurofloristData(filepath).then((res) => {console.log(res)})
+            data = extractEurofloristData(filepath).then((res) => {console.log(res)})
             break
         default:
             console.log("Could not read file")
             return
     }
+    return data;
 }
