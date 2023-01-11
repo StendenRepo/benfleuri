@@ -23,6 +23,7 @@ function TableButtonCell(orderID) {
 function PillLabel({type}) {
     let colorStyle = "rounded px-px text-center "
     let text = ""
+    type = type.toLowerCase();
     if (type === "send") {
         colorStyle += "bg-yellow-400 text-black"
         text = "Verzonden"
@@ -35,7 +36,9 @@ function PillLabel({type}) {
     } else if (type === "not-delivered") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Geleverd maar niet thuis"
-    } //TODO
+    } else {
+        text = type;
+    }
 
     return <div className={colorStyle}>
         {text}

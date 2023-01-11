@@ -2,6 +2,7 @@ import MainLayout from '../layout/MainLayout';
 import Link from 'next/link'
 import {OrderTable, TableRow, GreenButton, WhiteButton} from '../components/OrderTable'
 import {ArrowLeftIcon} from '@heroicons/react/20/solid';
+import {request, gql} from 'graphql-request'
 
 function Header() {
     return <div className={`border-b pb-[4%] flex flex-col font-['Roboto'] px-[4%] pt-[2%]`}>
@@ -25,11 +26,47 @@ function Header() {
     </div>
 }
 
-export default function OrderOverview() {
+export async function getServerSideProps() {
+    const query = gql`
+    {
+  findAllOrders {
+    id
+    customerId
+    productInfo
+    recieverId
+    paymentMethod
+    orderState
+    price
+  }
+    }
+  `
+    const data = await request('http://localhost:3000/api/graphql', query)
+    const {findAllOrders} = data
+
+    const customerQuery = gql`
+    {
+  findAllCustomers {
+    id
+    firstName
+    lastName
+  }
+    }
+  `
+    const customerData = await request('http://localhost:3000/api/graphql', customerQuery)
+    const {findAllCustomers} = customerData
+
+    return {
+        props: {
+            findAllOrders,
+            findAllCustomers
+        },
+    }
+}
+
+export default function OrderOverview({findAllOrders, findAllCustomers}) {
     return (
         <MainLayout>
             <Header/>
-
             <div className={`h-full flex flex-col items-center py-0 px-8`}>
                 <div className="mt-[3%] overflow-auto items-center justify-center w-[95%]">
                     <div className={`font-['Roboto'] items-start text-2xl font-bold w-1/2 pb-4`}>
@@ -41,18 +78,33 @@ export default function OrderOverview() {
                         </select>
                     </div>
                     <OrderTable>
-                        <TableRow
-                            data={[1, "Brian Hoogerwerf", "23 rooie tulpen met gratis kaartje", "Brian Hoogerwerf", "Factuur", "send", "29,45"]}/>
-                        <TableRow
-                            data={[1, "Brian Hoogerwerf", "23 rooie tulpen met gratis kaartje", "Brian Hoogerwerf", "Factuur", "send", "29,45"]}/>
-                        <TableRow
-                            data={[1, "Brian Hoogerwerf", "23 rooie tulpen met gratis kaartje", "Brian Hoogerwerf", "Factuur", "send", "29,45"]}/>
+                        {findAllOrders.map(f => {
+                            let customerName = "";
+                            let receiverName = "";
+                            let customerId = f.customerId;
+                            let receiverId = f.recieverId;
+                            findAllCustomers.every(v => {
+                                if (customerName !== "" && receiverName !== "") {
+                                    return false;
+                                }
+                                let cID = v.id;
+                                if (cID === customerId) {
+                                    customerName = v.firstName + " " + v.lastName;
+                                }
+                                if (cID === receiverId) {
+                                    receiverName = v.firstName + " " + v.lastName;
+                                }
+
+                            });
+                            return <TableRow data={[f.id, customerName, f.productInfo, receiverName, f.paymentMethod,
+                                f.orderState, f.price]}></TableRow>
+                        })
+                        }
                     </OrderTable>
                     <div className={"mt-20 w-full flex justify-end"}>
                         <GreenButton>Route maken</GreenButton>
                     </div>
                 </div>
-
             </div>
         </MainLayout>
     );
