@@ -1,7 +1,12 @@
-import Image from 'next/image';
 import MainLayout from '../layout/MainLayout';
-import {useState} from 'react'
-
+import Link from 'next/link'
+import {
+  ArrowLeftIcon,
+} from '@heroicons/react/20/solid';
+import {
+  GreenButton,
+  WhiteButton,
+} from '../components/OrderTable';
 
 export default function AddOrder() {
   // const [file, setFile] = useState(null)
@@ -45,29 +50,18 @@ export default function AddOrder() {
         className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px] w-[90%]`}
       >
         <div
-          className={`flex font-['Roboto'] ml-[2%] mb-[1%] w-[150px] justify-between`}
+          className={`flex font-['Roboto'] ml-[1%] mb-[1%] w-[150px] justify-between`}
         >
-          <svg
-            width="12"
-            height="15"
-            viewBox="0 0 12 19"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M11.4729 2.80625L9.41663 0.75L0.666626 9.5L9.41663 18.25L11.4729 16.1938L4.79371 9.5L11.4729 2.80625Z"
-              fill="black"
-              fillOpacity="0.87"
-            />
-          </svg>
-          <a
+          <Link
             className={`mr-[50px]`}
-            href={'#'}
+            href={'/'}
           >
+            <ArrowLeftIcon
+                className="h-5 w-5 pr-[2%] inline-block"
+                aria-hidden="true"
+            />
             Dashboard
-          </a>
+          </Link>
         </div>
         <div className={`flex justify-between w-[100%] mb-3`}>
           <div className={`font-['Roboto'] text-2xl font-bold`}>
@@ -83,7 +77,8 @@ export default function AddOrder() {
           >
 
           </input>
-          
+         
+          <WhiteButton link="#">Exporteer bestellingen</WhiteButton>
         </div>
       </div>
       <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
@@ -517,18 +512,8 @@ export default function AddOrder() {
               <div
                 className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
               >
-                <button
-                  className={`rounded py-[5px] px-[25px] 
-                  font-['Roboto'] bg-[#009A42] text-white cursor-pointer`}
-                >
-                  Voeg order
-                </button>
-                <button
-                  className={`border-[1px] border-black rounded py-[5px] px-[25px] 
-                  font-['Roboto'] bg-white text-black cursor-pointer`}
-                >
-                  Annuleren
-                </button>
+                <GreenButton link="#">Voeg order</GreenButton>
+                <WhiteButton link="/">Annuleren</WhiteButton>
               </div>
             </div>
           </div>

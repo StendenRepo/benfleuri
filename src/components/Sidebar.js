@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link'
 
 export default function Sidebar() {
   const [close, setClose] = useState('');
@@ -34,13 +35,15 @@ export default function Sidebar() {
         <div className="z-1 bg-white w-64 h-full max-sm:h-screen shadow-lg max-sm:w-screen shadow-black">
           <div className="sm:fixed sm:w-64">
             <div className="flex justify-center">
-              <Image
-                src="/Logo.svg"
-                width={100}
-                height={100}
-                className="mt-8"
-                alt="Benfleuri-icon"
-              />
+              <Link href="/">
+                <Image
+                  src="/Logo.svg"
+                  width={100}
+                  height={100}
+                  className="mt-8"
+                  alt="Benfleuri-logo"
+                />
+              </Link>
             </div>
             <div className="sm:hidden">
               <button onClick={() => closeSidebar()}>
@@ -70,7 +73,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  Dashboard
+                  <Link href="/">Dashboard</Link>
                 </p>
               </div>
               <div className="flex content-center p-2 group hover:bg-hover-green">
@@ -82,7 +85,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  Nieuwe Bestelling
+                  <Link href="/addOrder">Nieuwe Bestelling</Link>
                 </p>
               </div>
               <div className="flex content-center p-2 group hover:bg-hover-green">
@@ -94,7 +97,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  Bestellingen
+                  <Link href="/orderOverview">Bestellingen</Link>
                 </p>
               </div>
               <div className="flex content-center p-2 group hover:bg-hover-green">
@@ -106,7 +109,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  Gebruikerbeheer
+                  <Link href="/userOverview">Gebruikerbeheer</Link>
                 </p>
               </div>
               <div className="flex content-center p-2 group hover:bg-hover-green">
@@ -118,7 +121,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  Klanten
+                  <Link href="/admin/customerOverview/customerOverview">Klanten</Link>
                 </p>
               </div>
             </div>

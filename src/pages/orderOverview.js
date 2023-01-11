@@ -1,19 +1,25 @@
 import MainLayout from '../layout/MainLayout';
+import Link from 'next/link'
 import {OrderTable, TableRow, GreenButton, WhiteButton} from '../components/OrderTable'
+import {ArrowLeftIcon} from '@heroicons/react/20/solid';
 
 function Header() {
     return <div className={`border-b pb-[4%] flex flex-col font-['Roboto'] px-[4%] pt-[2%]`}>
-        <div className={`font-['Roboto'] ml-[2%] mb-[1%]`}>
-            <a href={"/"}>Dashboard</a>
+        <div className={`font-['Roboto'] ml-[1%] mb-[1%]`}>
+            <ArrowLeftIcon
+                className="h-5 w-5 pr-[1] inline-block"
+                aria-hidden="true"
+            />
+            <Link href={"/"}>Dashboard</Link>
         </div>
         <div className={`flex flex-row`}>
             <div className={`font-['Roboto'] items-start text-3xl font-bold w-1/2 `}>
                 Bestellingen
             </div>
             <div className={`flex justify-end w-1/2 gap-x-4`}>
-                <GreenButton>Nieuwe Bestelling</GreenButton>
-                <WhiteButton>Importeer Bestelling</WhiteButton>
-                <WhiteButton>Exporteer Bestelling</WhiteButton>
+                <GreenButton link="/addOrder">Nieuwe Bestelling</GreenButton>
+                <WhiteButton link="#">Importeer Bestelling</WhiteButton>
+                <WhiteButton link="#">Exporteer Bestelling</WhiteButton>
             </div>
         </div>
     </div>

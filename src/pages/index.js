@@ -1,5 +1,6 @@
-import Sidebar from '../components/Sidebar';
 import MainLayout from '../layout/MainLayout';
+import Link from 'next/link'
+
 import {
   GreenButton,
   OrderTable,
@@ -8,7 +9,6 @@ import {
 } from '../components/OrderTable';
 import {
   ArrowLeftIcon,
-  ArrowPathIcon,
   ArrowRightIcon,
 } from '@heroicons/react/20/solid';
 
@@ -24,7 +24,7 @@ function Header() {
           Bestellingen
         </div>
         <div className={`flex justify-end w-1/2 gap-x-4`}>
-          <GreenButton>Voeg nieuwe bestelling toe</GreenButton>
+            <GreenButton link="/addOrder">Voeg nieuwe bestelling toe</GreenButton>
         </div>
       </div>
     </div>
