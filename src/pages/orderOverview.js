@@ -178,6 +178,24 @@ async function importWooCommerceOrder() {
     const deliveryDate = response.data.meta_data[2].value;
     const cardText = response.data.line_items[0].meta_data[1].value[0].value;
 
+    //Checking if the customer wants an extra card or ribbon for his product
+    const obj =
+      response.data.line_items[0].meta_data[5].value[0]?.[0].element.rules;
+    const json = JSON.stringify(obj);
+    const typeCardData = JSON.parse(json);
+
+    //Card type data
+    const noCard = typeCardData['Ik wil geen kaartje toevoegen_0'];
+    const basicCard = typeCardData['Gratis kaartje_1'];
+    const specialCard = typeCardData['Speciaal wenskaartje_2'];
+    const ribbon = typeCardData['Speciaal wenslintje_3'];
+
+    //Card type check
+    const noCardCheck = noCard == '1' ? true : false;
+    const basicCardCheck = basicCard == '1' ? true : false;
+    const specialCardCheck = specialCard == '1' ? true : false;
+    const ribbonCheck = ribbon == '1' ? true : false;
+
     const productInfo = {
       product: product,
       productQuantity: productQuantity,
@@ -188,13 +206,15 @@ async function importWooCommerceOrder() {
       totalOrderPrice: totalOrderPrice,
       deliveryDate: deliveryDate,
       cardText: cardText,
+      noCard: noCardCheck,
+      basicCard: basicCardCheck,
+      specialCard: specialCardCheck,
+      ribbonCheck: ribbonCheck,
     };
 
     // console.log(ordererData);
     // console.log(shippingData);
     // console.log(productInfo);
-
-    console.log(response.data.line_items[0].meta_data[5].display_value);
   });
 }
 
