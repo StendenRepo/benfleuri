@@ -5,7 +5,7 @@ const mailparser = require('mailparser')
  * This function take a eml file and reads all data that is needed from it by using string manipulation
  * This function is solely useable for mails from pimm solutions as the format is very specific
  */
-async function extractPimmSolutionsFormData(emlFile) {
+export async function extractPimmSolutionsFormData(emlFile) {
   try {
       const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
       const parsedMail = await mailparser.simpleParser(emlFileReader)
@@ -81,16 +81,13 @@ async function extractPimmSolutionsFormData(emlFile) {
           'telNumber': telNumber
         }
       }
-      console.log(extractedData)
+      // console.log(extractedData)
       return extractedData
-
     } catch (error) {
-        console.log(error)
+      // console.log(error)
+      return null
     }
 }
 
-(async () => {
-  const extractedData = await extractPimmSolutionsFormData('sample2.eml')
-})()
 
   
