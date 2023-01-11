@@ -88,7 +88,8 @@ export async function extractWebbloemenData(filePath) {
     const extractedData = {
         "subject": subject,
         "deliveryDate": deliveryDate(),
-        "name": recieverName,
+        "firstName": recieverName.split(" ")[0],
+        "lastName": recieverName.split(" ")[1],
         "adress": deliveryAdress,
         "postalCode": postalCode,
         "city": city,

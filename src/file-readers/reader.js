@@ -5,7 +5,8 @@ import { extractEurofloristData } from "./pdf-reader/eurofloristReader";
 import { extractWyBloemistenData } from "./pdf-reader/wyBloemistenReader";
 import { request, gql } from 'graphql-request'
 
-export async function getServerSideProps() {
+export async function getServerSideProps(fileData) {
+    console.log(fileData)
   const query = gql
   `mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $productInfo: String, $message: String, $extraInfo: String, $cardType: CardType, $includeDelivery: Boolean, $price: Float, $dateOfDelivery: String, $orderState: OrderState, $paymentMethod: PaymentMethod) {
     createOrder(customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, productInfo: $productInfo, message: $message, extraInfo: $extraInfo, cardType: $cardType, includeDelivery: $includeDelivery, price: $price, dateOfDelivery: $dateOfDelivery, orderState: $orderState, paymentMethod: $paymentMethod) {
@@ -26,17 +27,18 @@ export async function getServerSideProps() {
     }
   }
   `
+
   const variables = {
     "recieverId": 1,
     "customerId": 1,
     "employeeId": 1,
-    "productInfo": "Hello",
-    "message": "hello",
-    "extraInfo": "nothing",
+    "productInfo": "d",
+    "message": "df",
+    "extraInfo": "fdfd",
     "cardType": "NONE",
-    "includeDelivery": false,
-    "price": 20,
-    "dateOfDelivery": "10-02-2023",
+    "includeDelivery": true,
+    "price": 100,
+    "dateOfDelivery": "21-12-2034",
     "orderState": "OPEN",
     "paymentMethod": "PIN"
   }
@@ -53,27 +55,27 @@ export async function fileReader(file) {
 
     const fileName = file.originalFilename.toLowerCase()
     const filepath = file.filepath
-    var data;
+    var fileData;
     switch(true) {
         case fileName.includes("bestelformulier"):
-            data = extractOrderFormData(filepath).then((res) => {console.log(res)})
+            fileData = extractOrderFormData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("wybloem"):
-            data = extractWyBloemistenData(filepath).then((res) => {console.log(res)})
+            fileData = extractWyBloemistenData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("pimm"):
-            data = extractPimmSolutionsFormData(filepath).then((res) => {console.log(res)})
+            fileData = extractPimmSolutionsFormData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("webbloemen"):
-            data = extractWebbloemenData(filepath).then((res) => {console.log(res)})
+            fileData = extractWebbloemenData(filepath).then((res) => {console.log(res)})
             break
         case fileName.includes("euroflorist"):
-            data = extractEurofloristData(filepath).then((res) => {console.log(res)})
+            fileData = extractEurofloristData(filepath).then((res) => {console.log(res)})
             break
         default:
             console.log("Could not read file")
             return
     }
-    getServerSideProps()
-    return data;
+    getServerSideProps(fileData)
+    return fileData;
 }
