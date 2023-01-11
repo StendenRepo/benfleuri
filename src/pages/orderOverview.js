@@ -2,7 +2,7 @@ import MainLayout from '../layout/MainLayout';
 import Link from 'next/link'
 import {OrderTable, TableRow, GreenButton, WhiteButton} from '../components/OrderTable'
 import {ArrowLeftIcon} from '@heroicons/react/20/solid';
-import {request, gql} from 'graphql-request'
+import {getAllCustomers, getAllOrders} from './sql'
 
 function Header() {
     return <div className={`border-b pb-[4%] flex flex-col font-['Roboto'] px-[4%] pt-[2%]`}>
@@ -27,33 +27,9 @@ function Header() {
 }
 
 export async function getServerSideProps() {
-    const query = gql`
-    {
-  findAllOrders {
-    id
-    customerId
-    productInfo
-    recieverId
-    paymentMethod
-    orderState
-    price
-  }
-    }
-  `
-    const data = await request('http://localhost:3000/api/graphql', query)
-    const {findAllOrders} = data
-
-    const customerQuery = gql`
-    {
-  findAllCustomers {
-    id
-    firstName
-    lastName
-  }
-    }
-  `
-    const customerData = await request('http://localhost:3000/api/graphql', customerQuery)
-    const {findAllCustomers} = customerData
+    const {findAllOrders} = await getAllOrders(
+        "id customerId productInfo recieverId paymentMethod orderState price")
+    const {findAllCustomers} = await getAllCustomers("id firstName lastName")
 
     return {
         props: {

@@ -7,6 +7,7 @@ import {
   GreenButton,
   WhiteButton,
 } from '../components/OrderTable';
+import {addOrder} from "./sql";
 
 export default function AddOrder() {
   return (
@@ -467,7 +468,8 @@ export default function AddOrder() {
               <div
                 className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
               >
-                <GreenButton link="#">Voeg order</GreenButton>
+                <button onClick={() => addOrder()} >test</button>
+                <GreenButton link="">Voeg order</GreenButton>
                 <WhiteButton link="/">Annuleren</WhiteButton>
               </div>
             </div>
