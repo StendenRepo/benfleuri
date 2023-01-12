@@ -39,10 +39,54 @@ export async function fileReader(file) {
         if(fileName.includes("euroflorist")) {
         fileData = await extractEurofloristData(filepath)
         }
+        
+        var recieverData = {}
+        var customerData = {}
+        var orderData = {}
+
+        var recieverVariables = {
+            "firstName": fileData['firstName'],
+            "lastName": fileData['lastName'],
+            "city": fileData['city'],
+            "phoneNumber": fileData['phoneNumber'],
+            "email": fileData['email'],
+            "postalCode": fileData['postalCode'],
+            "streetName": fileData['streetName'],
+            "houseNumber": fileData['houseNumber']
+        }
+
+        var customerVariables = {
+            "firstName": fileData['client']['firstName'],
+            "lastName": fileData['client']['lastName'],
+            "city": fileData['client']['city'],
+            "phoneNumber": fileData['client']['phoneNumber'],
+            "email": fileData['client']['email'],
+            "postalCode": fileData['client']['postalCode'],
+            "streetName": fileData['client']['streetName'],
+            "houseNumber": fileData['client']['houseNumber']
+        }
+
+        const findCustomers = gql
+        `
+        query FindAllCustomers {
+            findAllCustomers {
+                id
+                firstName
+                lastName
+                city
+                phoneNumber
+                email
+                postalCode
+                streetName
+                houseNumber
+            }
+        }
+        `
 
         // Blueprint for creating a customer in the database (the reciever)
         const createCustomer = gql
-        `mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $streetName: String, $postalCode: String, $email: String, $houseNumber: String) {
+        `
+        mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $streetName: String, $postalCode: String, $email: String, $houseNumber: String) {
             createCustomer(firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, streetName: $streetName, postalCode: $postalCode, email: $email, houseNumber: $houseNumber) {
             id
             firstName
@@ -57,35 +101,6 @@ export async function fileReader(file) {
         }
         `
 
-        var variables = {
-        "city": fileData['city'],
-        "email": fileData['email'],
-        "firstName": fileData['firstName'],
-        "lastName": fileData['lastName'],
-        "phoneNumber": fileData['phoneNumber'],
-        "postalCode": fileData['postalCode'],
-        "streetName": fileData['streetName'],
-        "houseNumber": fileData['houseNumber']
-        }
-
-        const recieverData = await request('http://localhost:3000/api/graphql', createCustomer, variables)
-
-        // Create a customer (the person who ordered)
-        variables = {
-            "city": fileData['client']['city'],
-            "email": fileData['client']['email'],
-            "firstName": fileData['client']['firstName'],
-            "lastName": fileData['client']['lastName'],
-            "phoneNumber": fileData['client']['phoneNumber'],
-            "postalCode": fileData['client']['postalCode'],
-            "streetName": fileData['client']['streetName'],
-            "houseNumber": fileData['client']['houseNumber']
-        }
-
-        const customerData = await request('http://localhost:3000/api/graphql', createCustomer, variables)
-
-
-        // create the order coupled with the previously created customer and reciever
         const createOrder = gql
         `
         mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $productInfo: String, $message: String, $extraInfo: String, $cardType: CardType, $includeDelivery: Boolean, $price: Float, $dateOfDelivery: String, $orderState: OrderState, $paymentMethod: PaymentMethod) {
@@ -108,9 +123,61 @@ export async function fileReader(file) {
         }
         `
 
-        variables = {
-            "recieverId": recieverData['createCustomer']['id'],
-            "customerId": customerData['createCustomer']['id'],
+        const findOrders = gql
+        `
+        query FindAllOrders {
+            findAllOrders {
+              recieverId
+              customerId
+              employeeId
+              productInfo
+              message
+              extraInfo
+              cardType
+              includeDelivery
+              price
+              dateOfDelivery
+              orderState
+              paymentMethod
+            }
+          }
+        `
+
+
+        var customerInDatabase = false
+        var recieverInDatabase = false
+        var recieverId
+        var customerId
+        const allCustomers = await request('http://localhost:3000/api/graphql', findCustomers)
+        allCustomers['findAllCustomers'].map((customer) => {
+            const id = customer['id']
+            delete(customer.id)
+            if(JSON.stringify(customer) == JSON.stringify(customerVariables)) {
+                customerId = id
+                customerInDatabase = true
+                customerData = customer
+            }
+            if(JSON.stringify(customer) == JSON.stringify(recieverVariables)) {
+                recieverId = id
+                recieverInDatabase = true
+                recieverData = customer
+            }
+        })
+
+        if(!recieverInDatabase) {
+            recieverData = await request('http://localhost:3000/api/graphql', createCustomer, recieverVariables)
+            recieverId = recieverData['createCustomer']['id']
+        }
+
+        // Create a customer (the person who ordered)
+        if(!customerInDatabase) {
+            customerData = await request('http://localhost:3000/api/graphql', createCustomer, customerVariables)
+            customerId = customerData['createCustomer']['id']
+        }
+
+        var orderVariables = {
+            "recieverId": recieverId,
+            "customerId": customerId,
             "employeeId": 1,
             "productInfo": fileData['description'],
             "message": fileData['cardText'],
@@ -118,12 +185,25 @@ export async function fileReader(file) {
             "cardType": fileData['withCard'],
             "includeDelivery": fileData['withDeliveryCosts'],
             "price": fileData['price'],
-            "dateOfDelivery": fileData['deliveryDate'],
+            // "dateOfDelivery": fileData['deliveryDate'],
             "orderState": "OPEN",
             "paymentMethod": "PIN",
         }
 
-        const orderData = await request('http://localhost:3000/api/graphql', createOrder, variables)
+        var orderIsInDatabase = false
+        const allOrders = await request('http://localhost:3000/api/graphql', findOrders)
+        allOrders['findAllOrders'].map((order) => {
+            delete(order.dateOfDelivery)
+            if(JSON.stringify(order) == JSON.stringify(orderVariables)) {
+                orderIsInDatabase = true
+            }
+        })
+        
+        if(!orderIsInDatabase) {
+            orderVariables['dateOfDelivery'] = fileData['deliveryDate']
+            orderData = await request('http://localhost:3000/api/graphql', createOrder, orderVariables)
+        }
+
 
         // add all inserted data together and return it
         const insertedData = {
