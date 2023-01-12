@@ -1,48 +1,52 @@
 import MainLayout from '../layout/MainLayout';
-import Link from 'next/link'
-import {
-  ArrowLeftIcon,
-} from '@heroicons/react/20/solid';
-import {
-  GreenButton,
-  WhiteButton,
-} from '../components/OrderTable';
+import Link from 'next/link';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
+import { GreenButton, WhiteButton } from '../components/OrderTable';
 
 export default function AddOrder() {
   // const [file, setFile] = useState(null)
   const uploadToClient = (event) => {
-    if(!event.target.files && !event.target.files[0]) {
-      return
+    if (!event.target.files && !event.target.files[0]) {
+      return;
     }
 
-    const file = event.target.files[0]
-    if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
-      alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
-      document.getElementById("file-uploader").value = null
-      return
+    const file = event.target.files[0];
+    if (file.type != 'application/pdf' && file.type != 'message/rfc822') {
+      alert('Het is alleen mogelijk om pdf of eml bestanden te uploaden!');
+      document.getElementById('file-uploader').value = null;
+      return;
     }
 
-    const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
-    const originalFileName = file.name.toString().toLowerCase()
-    if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
-      alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
-      document.getElementById("file-uploader").value = null
-      return
+    const supplierTypes = [
+      'webbloemen',
+      'wybloem',
+      'euroflorist',
+      'bestelformulier',
+      'pimm',
+    ];
+    const originalFileName = file.name.toString().toLowerCase();
+    if (
+      !supplierTypes.some((supplier) => originalFileName.includes(supplier))
+    ) {
+      alert(
+        'De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten'
+      );
+      document.getElementById('file-uploader').value = null;
+      return;
     }
 
-    uploadToServer(file)
-  }
+    uploadToServer(file);
+  };
 
   const uploadToServer = async (file) => {
     const body = new FormData();
-    body.append("file", file)
-    console.log(file)
-    const response = await fetch("api/fileUpload", {
-      method: "POST",
-      body
-    })
-  }
-
+    body.append('file', file);
+    console.log(file);
+    const response = await fetch('api/fileUpload', {
+      method: 'POST',
+      body,
+    });
+  };
 
   return (
     <MainLayout>
@@ -57,8 +61,8 @@ export default function AddOrder() {
             href={'/'}
           >
             <ArrowLeftIcon
-                className="h-5 w-5 pr-[2%] inline-block"
-                aria-hidden="true"
+              className="h-5 w-5 pr-[2%] inline-block"
+              aria-hidden="true"
             />
             Dashboard
           </Link>
@@ -67,17 +71,16 @@ export default function AddOrder() {
           <div className={`font-['Roboto'] text-2xl font-bold`}>
             Voeg order toe
           </div>
-          <input type="file" 
-          id="file-uploader"
-          className={`file:mr-5 file:py-2 file:px-6
+          <input
+            type="file"
+            id="file-uploader"
+            className={`file:mr-5 file:py-2 file:px-6
           file:rounded file:border
           file:text-sm file:font-medium hover:file:bg-[#DEF2E6] 
           file:bg-green file:text-black-700 border-none`}
-          onChange={uploadToClient}
-          >
+            onChange={uploadToClient}
+          ></input>
 
-          </input>
-         
           <WhiteButton link="#">Exporteer bestellingen</WhiteButton>
         </div>
       </div>
@@ -186,41 +189,61 @@ export default function AddOrder() {
                     id="telefoonnummerBesteller"
                   ></input>
                 </div>
-                <div className={`flex flex-col  mt-[3%]`}>
-                  <label className={`mt-[3%]`}>Bezorgkosten</label>
-                  <div className={`flex w-[30%] justify-between lg:w-[20%]`}>
-                    <div className={`flex justify-between`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="ja"
-                        value="ja"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="ja"
+                <div className={`flex flex-col lg:flex-row justify-between`}>
+                  <div className={`flex flex-col  mt-[3%]`}>
+                    <label className={`mt-[3%]`}>Bezorgkosten</label>
+                    <div
+                      className={`flex w-[200px] justify-between lg:w-[90%]`}
+                    >
+                      <div className={`flex justify-between`}>
+                        <input
+                          className={`accent-[#009A42]`}
+                          type="radio"
+                          name="bezorgkosten"
+                          id="ja"
+                          value="ja"
+                        ></input>
+                        <label
+                          className={`ml-1`}
+                          htmlFor="ja"
+                        >
+                          Ja
+                        </label>
+                      </div>
+                      <div
+                        className={`flex justify-between sm:ml[0px] ml-[5%]`}
                       >
-                        Ja
-                      </label>
-                    </div>
-                    <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="nee"
-                        value="nee"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="nee"
-                      >
-                        Nee
-                      </label>
+                        <input
+                          className={`accent-[#009A42]`}
+                          type="radio"
+                          name="bezorgkosten"
+                          id="nee"
+                          value="nee"
+                        ></input>
+                        <label
+                          className={`ml-1`}
+                          htmlFor="nee"
+                        >
+                          Nee
+                        </label>
+                      </div>
                     </div>
                   </div>
+                  <div className={`flex flex-col mt-[3%] w-[95px]`}>
+                    <label htmlFor="paymentMethod">Betaalwijze</label>
+                    <select
+                      className={`border-[1px] border-gray-500 h[10px]`}
+                      name="paymentMethod"
+                      id="paymentMethod"
+                    >
+                      <option value="ideal">Ideal</option>
+                      <option value="factuur">Factuur</option>
+                      <option value="pin">Pin</option>
+                      <option value="contant">Contant</option>
+                    </select>
+                  </div>
                 </div>
+
                 <div
                   className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
                 >
