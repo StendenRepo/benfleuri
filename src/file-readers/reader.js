@@ -136,13 +136,11 @@ export async function fileReader(file) {
               cardType
               includeDelivery
               price
-              dateOfDelivery
               orderState
               paymentMethod
             }
           }
         `
-
 
         var customerInDatabase = false
         var recieverInDatabase = false
@@ -193,7 +191,6 @@ export async function fileReader(file) {
         var orderIsInDatabase = false
         const allOrders = await request('http://localhost:3000/api/graphql', findOrders)
         allOrders['findAllOrders'].map((order) => {
-            delete(order.dateOfDelivery)
             if(JSON.stringify(order) == JSON.stringify(orderVariables)) {
                 orderIsInDatabase = true
             }
@@ -203,7 +200,6 @@ export async function fileReader(file) {
             orderVariables['dateOfDelivery'] = fileData['deliveryDate']
             orderData = await request('http://localhost:3000/api/graphql', createOrder, orderVariables)
         }
-
 
         // add all inserted data together and return it
         const insertedData = {
