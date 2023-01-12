@@ -27,6 +27,8 @@ export async function extractPimmSolutionsFormData(emlFile) {
       // gets the standard email header data
       const clientEmail = parsedMail.from['value'][0]['address']
       const clientName = parsedMail.from['value'][0]['name']
+      const clientFirstName = clientName.split(" ")[0]
+      const clientLastName = clientName.split(" ").slice(1).join(" ")
       const orderDate = parsedMail.date
       const subject = parsedMail.subject
 
@@ -36,11 +38,11 @@ export async function extractPimmSolutionsFormData(emlFile) {
       const companyName = filteredMailLines[1]
       const name = filteredMailLines[2]
       const firstName = name.split(" ")[0]
-      const lastName = name.split(" ")[1]
+      const lastName = name.split(" ").slice(1).join(" ")
 
       const adress = filteredMailLines[3].toString()
-      const streetName = adress.split(/\s/i)[0]
-      const houseNumber = adress.split(/\s/i)[1]
+      const streetName = adress.split(/\s/i).slice(0, -1).join(" ")
+      const houseNumber = adress.split(/\s/i).slice(-1).join(" ")
 
       // City and postalcode are in the same array element, so it is split in two parts and city gets popped from the array. The remaining part is the postalCode
       const postalCodeAndCity = filteredMailLines[4].split(/\s+/)
@@ -84,10 +86,17 @@ export async function extractPimmSolutionsFormData(emlFile) {
         'cardText': cardTextAsString,
         'comments': '',
         'withDeliveryCosts': true,
+        'email': '',
+        'phoneNumber': '',
         'client': {
-          'name': clientName,
+          'firstName': clientFirstName,
+          'lastName': clientLastName,
           'email': clientEmail,
-          'telNumber': telNumber
+          'phoneNumber': telNumber,
+          'city': '',
+          'streetName': '',
+          'houseNumber': '',
+          'postalCode': ''
         }
       }
       // console.log(extractedData)

@@ -14,6 +14,8 @@ export async function extractEurofloristData(filePath) {
 
     const clientData = dataArray.slice(2, 8)
     const clientName = clientData[0].split(":")[1]
+    const clientFirstName = clientName.split(" ")[0]
+    const clientLastName = clientName.split(" ").slice(1).join(" ")
     const clientPhone = clientData[1].split(":")[1]
     const clientFax = clientData[2].split(":")[1]
     const clientEmail = clientData[3].split(":")[1]
@@ -22,12 +24,12 @@ export async function extractEurofloristData(filePath) {
     const recieverData = dataArray.slice(recieverIndex, recieverIndex + 6)
     const recieverName = recieverData[0].split(":")[1]
     const firstName = recieverName.split(" ")[0]
-    const lastName = recieverName.split(" ")[1]
+    const lastName = recieverName.split(" ").slice(1).join("")
 
 
     const adress = recieverData[1].split(":")[1]
-    const streetName = adress.split(" ")[0]
-    const houseNumber = adress.split(" ")[1]
+    const streetName = adress.split(" ").slice(0, -1).join(" ")
+    const houseNumber = adress.split(" ").slice(-1).join(" ")
 
     const postalCode = recieverData[2].split(":")[1]
     const city = recieverData[3].split(":")[1]
@@ -72,10 +74,15 @@ export async function extractEurofloristData(filePath) {
         "withCard": withCard,
         "cardText": cardText,
         "client": {
-            "name": clientName,
-            "telNumber": clientPhone,
+            "firstName": clientFirstName,
+            "lastName": clientLastName,
+            "phoneNumber": clientPhone,
             "fax": clientFax,
-            "email": clientEmail
+            "email": clientEmail,
+            'streetName': '',
+            'houseNumber': '',
+            'city': '',
+            'postalCode': ''
         }
     }
     // console.log(extractedData)

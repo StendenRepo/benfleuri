@@ -40,11 +40,11 @@ export async function extractWebbloemenData(filePath) {
     // Get all the data using string manipulation
     const recieverName = deliveryData[2]
     const firstName = recieverName.split(" ")[0]
-    const lastName = recieverName.split(" ")[1]
+    const lastName = recieverName.split(" ").slice(1).join(" ")
 
-    const deliveryAdress = deliveryData[3] 
-    const streetName = deliveryAdress.split(" ")[0]
-    const houseNumber = deliveryAdress.split(" ")[1]
+    const adress = deliveryData[3] 
+    const streetName = adress.split(" ").slice(0, -1).join(" ")
+    const houseNumber = adress.split(" ").slice(-1).join(" ")
 
     const postalCode = deliveryData[4].split(" ")[0]
     const city = deliveryData[4].split(" ")[1]
@@ -85,14 +85,22 @@ export async function extractWebbloemenData(filePath) {
     var clientCity = ""
     var clientEmail = ""
     var clientPhone = ""
+    var clientStreetName = ""
+    var clientHousenumber = ""
+    var clientFirstName = ""
+    var clientLastName = ""
 
     if(clientData != -1) {
       clientName = orderData[clientData + 1]  
+      clientFirstName = clientName.split(" ")[0]
+      clientLastName = clientName.split(" ").slice(1).join(" ")
       clientAdress = orderData[clientData + 2]
       clientPostalCode = orderData[clientData + 3].split(" ")[0]
       clientCity = orderData[clientData + 3].split(" ")[1]
       clientEmail = orderData[clientData + 4]
       clientPhone = orderData[clientData + 5]
+      clientStreetName = clientAdress.split(" ").slice(0, -1).join(" ")
+      clientHousenumber = clientAdress.split(" ").slice(-1).join(" ")
     }
 
     const extractedData = {
@@ -109,14 +117,18 @@ export async function extractWebbloemenData(filePath) {
         "description": description,
         "price": totalPrice,
         "withDeliveryCosts": withDeliveryCosts,
+        "phoneNumber": "",
+        "email": "",
         "comments": comments,
         "client": {
-          "name": clientName,
-          "adress": clientAdress,
+          "firstName": clientFirstName,
+          "lastName": clientLastName,
+          "streetName": clientStreetName,
+          "houseNumber": clientHousenumber,
           "postalCode": clientPostalCode,
           "city": clientCity,
           "email": clientEmail,
-          "phoneNum": clientPhone
+          "phoneNumber": clientPhone
         }
         
     }

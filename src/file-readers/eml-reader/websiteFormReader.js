@@ -16,6 +16,8 @@ export async function extractOrderFormData(emlFile) {
   // gets the standard email header data
     const clientEmail = parsedMail.from['value'][0]['address']
     const clientName = parsedMail.from['value'][0]['name']
+    const clientFirstName = clientName.split(" ")[0]
+    const clientLastName = clientName.split(" ").slice(1).join(" ")
     const orderDate = parsedMail.date
     const subject = parsedMail.subject
 
@@ -23,12 +25,12 @@ export async function extractOrderFormData(emlFile) {
     const deliveryDate = parsedMail.text.match(/([0-9]+(\/[0-9]+)+)/i)[0].replaceAll("/", "-")
     const name = filteredMailLines[filteredMailLines.indexOf('GEGEVENS ONTVANGER') + 1]
     const firstName = name.split(" ")[0]
-    const lastName = name.split(" ")[1]
+    const lastName = name.split(" ").slice(1).join(" ")
 
   // gets adress data by looking for specific text like 'bezorgingsadres', and returns the array element after it
     const adress = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 1]
-    const streetName = adress.split(" ")[0]
-    const houseNumber = adress.split(" ")[1]
+    const streetName = adress.split(" ").slice(0, -1).join(" ")
+    const houseNumber = adress.split(" ").slice(-1).join(" ")
 
     const postalCode = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(0, 7).trim()
     const city = filteredMailLines[filteredMailLines.indexOf('BEZORGINGSADRES') + 2].replace(" ", "").substring(7)
@@ -68,10 +70,17 @@ export async function extractOrderFormData(emlFile) {
         'cardText': cardText,
         'withDeliveryCosts': withDeliveryCosts,
         'comments': comments,
+        'email': '',
+        'phoneNumber': '',
         'client': {
-          'name': clientName,
+          'firstName': clientFirstName,
+          'lastName': clientLastName,
           'email': clientEmail,
-          'telNumber': telNumber
+          'phoneNumber': telNumber,
+          'city': '',
+          'streetName': '',
+          'houseNumber': '',
+          'postalCode': ''
         }
     }
     // console.log(extractedData)
