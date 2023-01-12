@@ -148,39 +148,58 @@ export default function ViewOrder() {
                     id="telefoonnummer"
                   ></input>
                 </div>
-                <div className={`flex flex-col  mt-[3%]`}>
-                  <label className={`mt-[3%]`}>Bezorgkosten</label>
-                  <div className={`flex w-[30%] justify-between lg:w-[20%]`}>
-                    <div className={`flex justify-between`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="ja"
-                        value="ja"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="ja"
+                <div className={`flex flex-col lg:flex-row justify-between`}>
+                  <div className={`flex flex-col  mt-[3%]`}>
+                    <label className={`mt-[3%]`}>Bezorgkosten</label>
+                    <div
+                      className={`flex w-[200px] justify-between lg:w-[90%]`}
+                    >
+                      <div className={`flex justify-between`}>
+                        <input
+                          className={`accent-[#009A42]`}
+                          type="radio"
+                          name="bezorgkosten"
+                          id="ja"
+                          value="ja"
+                        ></input>
+                        <label
+                          className={`ml-1`}
+                          htmlFor="ja"
+                        >
+                          Ja
+                        </label>
+                      </div>
+                      <div
+                        className={`flex justify-between sm:ml[0px] ml-[5%]`}
                       >
-                        Ja
-                      </label>
+                        <input
+                          className={`accent-[#009A42]`}
+                          type="radio"
+                          name="bezorgkosten"
+                          id="nee"
+                          value="nee"
+                        ></input>
+                        <label
+                          className={`ml-1`}
+                          htmlFor="nee"
+                        >
+                          Nee
+                        </label>
+                      </div>
                     </div>
-                    <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="nee"
-                        value="nee"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="nee"
-                      >
-                        Nee
-                      </label>
-                    </div>
+                  </div>
+                  <div className={`flex flex-col mt-[3%] w-[95px]`}>
+                    <label htmlFor="paymentMethod">Betaalwijze</label>
+                    <select
+                      className={`border-[1px] border-gray-500 h[10px]`}
+                      name="paymentMethod"
+                      id="paymentMethod"
+                    >
+                      <option value="ideal">Ideal</option>
+                      <option value="factuur">Factuur</option>
+                      <option value="pin">Pin</option>
+                      <option value="contant">Contant</option>
+                    </select>
                   </div>
                 </div>
                 <div
