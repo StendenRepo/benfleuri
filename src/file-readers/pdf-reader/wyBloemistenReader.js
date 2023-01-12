@@ -1,6 +1,16 @@
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
+/**
+ * This function takes in a pdf file from 'wyBloemisten'
+ * The contents of the file are extracted using the fs and pdf-parse modules.
+ * Then, the document is split on every new line, and stores the lines in the dataArray
+ * Next, to extract all the data, string manipulation is used to get the specific data that is needed
+ * It stores every piece of data in a constant and adds it to the 'extractedData' JSON object
+ * @param {*} filePath: path to where file is stored locally 
+ * @returns extractedData: all data that needs to be extracted from the file in JSON format
+ */
+
 export async function extractWyBloemistenData(filePath) {
   try {
     const readFile = await fs.promises.readFile(filePath);
@@ -21,6 +31,7 @@ export async function extractWyBloemistenData(filePath) {
       return info
     }
 
+    // Get living area data
     const postalCodeAndCity = dataArray[benFleuriNumberIndex - 1].split("7905GZ")[0].split(" ")
     const city = postalCodeAndCity.pop()
     const postalCode = postalCodeAndCity.join("")
@@ -30,10 +41,12 @@ export async function extractWyBloemistenData(filePath) {
     const streetName = adress.split(" ").slice(0, -1).join(" ")
     const houseNumber = adress.split(" ").slice(-1).join(" ")
 
+    // get personal data of the reciever
     const recieverName = dataArray[benFleuriNumberIndex - 3].split("BenFleuri")[0].split(" ").slice(-2).join(" ")
     const firstName = recieverName.split(" ")[0]
     const lastName = recieverName.split(" ").slice(1).join(" ")
 
+    // get all info about the card
     const cardTextIndex = dataArray.findIndex(element => element.includes("Ordernummer:"))
     const cardText = dataArray.slice(benFleuriNumberIndex + 1, cardTextIndex).join("\n").trim()
     const withCard = dataArray.includes(dataArray.find(element => element.includes("kaartje")))

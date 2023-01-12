@@ -8,6 +8,10 @@ export const config = {
     }
 }
 
+/**
+ * This function extracts the file from the incoming FormData object 
+ * It then calls the function fileReader and passes the file with it
+ */
 const extractData = async (req, res) => {
     const form = new formidable.IncomingForm()
     form.parse(req, async function (err, fields, files) {

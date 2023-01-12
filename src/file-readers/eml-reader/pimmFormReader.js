@@ -2,9 +2,15 @@ const fs = require('fs')
 const mailparser = require('mailparser')
 
 /**
- * This function take a eml file and reads all data that is needed from it by using string manipulation
- * This function is solely useable for mails from pimm solutions as the format is very specific
+ * This function takes in a pdf file from 'Pimmsolutions'
+ * The contents of the file are extracted using the fs and mailparser modules.
+ * Then, the document is split on every new line, and stores the lines in the filteredMailLines
+ * Next, to extract all the data, string manipulation is used to get the specific data that is needed
+ * It stores every piece of data in a constant and adds it to the 'extractedData' JSON object
+ * @param {*} filePath: path to where file is stored locally 
+ * @returns extractedData: all data that needs to be extracted from the file in JSON format
  */
+
 export async function extractPimmSolutionsFormData(emlFile) {
   try {
       const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
@@ -99,10 +105,10 @@ export async function extractPimmSolutionsFormData(emlFile) {
           'postalCode': ''
         }
       }
-      // console.log(extractedData)
+
       return extractedData
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       return null
     }
 }

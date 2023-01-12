@@ -1,6 +1,16 @@
 const fs = require('fs');
 const pdfParse = require('pdf-parse');
 
+/**
+ * This function takes in a pdf file from 'Webbloemen'
+ * The contents of the file are extracted using the fs and pdf-parse modules.
+ * Then, the document is split on every new line, and stores the lines in the dataArray
+ * Next, to extract all the data, string manipulation is used to get the specific data that is needed
+ * It stores every piece of data in a constant and adds it to the 'extractedData' JSON object
+ * @param {*} filePath: path to where file is stored locally 
+ * @returns extractedData: all data that needs to be extracted from the file in JSON format
+ */
+
 export async function extractWebbloemenData(filePath) {
   try {
     const readFile = await fs.promises.readFile(filePath);
@@ -11,9 +21,7 @@ export async function extractWebbloemenData(filePath) {
     const dataArray = filteredPdfLines.split("\n")
     const deliveryData = dataArray.slice(3, dataArray.indexOf(" "))
 
-    /**
-     * This function retrieves the date as a string with the month in letters and converts it to xx-xx-xxxx format
-     */
+    // This function retrieves the date as a string with the month in letters and converts it to xx-xx-xxxx format
     const deliveryDate = () => {
       const dataAsString = deliveryData[0].toLowerCase().split(" ")
       dataAsString.shift()
@@ -37,17 +45,19 @@ export async function extractWebbloemenData(filePath) {
       return date
     }
 
-    // Get all the data using string manipulation
+    // Get personal info
     const recieverName = deliveryData[2]
     const firstName = recieverName.split(" ")[0]
     const lastName = recieverName.split(" ").slice(1).join(" ")
 
+    // Get living area info
     const adress = deliveryData[3] 
     const streetName = adress.split(" ").slice(0, -1).join(" ")
     const houseNumber = adress.split(" ").slice(-1).join(" ")
 
     const postalCode = deliveryData[4].split(" ")[0]
     const city = deliveryData[4].split(" ")[1]
+
     const cardText = deliveryData.slice(5, deliveryData.length - 1).join("\n")
     const subject = deliveryData[deliveryData.length - 1]
 
@@ -55,6 +65,7 @@ export async function extractWebbloemenData(filePath) {
     const bouquet = orderData[0].substring(12).split("€")[0].toString()
     const bouquetPrice = parseFloat(orderData[0].substring(12).split("€")[1].trim())
 
+    // Get card related information
     const cardIndex = orderData.indexOf(orderData.find(word => word.includes("kaartje")))
     const cardType = orderData[cardIndex].toLowerCase()
     var card = "NONE"
@@ -65,19 +76,18 @@ export async function extractWebbloemenData(filePath) {
     const color = orderData.slice(orderData.indexOf(" ") + 1, cardIndex).toString()
     const description = bouquet + "\n" + color
 
+    // Get price related info
     const deliveryCostIndex = orderData.indexOf(orderData.find(word => word.includes("Bezorgkosten")))
     const cardPrice = parseFloat(orderData[deliveryCostIndex + 1].replace(",", "."))
     const deliveryPrice = parseFloat(orderData[deliveryCostIndex + 2])
     const withDeliveryCosts = deliveryPrice == 0 ? false : true
     const totalPrice = bouquetPrice + cardPrice + deliveryPrice
 
+    // Get extra info / comments
     const commentsArray = orderData.slice(orderData.indexOf("Opmerking:"))
     const comments = commentsArray.slice(0, commentsArray.indexOf(" ")).join("\n")
 
-
-    /**
-     * Next section extracts data from the person who bought the flowers, if that data is present
-     */
+    // Next section extracts data from the person who bought the flowers, if that data is present
     const clientData = orderData.findIndex(word => word == "Opdrachtgever")
     var clientName = ""
     var clientAdress = ""
@@ -133,10 +143,9 @@ export async function extractWebbloemenData(filePath) {
         
     }
  
-    // console.log(extractedData);
     return extractedData
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     return null
   }
 }
