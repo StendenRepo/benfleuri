@@ -3,6 +3,7 @@ import {Listbox, Menu, Transition} from '@headlessui/react'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import {renderToString} from "react-dom/server";
 
 function TableHeaderCell({children}) {
     return <th scope="col"
@@ -21,18 +22,17 @@ function TableButtonCell(orderID) {
 
 function PillLabel({type}) {
     let colorStyle = "rounded px-px text-center "
-    let text = ""
-    type = type.toLowerCase();
-    if (type === "send") {
+    let text = "";
+    if (type === "DELIVERED") {
         colorStyle += "bg-yellow-400 text-black"
         text = "Verzonden"
-    } else if (type === "complete") {
+    } else if (type === "CLOSED") {
         colorStyle += "bg-[#009A40] text-white"
         text = "Voltooid"
-    } else if (type === "open") {
+    } else if (type === "OPEN") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Open"
-    } else if (type === "not-delivered") {
+    } else if (type === "IN_PROGRESS") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Geleverd maar niet thuis"
     } else {
@@ -93,7 +93,7 @@ export function TableRow({data}) {
     );
 }
 
-export function OrderTable({children}) {
+export function OrderTable({orders, customers, children}) {
     let status = [
         { name: 'Status', disabled: true },
         { name: 'Geleverd maar niet thuis', disabled: false },
@@ -121,7 +121,7 @@ export function OrderTable({children}) {
                 </div>
                 <div className="gap-x-[5px] flex inline-block">
                 <div className="items-stretch flex flex-row ">
-                    <StatusDropdown listValues={status} roundCorners="left"/>
+                    <StatusDropdown orders={orders} customers={customers} listValues={status} roundCorners="left"/>
                     <Dropdown listValues={sort} roundCorners="right"/>
                 </div>
                 <div className="items-stretch flex flex-row">
@@ -144,7 +144,7 @@ export function OrderTable({children}) {
                     <TableHeaderCell></TableHeaderCell>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="tableContent">
                 {children}
                 </tbody>
             </table>
@@ -152,7 +152,7 @@ export function OrderTable({children}) {
     );
 }
 
-function StatusDropdown({listValues, roundCorners}) {
+function StatusDropdown({customers, orders, listValues, roundCorners}) {
     const [selected, setSelected] = useState(listValues[0])
     let corners = roundCorners === "left" ? "rounded-l border-[1px]" :
         (roundCorners === "right" ? "rounded-r border-y-[1px] border-r-[1px]" : (roundCorners === "both" ?
@@ -246,5 +246,52 @@ function Dropdown({listValues, roundCorners}) {
                 </div>
             </Listbox>
         </div>
+    )
+}
+
+export function updateOrderTable({startIndex, findAllOrders, findAllCustomers}) {
+    let content = "";
+    let limit = parseInt(document.getElementById("orderCount").value);
+    let status = ""
+    let amount = 0;
+    let index = 0;
+    console.log(findAllOrders)
+    findAllOrders.map(f => {
+        if(index < startIndex){
+            index++;
+            return false;
+        }
+        if (amount >= limit) {
+            return true;
+        }
+        let customerName = "";
+        let receiverName = "";
+        let customerId = f.customerId;
+        let receiverId = f.recieverId;
+
+        for (let i = 0; i < findAllCustomers.length; i++) {
+            let v = findAllCustomers[i];
+            if (customerName !== "" && receiverName !== "") {
+                continue;
+            }
+            let cID = v.id;
+            if (cID === customerId) {
+                customerName = v.firstName + " " + v.lastName;
+            }
+            if (cID === receiverId) {
+                receiverName = v.firstName + " " + v.lastName;
+            }
+        }
+        content += renderToString(getTableRow(f, customerName, receiverName));
+        amount++;
+    })
+    document.getElementById("tableContent").innerHTML = content
+}
+
+
+function getTableRow(order, customerName, receiverName){
+    return (
+        <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
+            order.orderState, order.price]}></TableRow>
     )
 }
