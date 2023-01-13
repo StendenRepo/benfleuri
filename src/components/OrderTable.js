@@ -1,13 +1,24 @@
 import {Fragment} from 'react'
+//We use HeadlessUI for the dropdown, because we had issues with formatting the HTML dropdowns.
 import {Listbox, Menu, Transition} from '@headlessui/react'
+//Used for hyperlinks.
 import Link from 'next/link'
 import { useState } from 'react'
+//Used for SVG icons
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+//Used for dynamically filling the table.
 import {renderToString} from "react-dom/server";
 import {getAllCustomers, getAllOrders} from "../pages/sql";
 
+//The current page of the table.
 let currentPage = 1;
 
+/**
+ * Gets the database data for the Order table.
+ * Is used to update the data when the update button is pressed.
+ *
+ * @returns {Promise<{props: {findAllOrders: *, findAllCustomers: *}}>}
+ */
 export async function getOrderTableData(){
     const {findAllOrders} = await getAllOrders(
         "id customerId productInfo recieverId paymentMethod orderState price")
@@ -21,6 +32,10 @@ export async function getOrderTableData(){
     }
 }
 
+/**
+ * Table Header template.
+ * @param children values for the header.
+ */
 function TableHeaderCell({children}) {
     return <th scope="col"
                className="text-sm font-normal text-gray-400 px-4 py-2 text-left">
@@ -28,6 +43,10 @@ function TableHeaderCell({children}) {
     </th>
 }
 
+/**
+ * Table Button template.
+ * @param orderID The ID of the order.
+ */
 function TableButtonCell(orderID) {
     return <td className={`text-sm text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
         <button id={`edit-` + orderID}
@@ -36,23 +55,27 @@ function TableButtonCell(orderID) {
     </td>
 }
 
-function PillLabel({type}) {
+/**
+ * Pill label template for the order status.
+ * @param status the order status..
+ */
+function PillLabel({status}) {
     let colorStyle = "rounded px-px text-center "
     let text = "";
-    if (type === "DELIVERED") {
+    if (status === "DELIVERED") {
         colorStyle += "bg-yellow-400 text-black"
         text = "Verzonden"
-    } else if (type === "CLOSED") {
+    } else if (status === "CLOSED") {
         colorStyle += "bg-[#009A40] text-white"
         text = "Voltooid"
-    } else if (type === "OPEN") {
+    } else if (status === "OPEN") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Open"
-    } else if (type === "IN_PROGRESS") {
+    } else if (status === "IN_PROGRESS") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Geleverd maar niet thuis"
     } else {
-        text = type;
+        text = status;
     }
 
     return <div className={colorStyle}>
@@ -60,6 +83,12 @@ function PillLabel({type}) {
     </div>
 }
 
+/**
+ * Table cell template.
+ *
+ * @param children The values for the cell.
+ * @param center If the text should be centered.
+ */
 function TableCell({children, center}) {
     let className = "text-sm text-black font-normal px-4 py-2 whitespace-nowrap"
     if (center) {
@@ -70,6 +99,11 @@ function TableCell({children, center}) {
     </td>
 }
 
+/**
+ * Green Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
 export function GreenButton({children, link}) {
     return (
         <Link href={!link ? "" : link}>
@@ -80,6 +114,11 @@ export function GreenButton({children, link}) {
     )
 }
 
+/**
+ * White Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
 export function WhiteButton({children, link}) {
     return (
         <Link href={!link ? "" : link}>
@@ -91,6 +130,8 @@ export function WhiteButton({children, link}) {
 }
 
 /**
+ * Table row template
+ *
  * @param data A array containing the data for the table row.
  */
 export function TableRow({data}) {
@@ -109,7 +150,14 @@ export function TableRow({data}) {
     );
 }
 
-export function OrderTable({data, orders, customers, children}) {
+/**
+ * Order Table template
+ *
+ * @param data The HTML of the rows.
+ * @param orders The order data.
+ * @param customers The customer data.
+ */
+export function OrderTable({data, orders, customers}) {
     let status = [
         { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
@@ -183,6 +231,11 @@ export function OrderTable({data, orders, customers, children}) {
     );
 }
 
+/**
+ * Dropdown template using Headless UI.
+ * @param listValues The values of the list.
+ * @param roundCorners If the ListBox should have rounded corners.
+ */
 function Dropdown({listValues, roundCorners}) {
     const [selected, setSelected] = useState(listValues[0])
     let corners = roundCorners === "left" ? "rounded-l border-[1px]" :
@@ -231,21 +284,36 @@ function Dropdown({listValues, roundCorners}) {
     )
 }
 
+/**
+ * Updates the order table with relevant filters.
+ *
+ * @param startIndex The index of the order data the table should start at. Is used for pages.
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ * @param pageLoad If the page is still loading, should only be true on first load.
+ *
+ * @returns {string}
+ * The new HTML content of the order table. Return value is only used on first load.
+ * Otherwise, the HTML is directly set in this function.
+ */
 export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, pageLoad = false}) {
-    let content = "", searchInput = "";
+    let content = "";
+    let searchInput = ""
     let limit = 5;
     if(!pageLoad) {
+        //Only look at the buttons and search field if the page is loaded.
         limit = parseInt(document.getElementById("orderCount").value);
         searchInput = document.getElementById("searchField").value.toLowerCase();
     }
     let matchedOrders = {}
-
+    //Loop over all the orders.
     findAllOrders.map(f => {
         let customerName = "";
         let receiverName = "";
         let customerId = f.customerId;
         let receiverId = f.recieverId;
 
+        //Find the customer of the order.
         for (let i = 0; i < findAllCustomers.length; i++) {
             let v = findAllCustomers[i];
             if (customerName !== "" && receiverName !== "") {
@@ -259,6 +327,7 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
                 receiverName = v.firstName + " " + v.lastName;
             }
         }
+        //Check the search input.
         if(searchInput !== ""){
             if(
                 !customerName.toLowerCase().includes(searchInput) &&
@@ -268,6 +337,7 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
                 return false;
             }
         }
+        //Add to object.
         matchedOrders[f.id] = {"order": f, "customerName": customerName, "receiverName": receiverName}
     })
 
@@ -275,25 +345,29 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
     let amount = 0;
     let leftAmount = Object.keys(matchedOrders).length;
     //You now have an object containing only the rows that match the criteria.
+    //Loop over this for the table.
     Object.keys(matchedOrders).forEach(key => {
         if(index < startIndex){
+            //Is order from previous page.
             index++;
             leftAmount--
             return false;
         }
 
         if (amount >= limit) {
+            //Is order from next page.
             return false;
         }
 
+        //Add HTML to string.
         let f = matchedOrders[key].order
-        console.log(f)
         content += renderToString(getTableRow(f, matchedOrders[key].customerName, matchedOrders[key].receiverName));
         amount++
         leftAmount--
     })
 
     if(!pageLoad) {
+        //Only look at the buttons and search field if the page is loaded.
         document.getElementById("prevButton").removeAttribute('disabled')
         document.getElementById("nextButton").disabled = leftAmount <= 0;
         document.getElementById("prevButton").disabled = startIndex - limit < 0;
@@ -303,6 +377,12 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
     return content;
 }
 
+/**
+ * Handles the next page button.
+ *
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ */
 export function nextPage({findAllOrders, findAllCustomers}){
     let limit = parseInt(document.getElementById("orderCount").value);
     let startIndex = (currentPage * limit);
@@ -314,6 +394,12 @@ export function nextPage({findAllOrders, findAllCustomers}){
     updateOrderTable({startIndex, findAllOrders, findAllCustomers});
 }
 
+/**
+ * Handles the previous page button.
+ *
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ */
 export function previousPage({findAllOrders, findAllCustomers}){
     let limit = parseInt(document.getElementById("orderCount").value);
     let startIndex = (currentPage * limit)  - (limit)
@@ -324,6 +410,12 @@ export function previousPage({findAllOrders, findAllCustomers}){
     updateOrderTable({startIndex, findAllOrders, findAllCustomers});
 }
 
+/**
+ * Gets a TableRow template, filled with the order/customer data.
+ * @param order The order.
+ * @param customerName The name of the customer.
+ * @param receiverName The name of the receiver.
+ */
 function getTableRow(order, customerName, receiverName){
     return (
         <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,

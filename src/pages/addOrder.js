@@ -1,14 +1,17 @@
 import MainLayout from '../layout/MainLayout';
+//Is used for hyperlinks.
 import Link from 'next/link'
-import {
-    ArrowLeftIcon,
-} from '@heroicons/react/20/solid';
-import {
-    GreenButton, GreenSubmitButton, TableRow,
-    WhiteButton,
-} from '../components/OrderTable';
+//HeroIcons is used for the SVG icons.
+import {ArrowLeftIcon} from '@heroicons/react/20/solid';
+import {WhiteButton,} from '../components/OrderTable';
 import {addOrder, getAllCustomers, getAllEmployees, addCustomerIfNotExists} from "./sql";
 
+
+/**
+ * Gets called when the page is loaded, this is where the data from the database is loaded.
+ *
+ * @returns {Promise<{props: {findAllCustomers: *, findAllEmployees: *}}>}
+ */
 export async function getServerSideProps() {
     const {findAllCustomers} = await getAllCustomers("id firstName lastName city postalCode")
     const {findAllEmployees} = await getAllEmployees("id name")
@@ -21,11 +24,14 @@ export async function getServerSideProps() {
     }
 }
 
-function updateTotalPriceField(){
+/**
+ * Updated the total price field when a relevant value in the form is changed.
+ */
+function updateTotalPriceField() {
     let price = parseFloat(document.getElementById("orderPrice").value);
-    if(document.querySelector('input[name="includeDeliveryCosts"]:checked').value
-        === "yes"){
-        if(document.getElementById("receiverPlace").value.toLowerCase() === "hoogeveen"){
+    if (document.querySelector('input[name="includeDeliveryCosts"]:checked').value
+        === "yes") {
+        if (document.getElementById("receiverPlace").value.toLowerCase() === "hoogeveen") {
             price += 4.50;
         } else {
             price += 5.95;
@@ -34,18 +40,63 @@ function updateTotalPriceField(){
     document.getElementById("totalPrice").value = price
 }
 
-async function handleFormSubmit(customers){
-    console.log(customers)
-    let cardSelection = document.querySelector('input[name="cardSelect"]:checked').value;
-    let includeDeliveryCosts = document.querySelector('input[name="includeDeliveryCosts"]:checked').value;
 
+function validateElements(missingInput, elements) {
+    for (let i = 0; i < elements.length; i++) {
+        let element = elements[i]
+        if (element.hasAttribute("required")) {
+            console.log("required")
+            if (element.value === "") {
+                element.style.border = "solid #ff0000"
+                missingInput = true;
+            } else {
+                element.style.border = ""
+            }
+        } else {
+            element.style.border = ""
+        }
+    }
+    return missingInput;
+}
+
+/**
+ * Handles the validating and submitting of the form.
+ * When something goes wrong, an alert with an error will be displayed.
+ * Otherwise, the data will be added to the database and the user will be redirected
+ * to the orderOverview page.
+ */
+
+async function handleFormSubmit() {
+    //Check if all the required fields have been filled out.
+    let missingInput = validateElements(false, document.querySelectorAll("input[type=text]"));
+    missingInput = validateElements(missingInput, document.querySelectorAll("textarea"));
+    missingInput = validateElements(missingInput, document.querySelectorAll("textarea"));
+    missingInput = validateElements(missingInput, [document.getElementById("deliveryDate")]);
+
+    let cardSelect = document.querySelector('input[name="cardSelect"]:checked')
+    if (cardSelect === null) {
+        missingInput = true;
+        document.querySelector('#cardSelectContainer').style.border = "solid #ff0000"
+    } else {
+        document.querySelector('#cardSelectContainer').style.border = ""
+    }
+
+    if (missingInput) {
+        alert("Er zijn verplichte velden niet ingevuld.")
+        return
+    }
+
+
+    let includeDeliveryCosts = document.querySelector('input[name="includeDeliveryCosts"]:checked').value;
     let price = parseFloat(document.getElementById("totalPrice").value)
-    if(isNaN(price)){
+    //Validate price.
+    if (isNaN(price)) {
         alert("De gegeven prijs is ongeldig.")
         return
     }
 
-    let customer = await addCustomerIfNotExists(customers,
+    //Add the customer if he/she does not yet exist in the database.
+    let customer = await addCustomerIfNotExists(
         document.getElementById('customerFirstName').value,
         document.getElementById('customerLastName').value,
         document.getElementById('customerPhoneNumber').value,
@@ -55,10 +106,12 @@ async function handleFormSubmit(customers){
         document.getElementById('customerPostalCode').value,
     )
 
-    console.log(customer)
-
-
-    let receiver = await addCustomerIfNotExists(customers,
+    if (customer.error) {
+        alert(customer.error.message);
+        return
+    }
+    //Add the receiver if he/she does not yet exist in the database.
+    let receiver = await addCustomerIfNotExists(
         document.getElementById('receiverFirstName').value,
         document.getElementById('receiverLastName').value,
         document.getElementById('receiverPhoneNumber').value,
@@ -67,34 +120,49 @@ async function handleFormSubmit(customers){
         document.getElementById('receiverStreetNumber').value,
         document.getElementById('receiverPostalCode').value,
     )
-    console.log(receiver)
 
-    console.log(document.getElementById('deliveryDate').value)
+    if (receiver.error) {
+        alert(receiver.error.message);
+        return
+    }
 
+    //Format the date to SQL format.
     let splitDate = document.getElementById('deliveryDate').value.split("-")
     let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
 
+    //Add the order to the database.
     let order = await addOrder(
         customer.id,
         parseInt(document.getElementById('employee').value),
         receiver.id,
         date,
         price,
-        "CASH",
+        document.getElementById('paymentMethod').value.toUpperCase(),
         document.getElementById('extraInfo').value,
         document.getElementById('productInfo').value,
         document.getElementById('productMessage').value,
         "OPEN",
         includeDeliveryCosts === "yes",
-        cardSelection === "card-free" ? "BASIC_CARD" :
-            cardSelection === "card-ribbon" ? "RIBBON" :
-                cardSelection === "card-wish" ? "SPECIAL_CARD" : "NONE"
+        cardSelect.value === "card-free" ? "BASIC_CARD" :
+            cardSelect.value === "card-ribbon" ? "RIBBON" :
+                cardSelect.value === "card-wish" ? "SPECIAL_CARD" : "NONE"
     )
     if (order.error) {
         alert(order.error.message);
+    } else {
+        //Redirect to orderOverview if the Order was successfully added to the database.
+        window.location.replace("/orderOverview");
     }
 }
 
+/**
+ * The page HTML.
+ *
+ * @param findAllCustomers The database data of the customers.
+ * @param findAllEmployees The database data of the employees.
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export default function AddOrder({findAllCustomers, findAllEmployees}) {
     return (
         <MainLayout>
@@ -132,8 +200,8 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                             <div className={`font-['Roboto'] text-1xl font-bold`}>
                                 Besteller
                             </div>
-                            <formHtml
-                                className={`mt-1`}
+                            <div id={"formHtml"}
+                                 className={`mt-1`}
                             >
                                 <div className={`flex flex-col`}>
                                     <label htmlFor="customerCompanyName">Naam opdrachtgever</label>
@@ -148,120 +216,137 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                     className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
                                     <div className={`flex flex-col`}>
                                         <label htmlFor="customerFirstName">
-                                            Voornaam contactpersoon
+                                            Voornaam contactpersoon*
                                         </label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="customerFirstName"
-                                            id="customerFirstName"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerFirstName"
+                                               id="customerFirstName"
                                         ></input>
                                     </div>
                                     <div className={`flex flex-col`}>
                                         <label htmlFor="customerLastName">
-                                            Achternaam contactpersoon
+                                            Achternaam contactpersoon*
                                         </label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="customerLastName"
-                                            id="customerLastName"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerLastName"
+                                               id="customerLastName"
                                         ></input>
                                     </div>
                                 </div>
                                 <div
                                     className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
                                     <div className={`flex flex-col`}>
-                                        <label htmlFor="customerStreet">Straatnaam</label>
+                                        <label htmlFor="customerStreet">Straatnaam*</label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="customerStreet"
-                                            id="customerStreet"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerStreet"
+                                               id="customerStreet"
                                         ></input>
                                     </div>
                                     <div className={`flex w-[100%] lg:w-[48%] justify-between`}>
                                         <div className={`flex flex-col`}>
-                                            <label htmlFor="customerStreetNumber">Nummer</label>
+                                            <label htmlFor="customerStreetNumber">Nummer*</label>
                                             <input required
-                                                className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
-                                                type="text"
-                                                name="customerStreetNumber"
-                                                id="customerStreetNumber"
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
+                                                   type="text"
+                                                   name="customerStreetNumber"
+                                                   id="customerStreetNumber"
                                             ></input>
                                         </div>
                                         <div className={`flex flex-col`}>
-                                            <label htmlFor="customerPostalCode">Postcode</label>
+                                            <label htmlFor="customerPostalCode">Postcode*</label>
                                             <input required
-                                                className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                                type="text"
-                                                name="customerPostalCode"
-                                                id="customerPostalCode"
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                                   type="text"
+                                                   name="customerPostalCode"
+                                                   id="customerPostalCode"
                                             ></input>
                                         </div>
                                     </div>
                                 </div>
                                 <div className={`flex flex-col mt-[3%]`}>
-                                    <label htmlFor="customerPlace">Plaats</label>
+                                    <label htmlFor="customerPlace">Plaats*</label>
                                     <input required
-                                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                        type="text"
-                                        name="customerPlace"
-                                        id="customerPlace"
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="customerPlace"
+                                           id="customerPlace"
                                     ></input>
                                 </div>
                                 <div className={`flex flex-col mt-[3%]`}>
                                     <label htmlFor="customerPhoneNumber">
-                                        Telefoonnummer
+                                        Telefoonnummer*
                                     </label>
                                     <input required
-                                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                        type="text"
-                                        name="customerPhoneNumber"
-                                        id="customerPhoneNumber"
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="customerPhoneNumber"
+                                           id="customerPhoneNumber"
                                     ></input>
                                 </div>
-                                <div className={`flex flex-col  mt-[3%]`}>
-                                    <label className={`mt-[3%]`}>Bezorgkosten</label>
-                                    <div className={`flex w-[30%] justify-between lg:w-[20%]`}>
-                                        <div className={`flex justify-between`}>
-                                            <input required
-                                                className={`accent-[#009A42]`}
-                                                type="radio"
-                                                name="includeDeliveryCosts"
-                                                id="includeDeliveryCosts"
-                                                value="yes"
-                                                   checked="checked"
-                                                   onChange={() => {
-                                                       updateTotalPriceField()
-                                                   }
-                                                   }
-                                            ></input>
-                                            <label
-                                                className={`ml-1`}
-                                                htmlFor="includeDeliveryCosts">
-                                                Ja
-                                            </label>
+                                <div className={`flex flex-col lg:flex-row justify-between`}>
+                                    <div className={`flex flex-col  mt-[3%]`}>
+                                        <label className={`mt-[3%]`}>Bezorgkosten*</label>
+                                        <div
+                                            className={`flex w-[200px] justify-between lg:w-[90%]`}
+                                        >
+                                            <div className={`flex justify-between`}>
+                                                <input required
+                                                       className={`accent-[#009A42]`}
+                                                       type="radio"
+                                                       name="includeDeliveryCosts"
+                                                       id="includeDeliveryCosts"
+                                                       value="yes"
+                                                       checked="checked"
+                                                       onChange={() => {
+                                                           updateTotalPriceField()
+                                                       }
+                                                       }
+                                                ></input>
+                                                <label
+                                                    className={`ml-1`}
+                                                    htmlFor="includeDeliveryCosts">
+                                                    Ja
+                                                </label>
+                                            </div>
+                                            <div
+                                                className={`flex justify-between sm:ml[0px] ml-[5%]`}
+                                            >
+                                                <input
+                                                    className={`accent-[#009A42]`}
+                                                    type="radio"
+                                                    name="includeDeliveryCosts"
+                                                    id="includeDeliveryCosts"
+                                                    value="no"
+                                                    onChange={() => {
+                                                        updateTotalPriceField()
+                                                    }
+                                                    }
+                                                ></input>
+                                                <label
+                                                    className={`ml-1`}
+                                                    htmlFor="includeDeliveryCosts">
+                                                    Nee
+                                                </label>
+                                            </div>
                                         </div>
-                                        <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
-                                            <input
-                                                className={`accent-[#009A42]`}
-                                                type="radio"
-                                                name="includeDeliveryCosts"
-                                                id="includeDeliveryCosts"
-                                                value="no"
-                                                onChange={() => {
-                                                    updateTotalPriceField()
-
-                                                }
-                                                }
-                                            ></input>
-                                            <label
-                                                className={`ml-1`}
-                                                htmlFor="includeDeliveryCosts">
-                                                Nee
-                                            </label>
-                                        </div>
+                                    </div>
+                                    <div className={`flex flex-col mt-[3%] w-[95px]`}>
+                                        <label htmlFor="paymentMethod">Betaalwijze*</label>
+                                        <select
+                                            className={`border-[1px] border-gray-500 h[10px]`}
+                                            name="paymentMethod"
+                                            id="paymentMethod"
+                                        >
+                                            <option value="pin">Pin</option>
+                                            <option value="invoice">Factuur</option>
+                                            <option value="cash">Contant</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div
@@ -270,27 +355,27 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                         <label
                                             className={`w-[200px]`}
                                             htmlFor="deliveryDate">
-                                            Datum van bezorging
+                                            Datum van bezorging*
                                         </label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-6 w-[100%] lg:w-[200px]`}
-                                            type="date"
-                                            name="deliveryDate"
-                                            id="deliveryDate"
+                                               className={`border-[1px] border-gray-500 h-6 w-[100%] lg:w-[200px]`}
+                                               type="date"
+                                               name="deliveryDate"
+                                               id="deliveryDate"
                                         ></input>
                                     </div>
                                     <div className={`flex flex-col`}>
-                                        <label htmlFor="deliveryMethod">Verzending</label>
+                                        <label htmlFor="deliveryMethod">Verzending*</label>
                                         <select required
-                                            className={`border-[1px] border-gray-500`}
-                                            name="deliveryMethod"
-                                            id="deliveryMethod">
+                                                className={`border-[1px] border-gray-500`}
+                                                name="deliveryMethod"
+                                                id="deliveryMethod">
                                             <option value="pickup">Afhalen</option>
                                             <option value="deliver">Bezorging</option>
                                         </select>
                                     </div>
                                 </div>
-                            </formHtml>
+                            </div>
                         </div>
                         <div className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}>
                             <div className={`font-['Roboto'] text-1xl font-bold`}>
@@ -305,78 +390,78 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                         <label
                                             className={'w-[150px]'}
                                             htmlFor="receiverFirstName">
-                                            Naam ontvanger
+                                            Naam ontvanger*
                                         </label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="receiverFirstName"
-                                            id="receiverFirstName"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverFirstName"
+                                               id="receiverFirstName"
                                         ></input>
                                     </div>
                                     <div className={`flex flex-col`}>
-                                        <label htmlFor="receiverLastName">Achternaam</label>
+                                        <label htmlFor="receiverLastName">Achternaam*</label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="receiverLastName"
-                                            id="receiverLastName"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverLastName"
+                                               id="receiverLastName"
                                         ></input>
                                     </div>
                                 </div>
                                 <div
                                     className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
                                     <div className={`flex flex-col`}>
-                                        <label htmlFor="receiverStreet">Straatnaam</label>
+                                        <label htmlFor="receiverStreet">Straatnaam*</label>
                                         <input required
-                                            className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                            type="text"
-                                            name="receiverStreet"
-                                            id="receiverStreet"
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverStreet"
+                                               id="receiverStreet"
                                         ></input>
                                     </div>
                                     <div className={`flex w-[100%] lg:w-[45%] justify-between`}>
                                         <div className={`flex flex-col`}>
-                                            <label htmlFor="receiverStreetNumber">Nummer</label>
+                                            <label htmlFor="receiverStreetNumber">Nummer*</label>
                                             <input required
-                                                className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
-                                                type="text"
-                                                name="receiverStreetNumber"
-                                                id="receiverStreetNumber"
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
+                                                   type="text"
+                                                   name="receiverStreetNumber"
+                                                   id="receiverStreetNumber"
                                             ></input>
                                         </div>
                                         <div className={`flex flex-col`}>
-                                            <label htmlFor="receiverPostalCode">Postcode</label>
+                                            <label htmlFor="receiverPostalCode">Postcode*</label>
                                             <input required
-                                                className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                                type="text"
-                                                name="receiverPostalCode"
-                                                id="receiverPostalCode"
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                                   type="text"
+                                                   name="receiverPostalCode"
+                                                   id="receiverPostalCode"
                                             ></input>
                                         </div>
                                     </div>
                                 </div>
                                 <div className={`flex flex-col  mt-[3%]`}>
-                                    <label htmlFor="receiverPlace">Plaats</label>
+                                    <label htmlFor="receiverPlace">Plaats*</label>
                                     <input required onChange={() => {
                                         updateTotalPriceField()
                                     }
                                     }
-                                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                        type="text"
-                                        name="receiverPlace"
-                                        id="receiverPlace"
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="receiverPlace"
+                                           id="receiverPlace"
                                     ></input>
                                 </div>
                                 <div className={`flex flex-col  mt-[3%]`}>
                                     <label htmlFor="receiverPhoneNumber">
-                                        Telefoonnummer
+                                        Telefoonnummer*
                                     </label>
                                     <input required
-                                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                                        type="text"
-                                        name="receiverPhoneNumber"
-                                        id="receiverPhoneNumber"
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="receiverPhoneNumber"
+                                           id="receiverPhoneNumber"
                                     ></input>
                                 </div>
                                 <div
@@ -386,16 +471,16 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                         <label
                                             className={'w-[122px]'}
                                             htmlFor="orderPrice">
-                                            Prijs bestelling
+                                            Prijs bestelling*
                                         </label>
                                         <input required onChange={() => {
                                             updateTotalPriceField()
                                         }
                                         }
-                                            className={`border-[1px] border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
-                                            type="text"
-                                            name="orderPrice"
-                                            id="orderPrice"
+                                               className={`border-[1px] border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
+                                               type="text"
+                                               name="orderPrice"
+                                               id="orderPrice"
                                         ></input>
                                     </div>
                                     <div className={`flex flex-col`}>
@@ -405,10 +490,10 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                             Prijs totaal
                                         </label>
                                         <input disabled
-                                            className={`border-[1px] bg-gray-200 border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
-                                            type="text"
-                                            name="totalPrice"
-                                            id="totalPrice"
+                                               className={`border-[1px] bg-gray-200 border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
+                                               type="text"
+                                               name="totalPrice"
+                                               id="totalPrice"
                                         ></input>
                                     </div>
                                 </div>
@@ -426,12 +511,12 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                     <label
                                         className={`mt-3`}
                                         htmlFor="productInfo">
-                                        Omschrijving bestelling
+                                        Omschrijving bestelling*
                                     </label>
                                     <textarea required
-                                        className={`border-[1px] border-gray-500 h-[80px] resize-none`}
-                                        name="productInfo"
-                                        id="productInfo"
+                                              className={`border-[1px] border-gray-500 h-[80px] resize-none`}
+                                              name="productInfo"
+                                              id="productInfo"
                                     ></textarea>
                                 </div>
                                 <div className={`flex flex-col`}>
@@ -461,15 +546,15 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                             </formHtml>
                         </div>
                         <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
-                            <div className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
+                            <div id={"cardSelectContainer"} className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
                                 <div className={`w-[82%] flex flex-col`}>
                                     <div className={` w-[100%] `}>
                                         <input required
-                                            className={`accent-[#009A42]`}
-                                            type="radio"
-                                            name="cardSelect"
-                                            id="cardSelect"
-                                            value="card-free"
+                                               className={`accent-[#009A42]`}
+                                               type="radio"
+                                               name="cardSelect"
+                                               id="cardSelect"
+                                               value="card-free"
                                         ></input>
                                         <label
                                             className={`ml-[5px]`}
@@ -528,9 +613,9 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                             >
                                 <label htmlFor="employee">Aangenomen door:</label>
                                 <select required
-                                    className={`border-[1px] border-black w-[100%] h-[30px]`}
-                                    name="employee"
-                                    id="employee">
+                                        className={`border-[1px] border-black w-[100%] h-[30px]`}
+                                        name="employee"
+                                        id="employee">
                                     {findAllEmployees.map(f => {
                                         return <option value={f.id}>{f.name}</option>
                                     })}
@@ -539,18 +624,6 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                             <div
                                 className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
                             >
-                                <button onClick={
-                                    async () => {
-
-                                        let order = await addOrder(1, 1, 1, "01-21-2023", 1.23, "PIN",
-                                            "extratest", "infotest", "messagetest", "IN_PROGRESS", false,
-                                            "SPECIAL_CARD")
-                                        if (order.error) {
-                                            alert(order.error.message);
-                                        }
-                                    }
-                                }>test
-                                </button>
                                 <input className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
         bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`}
                                        value="Order toevoegen" type="button" onClick={

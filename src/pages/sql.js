@@ -72,11 +72,11 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
 
     //Check valid price.
     if(Number.isNaN(price)){
-        return {error: {"message": "The gegeven prijs is ongeldig."}}
+        return {error: {"message": "De gegeven prijs is ongeldig."}}
     }
 
     if(!isValidDate(dateOfDelivery)){
-        return {error: {"message": "The gegeven datum is ongeldig."}}
+        return {error: {"message": "De gegeven datum is ongeldig."}}
     }
 
     const query = gql`
@@ -89,11 +89,6 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
     let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
         "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
-
-    /*let variables = {"customerId" : 1, "employeeId":  1, "recieverId":  1, "dateOfDelivery":  "01-01-2023",
-        "price":  1.23, "paymentMethod":  "PIN", "extraInfo": "testextra", "productInfo": "testinfo", "message": "testmessage",
-        "orderState": "CLOSED", "includeDelivery": false, "cardType": "NONE"}*/
-
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 
@@ -106,11 +101,11 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
 
 
 /**
- * Adds an Order with the given values to the database.
+ * Adds a Customer with the given values to the database if he/she does not yet exist.
  *
- * Returns the id of the added Order if successful or an error message if it failed.
+ * Returns the id of the Customer and a boolean if it already existed in the database.
+ * Or an error object with a message when something goes wrong.
  *
- * @param customers A collection of the existing customers.
  * @param {string} firstName The first name of the Customer.
  * @param {string} lastName The last name of the Customer.
  * @param {string} phoneNumber The phone number of the Customer.
@@ -119,13 +114,21 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
  * @param {string} houseNumber The house number of the Customer (Is a string due to house numbers having letters (16B)).
  * @param {string} postalCode The postal code of the Customer.
  *
- * @returns {Promise<{exists: boolean, id}>}
+ * @returns {Promise<{error: {message: string}|exists: boolean, id}>}
  */
-export async function addCustomerIfNotExists(customers, firstName, lastName, phoneNumber,
+export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
                                              city, streetName, houseNumber, postalCode){
+    //Validate length for postalCode and houseNumber.
+    if(postalCode.length > 6){
+        return {error: {"message": "De gegeven postcode voor " + firstName + " is ongeldig."}}
+    }
 
-    customers.forEach(function (value) {
-       // console.log(value)
+    if(houseNumber.length > 6){
+        return {error: {"message": "Het gegeven huisnummer voor " + firstName + " is ongeldig."}}
+    }
+
+    let customers = await getAllCustomers("id firstName lastName city postalCode")
+    customers.findAllCustomers.forEach(function (value) {
         if(value.firstName === firstName &&
             value.lastName === lastName &&
             value.city === city &&
@@ -138,7 +141,6 @@ export async function addCustomerIfNotExists(customers, firstName, lastName, pho
             }
         }})
 
-
     const query = gql`
 mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
   createCustomer(firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber) {
@@ -146,17 +148,15 @@ mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: S
   }
 }`
 
-    let variables = {"firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
-        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode}
-
-    let data = await request('http://localhost:3000/api/graphql', query, variables)
+    let data = await request('http://localhost:3000/api/graphql',
+        query, {"firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
+        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode})
 
     return {
         "exists": false,
         "id": data.createCustomer.id
     }
 }
-
 
 /**
  * Validates that the input string is a valid date formatted as "dd/mm/yyyy"
