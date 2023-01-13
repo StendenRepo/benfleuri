@@ -2,9 +2,15 @@ const fs = require('fs')
 const mailparser = require('mailparser')
 
 /**
- * This function take a eml file and reads all data that is needed from it by using string manipulation
- * This function is solely useable for mails from pimm solutions as the format is very specific
+ * This function takes in a pdf file from 'Pimmsolutions'
+ * The contents of the file are extracted using the fs and mailparser modules.
+ * Then, the document is split on every new line, and stores the lines in the filteredMailLines
+ * Next, to extract all the data, string manipulation is used to get the specific data that is needed
+ * It stores every piece of data in a constant and adds it to the 'extractedData' JSON object
+ * @param {*} filePath: path to where file is stored locally 
+ * @returns extractedData: all data that needs to be extracted from the file in JSON format
  */
+
 export async function extractPimmSolutionsFormData(emlFile) {
   try {
       const emlFileReader = await fs.promises.readFile(emlFile, 'utf8')
@@ -27,6 +33,8 @@ export async function extractPimmSolutionsFormData(emlFile) {
       // gets the standard email header data
       const clientEmail = parsedMail.from['value'][0]['address']
       const clientName = parsedMail.from['value'][0]['name']
+      const clientFirstName = clientName.split(" ")[0]
+      const clientLastName = clientName.split(" ").slice(1).join(" ")
       const orderDate = parsedMail.date
       const subject = parsedMail.subject
 
@@ -35,8 +43,12 @@ export async function extractPimmSolutionsFormData(emlFile) {
 
       const companyName = filteredMailLines[1]
       const name = filteredMailLines[2]
+      const firstName = name.split(" ")[0]
+      const lastName = name.split(" ").slice(1).join(" ")
 
-      const adress = filteredMailLines[3]
+      const adress = filteredMailLines[3].toString()
+      const streetName = adress.split(/\s/i).slice(0, -1).join(" ")
+      const houseNumber = adress.split(/\s/i).slice(-1).join(" ")
 
       // City and postalcode are in the same array element, so it is split in two parts and city gets popped from the array. The remaining part is the postalCode
       const postalCodeAndCity = filteredMailLines[4].split(/\s+/)
@@ -55,10 +67,12 @@ export async function extractPimmSolutionsFormData(emlFile) {
       var cardTextAsString = ""
 
       // checks if there is a card included in the order, gets information accordingly
+      var card = "NONE"
       const withCard = tableRowCount > 1 ? true : false
       if(withCard) {
           cardTextAsString = filteredMailLines.slice(filteredMailLines.lastIndexOf("1 x") + 2).join("\n")
           description = filteredMailLines.slice(descriptionIndex, filteredMailLines.lastIndexOf("1 x") - 1).join(" ")
+          card = "BASIC_CARD"
       }
 
       const extractedData = {
@@ -66,25 +80,35 @@ export async function extractPimmSolutionsFormData(emlFile) {
         'subject': subject,
         'deliveryDate': deliveryDate,
         'companyName': companyName,
-        'name': name,
-        'adress': adress,
+        'firstName': firstName,
+        'lastName': lastName,
+        'streetName': streetName,
+        'houseNumber': houseNumber,
         'city': city,
         'postalCode': postalCode,
         'description': description,
         'price': price,
-        'withCard': withCard,
+        'withCard': card,
         'cardText': cardTextAsString,
         'comments': '',
+        'withDeliveryCosts': true,
+        'email': '',
+        'phoneNumber': '',
         'client': {
-          'name': clientName,
+          'firstName': clientFirstName,
+          'lastName': clientLastName,
           'email': clientEmail,
-          'telNumber': telNumber
+          'phoneNumber': telNumber,
+          'city': '',
+          'streetName': '',
+          'houseNumber': '',
+          'postalCode': ''
         }
       }
-      // console.log(extractedData)
+
       return extractedData
     } catch (error) {
-      // console.log(error)
+      console.log(error)
       return null
     }
 }

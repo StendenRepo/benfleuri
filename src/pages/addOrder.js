@@ -96,6 +96,55 @@ async function handleFormSubmit() {
     let splitDate = document.getElementById('deliveryDate').value.split("-")
     let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
 
+export default function AddOrder() {
+  /**
+   * This function gets executed when a file is uploaded. 
+   * It checks if a file is present, if it is a pdf or eml and if it contains the name of the ordering company
+   * If it passes all the checks, it calls the uploadToServer() function and passes the file with it
+   * @param {event} event 
+   * @returns uploadToServer() function
+   */
+  const uploadToClient = (event) => {
+    try {
+      if(!event.target.files && !event.target.files[0]) {
+        return
+      }
+
+      const file = event.target.files[0]
+      if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
+        alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
+        document.getElementById("file-uploader").value = null
+        return
+      }
+
+      const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
+      const originalFileName = file.name.toString().toLowerCase()
+      if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
+        alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
+        document.getElementById("file-uploader").value = null
+        return
+      }
+
+      return uploadToServer(file)
+    } catch(error) {
+      return error
+    }
+  }
+
+  /**
+   * This function passes the file to a FormData object and makes an api request to api/fileUpload, it passes the file with it
+   * @param {file} file: the file that needs to be read 
+   */
+  const uploadToServer = async (file) => {
+    const body = new FormData();
+    body.append("file", file)
+    const response = await fetch("api/fileUpload", {
+      method: "POST",
+      body
+    })
+    return response
+  }
+
     //Add the order to the database.
     let order = await addOrder(
         customer.id,
