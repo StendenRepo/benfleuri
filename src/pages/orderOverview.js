@@ -1,11 +1,7 @@
 import MainLayout from '../layout/MainLayout';
 import Link from 'next/link'
-import {updateOrderTable, OrderTable, TableRow, GreenButton, WhiteButton} from '../components/OrderTable'
+import {updateOrderTable, getOrderTableData, OrderTable, TableRow, GreenButton, WhiteButton, nextPage, previousPage} from '../components/OrderTable'
 import {ArrowLeftIcon, ArrowRightIcon} from '@heroicons/react/20/solid';
-import {getAllCustomers, getAllOrders} from './sql'
-import { renderToString } from 'react-dom/server'
-
-let currentPage = 1;
 
 function Header() {
     return <div className={`border-b pb-[4%] flex flex-col font-['Roboto'] px-[4%] pt-[2%]`}>
@@ -30,51 +26,13 @@ function Header() {
 }
 
 export async function getServerSideProps() {
-    const {findAllOrders} = await getAllOrders(
-        "id customerId productInfo recieverId paymentMethod orderState price")
-    const {findAllCustomers} = await getAllCustomers("id firstName lastName")
-
-    return {
-        props: {
-            findAllOrders,
-            findAllCustomers
-        },
-    }
-}
-
-
-
-
-
-function nextPage({findAllOrders, findAllCustomers}){
-    let limit = parseInt(document.getElementById("orderCount").value);
-    let startIndex = (currentPage * limit);
-    if(startIndex > findAllOrders.length){
-        //Should already be stopped by disabling the button.
-        return;
-    }
-    console.log(startIndex + limit)
-    console.log(findAllCustomers.length)
-
-    document.getElementById("nextButton").disabled = startIndex + limit > findAllOrders.length;
-    document.getElementById("prevButton").disabled = startIndex - limit < 0;
-    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
-}
-
-function previousPage({findAllOrders, findAllCustomers}){
-    let limit = parseInt(document.getElementById("orderCount").value);
-    let startIndex = (currentPage * limit)  - (limit)
-    if(startIndex < 0){
-        return;
-    }
-    document.getElementById("nextButton").disabled = startIndex + limit > findAllOrders.length;
-    document.getElementById("prevButton").disabled = startIndex - limit < 0;
-    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
+    return getOrderTableData();
 }
 
 export default function OrderOverview({findAllOrders, findAllCustomers}) {
-    let limit = 5;
-    let amount = 0;
+    let content = updateOrderTable({startIndex: 0, findAllOrders, findAllCustomers,
+        pageLoad: true})
+
     return (
         <MainLayout>
             <Header/>
@@ -117,39 +75,7 @@ export default function OrderOverview({findAllOrders, findAllCustomers}) {
 
                     </div>
                     <div id="tableContainer">
-                        <OrderTable orders={findAllOrders} customers={findAllCustomers}>
-                            {findAllOrders.map(f => {
-                                if (amount >= limit) {
-                                    return true;
-                                }
-                                let customerName = "";
-                                let receiverName = "";
-
-                                let customerId = f.customerId;
-                                let receiverId = f.recieverId;
-
-                                for (let i = 0; i < findAllCustomers.length; i++) {
-                                    console.log(i)
-                                    let v = findAllCustomers[i];
-                                    console.log(v)
-                                    if (customerName !== "" && receiverName !== "") {
-                                        continue;
-                                    }
-                                    let cID = v.id;
-                                    if (cID === customerId) {
-                                        customerName = v.firstName + " " + v.lastName;
-                                    }
-                                    if (cID === receiverId) {
-                                        receiverName = v.firstName + " " + v.lastName;
-                                    }
-                                }
-                                amount++;
-                                return <TableRow
-                                    data={[f.id, customerName, f.productInfo, receiverName, f.paymentMethod,
-                                        f.orderState, f.price]}></TableRow>
-                            })
-                            }
-                        </OrderTable>
+                        <OrderTable data={content} orders={findAllOrders} customers={findAllCustomers}></OrderTable>
                     </div>
                     <div className={"mt-20 w-full flex justify-end"}>
                         <GreenButton>Route maken</GreenButton>

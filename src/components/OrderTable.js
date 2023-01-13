@@ -4,6 +4,22 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import {renderToString} from "react-dom/server";
+import {getAllCustomers, getAllOrders} from "../pages/sql";
+
+let currentPage = 1;
+
+export async function getOrderTableData(){
+    const {findAllOrders} = await getAllOrders(
+        "id customerId productInfo recieverId paymentMethod orderState price")
+    const {findAllCustomers} = await getAllCustomers("id firstName lastName")
+
+    return {
+        props: {
+            findAllOrders,
+            findAllCustomers
+        },
+    }
+}
 
 function TableHeaderCell({children}) {
     return <th scope="col"
@@ -93,9 +109,9 @@ export function TableRow({data}) {
     );
 }
 
-export function OrderTable({orders, customers, children}) {
+export function OrderTable({data, orders, customers, children}) {
     let status = [
-        { name: 'Status', disabled: true },
+        { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
         { name: 'In behandeling', disabled: false },
         { name: 'Open', disabled: false },
@@ -103,7 +119,7 @@ export function OrderTable({orders, customers, children}) {
         { name: 'Voltooid', disabled: false },
     ]
     let sort = [
-        { name: 'Sorteer op', disabled: true },
+        { name: 'Sorteer op', disabled: false },
         { name: 'Order', disabled: false },
         { name: 'Besteller', disabled: false },
         { name: 'Bestelling', disabled: false },
@@ -116,18 +132,34 @@ export function OrderTable({orders, customers, children}) {
         <div className="inline-block min-w-full">
             <div className={"bg-slate-100 flex max-lg:flex-col flex-row p-2 gap-x-4 rounded-t-lg"}>
                 <div className="flex flex-grow gap-y-[5px]">
-                <input className={`grow rounded-lg`} type="text" placeholder="Search.."></input>
-                <GreenButton>Zoek</GreenButton>
+                <input id="searchField" className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
+                    if(event.key.toLowerCase() === "enter"){
+                        event.preventDefault();
+                        document.getElementById("searchButton").click();
+                    }
+                }}></input>
+                    <button id="searchButton" className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button" onClick={() =>{
+        updateOrderTable({startIndex: 0, findAllOrders: orders, findAllCustomers: customers})}
+                    }>Zoek
+                    </button>
                 </div>
                 <div className="gap-x-[5px] flex inline-block">
                 <div className="items-stretch flex flex-row ">
-                    <StatusDropdown orders={orders} customers={customers} listValues={status} roundCorners="left"/>
+                    <Dropdown listValues={status} roundCorners="left"/>
                     <Dropdown listValues={sort} roundCorners="right"/>
                 </div>
                 <div className="items-stretch flex flex-row">
                     <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
                 </div>
-                <WhiteButton><ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></WhiteButton>
+                    <button onClick={async () => {
+                        let dbData = await getOrderTableData();
+                        updateOrderTable({startIndex: 0,
+                            findAllOrders: dbData.props.findAllOrders, findAllCustomers: dbData.props.findAllCustomers})
+                    }
+                    } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
+         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">
+                        <ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></button>
                 </div>
             </div>
             <table className="min-w-full ">
@@ -144,60 +176,11 @@ export function OrderTable({orders, customers, children}) {
                     <TableHeaderCell></TableHeaderCell>
                 </tr>
                 </thead>
-                <tbody id="tableContent">
-                {children}
+                <tbody id="tableContent" dangerouslySetInnerHTML={{"__html": data}}>
                 </tbody>
             </table>
         </div>
     );
-}
-
-function StatusDropdown({customers, orders, listValues, roundCorners}) {
-    const [selected, setSelected] = useState(listValues[0])
-    let corners = roundCorners === "left" ? "rounded-l border-[1px]" :
-        (roundCorners === "right" ? "rounded-r border-y-[1px] border-r-[1px]" : (roundCorners === "both" ?
-            "rounded border-[1px]" : "border-[1px]"))
-    return (
-        <div className="items-stretch">
-            <Listbox value={selected} onChange={setSelected}>
-                <div className="h-full">
-                    <div className="relative h-full">
-                    <Listbox.Button className={corners + " h-full border-black w-full cursor-default " +
-                        "text-sm font-['Roboto'] bg-white text-black py-2 pl-3 pr-10 text-left"}>
-                        <span className="block truncate">{selected.name}</span>
-                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-              <ChevronUpDownIcon
-                  className="h-5 w-5 text-gray-400" aria-hidden="true"/></span></Listbox.Button>
-                    </div>
-                    <Transition as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0">
-                        <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto
-                        rounded-md bg-white py-1 text-base shadow-lg ring-1
-                         ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {listValues.map((listValue, listValueIdx) => (
-                                <Listbox.Option
-                                    key={listValueIdx}
-                                    className={({ active, disabled }) =>
-                                        `relative cursor-default select-none py-2 px-4 
-                                        ${active ? 'bg-[#009a4040] text-[#009A40]' : 'text-gray-900'}
-                                        ${disabled ? 'bg-gray-100 text-gray-300' : 'text-gray-900'} 
-                                            `}
-                                    value={listValue}
-                                    disabled={listValue.disabled}
-                                >
-                                    {({ selected }) => (
-                                        <>
-                      <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                          {listValue.name}</span></>)}
-                                </Listbox.Option>))}
-                        </Listbox.Options>
-                    </Transition>
-                </div>
-            </Listbox>
-        </div>
-    )
 }
 
 function Dropdown({listValues, roundCorners}) {
@@ -208,10 +191,9 @@ function Dropdown({listValues, roundCorners}) {
     return (
         <div className="items-stretch">
             <Listbox value={selected} onChange={setSelected}>
-
                 <div className="h-full">
                     <div className="relative h-full">
-                        <Listbox.Button className={corners + " h-full border-black w-full cursor-default " +
+                        <Listbox.Button className={corners + " cursor-pointer h-full border-black w-full cursor-default " +
                             "text-sm font-['Roboto'] bg-white text-black py-2 pl-3 pr-10 text-left"}>
                             <span className="block truncate">{selected.name}</span>
                             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -229,7 +211,7 @@ function Dropdown({listValues, roundCorners}) {
                                 <Listbox.Option
                                     key={listValueIdx}
                                     className={({ active, disabled }) =>
-                                        `relative cursor-default select-none py-2 px-4 
+                                        `relative cursor-pointer select-none py-2 px-4 
                                         ${active ? 'bg-[#009a4040] text-[#009A40]' : 'text-gray-900'}
                                         ${disabled ? 'bg-gray-100 text-gray-300' : 'text-gray-900'} 
                                             `}
@@ -249,21 +231,16 @@ function Dropdown({listValues, roundCorners}) {
     )
 }
 
-export function updateOrderTable({startIndex, findAllOrders, findAllCustomers}) {
-    let content = "";
-    let limit = parseInt(document.getElementById("orderCount").value);
-    let status = ""
-    let amount = 0;
-    let index = 0;
-    console.log(findAllOrders)
+export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, pageLoad = false}) {
+    let content = "", searchInput = "";
+    let limit = 5;
+    if(!pageLoad) {
+        limit = parseInt(document.getElementById("orderCount").value);
+        searchInput = document.getElementById("searchField").value.toLowerCase();
+    }
+    let matchedOrders = {}
+
     findAllOrders.map(f => {
-        if(index < startIndex){
-            index++;
-            return false;
-        }
-        if (amount >= limit) {
-            return true;
-        }
         let customerName = "";
         let receiverName = "";
         let customerId = f.customerId;
@@ -282,12 +259,70 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers}) 
                 receiverName = v.firstName + " " + v.lastName;
             }
         }
-        content += renderToString(getTableRow(f, customerName, receiverName));
-        amount++;
+        if(searchInput !== ""){
+            if(
+                !customerName.toLowerCase().includes(searchInput) &&
+                !receiverName.toLowerCase().includes(searchInput) &&
+                !f.productInfo.toLowerCase().includes(searchInput)) {
+                console.log("Skipping: " + f.id)
+                return false;
+            }
+        }
+        matchedOrders[f.id] = {"order": f, "customerName": customerName, "receiverName": receiverName}
     })
-    document.getElementById("tableContent").innerHTML = content
+
+    let index = 0;
+    let amount = 0;
+    let leftAmount = Object.keys(matchedOrders).length;
+    //You now have an object containing only the rows that match the criteria.
+    Object.keys(matchedOrders).forEach(key => {
+        if(index < startIndex){
+            index++;
+            leftAmount--
+            return false;
+        }
+
+        if (amount >= limit) {
+            return false;
+        }
+
+        let f = matchedOrders[key].order
+        console.log(f)
+        content += renderToString(getTableRow(f, matchedOrders[key].customerName, matchedOrders[key].receiverName));
+        amount++
+        leftAmount--
+    })
+
+    if(!pageLoad) {
+        document.getElementById("prevButton").removeAttribute('disabled')
+        document.getElementById("nextButton").disabled = leftAmount <= 0;
+        document.getElementById("prevButton").disabled = startIndex - limit < 0;
+        document.getElementById("tableContent").innerHTML = content
+    }
+
+    return content;
 }
 
+export function nextPage({findAllOrders, findAllCustomers}){
+    let limit = parseInt(document.getElementById("orderCount").value);
+    let startIndex = (currentPage * limit);
+    if(startIndex > findAllOrders.length){
+        //Should already be stopped by disabling the button.
+        return;
+    }
+
+    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
+}
+
+export function previousPage({findAllOrders, findAllCustomers}){
+    let limit = parseInt(document.getElementById("orderCount").value);
+    let startIndex = (currentPage * limit)  - (limit)
+    if(startIndex < 0){
+        //Should already be stopped by disabling the button.
+        return;
+    }
+    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
+}
 
 function getTableRow(order, customerName, receiverName){
     return (
