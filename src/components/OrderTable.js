@@ -300,6 +300,9 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
     let content = "";
     let searchInput = ""
     let limit = 5;
+    if(startIndex === 0){
+        currentPage = 1;
+    }
     if(!pageLoad) {
         //Only look at the buttons and search field if the page is loaded.
         limit = parseInt(document.getElementById("orderCount").value);
