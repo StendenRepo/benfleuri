@@ -4,7 +4,8 @@ import Link from 'next/link'
 //HeroIcons is used for the SVG icons.
 import {ArrowLeftIcon} from '@heroicons/react/20/solid';
 import {WhiteButton,} from '../components/OrderTable';
-import {addOrder, getAllCustomers, getAllEmployees, addCustomerIfNotExists} from "./sql";
+import {addOrder, getAllCustomers, getAllEmployees, addCustomerIfNotExists} from "../components/sql";
+import {updateTotalPriceField, validateElements} from "../components/OrderFormFunctions";
 
 
 /**
@@ -22,41 +23,6 @@ export async function getServerSideProps() {
             findAllEmployees
         },
     }
-}
-
-/**
- * Updated the total price field when a relevant value in the form is changed.
- */
-function updateTotalPriceField() {
-    let price = parseFloat(document.getElementById("orderPrice").value);
-    if (document.querySelector('input[name="includeDeliveryCosts"]:checked').value
-        === "yes") {
-        if (document.getElementById("receiverPlace").value.toLowerCase() === "hoogeveen") {
-            price += 4.50;
-        } else {
-            price += 5.95;
-        }
-    }
-    document.getElementById("totalPrice").value = price
-}
-
-
-function validateElements(missingInput, elements) {
-    for (let i = 0; i < elements.length; i++) {
-        let element = elements[i]
-        if (element.hasAttribute("required")) {
-            console.log("required")
-            if (element.value === "") {
-                element.style.border = "solid #ff0000"
-                missingInput = true;
-            } else {
-                element.style.border = ""
-            }
-        } else {
-            element.style.border = ""
-        }
-    }
-    return missingInput;
 }
 
 /**

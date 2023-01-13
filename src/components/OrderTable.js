@@ -8,7 +8,7 @@ import { useState } from 'react'
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 //Used for dynamically filling the table.
 import {renderToString} from "react-dom/server";
-import {getAllCustomers, getAllOrders} from "../pages/sql";
+import {getAllCustomers, getAllOrders} from "./sql";
 
 //The current page of the table.
 let currentPage = 1;
@@ -47,14 +47,13 @@ function TableHeaderCell({children}) {
  * Table Button template.
  * @param orderID The ID of the order.
  */
-function TableButtonCell(orderID) {
+function TableButtonCell({orderID}) {
     return <td className={`text-sm text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
-        <button id={`edit-` + orderID}
+        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
                 className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
-        </button>
+        </button></Link>
     </td>
 }
-
 /**
  * Pill label template for the order status.
  * @param status the order status..
@@ -115,6 +114,21 @@ export function GreenButton({children, link}) {
 }
 
 /**
+ * Blue Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
+export function BlueButton({children, link}) {
+    return (
+        <Link href={!link ? "" : link}>
+            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} type="button">{children}
+            </button>
+        </Link>
+    )
+}
+
+/**
  * White Button template
  * @param children The value of the button.
  * @param link The hyperlink.
@@ -145,7 +159,7 @@ export function TableRow({data}) {
             <TableCell>{data[4]}</TableCell>
             <TableCell><PillLabel type={data[5]}/></TableCell>
             <TableCell>€{data[6]}</TableCell>
-            <TableButtonCell id={data[0]}/>
+            <TableButtonCell orderID={data[0]}/>
         </tr>
     );
 }
@@ -161,7 +175,6 @@ export function OrderTable({data, orders, customers}) {
     let status = [
         { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
-        { name: 'In behandeling', disabled: false },
         { name: 'Open', disabled: false },
         { name: 'Verzonden', disabled: false },
         { name: 'Voltooid', disabled: false },
@@ -391,7 +404,6 @@ export function nextPage({findAllOrders, findAllCustomers}){
     let page = currentPage - 1;
     let limit = parseInt(document.getElementById("orderCount").value);
     let startIndex = (page * limit);
-    console.log(startIndex)
     if(startIndex > findAllOrders.length){
         //Should already be stopped by disabling the button.
         return;
@@ -413,7 +425,6 @@ export function previousPage({findAllOrders, findAllCustomers}){
     let page = currentPage - 1;
     let limit = parseInt(document.getElementById("orderCount").value);
     let startIndex = (page * limit)  - (limit)
-    console.log(startIndex)
     if(startIndex < 0){
         //Should already be stopped by disabling the button.
         return;
