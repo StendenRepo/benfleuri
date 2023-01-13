@@ -109,7 +109,7 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  <Link href="/userOverview">Gebruikerbeheer</Link>
+                  <Link href="/admin/createUser">Gebruikerbeheer</Link>
                 </p>
               </div>
               <div className="flex content-center p-2 group hover:bg-hover-green">
