@@ -5,7 +5,7 @@ import Link from 'next/link'
 import {ArrowLeftIcon} from '@heroicons/react/20/solid';
 import {BlueButton, GreenButton, WhiteButton,} from '../components/OrderTable';
 import {updateTotalPriceField, validateElements} from "../components/OrderFormFunctions";
-import {updateCustomer, updateOrder, getAllCustomers, getAllEmployees, getAllOrders} from "../components/sql";
+import {updateOrder, getAllCustomers, getAllEmployees, getAllOrders} from "../components/sql";
 import { useRouter } from 'next/router'
 
 
@@ -64,8 +64,10 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
     return
   }
 
-  //Add the customer if he/she does not yet exist in the database.
-  let customer = await updateCustomer(orderObj.customerId,
+  //NOTE: We could not get the updateCustomer function done in time.
+  //So it only updates the order data.
+
+  /*let customer = await updateCustomer(orderObj.customerId,
       document.getElementById('customerFirstName').value,
       document.getElementById('customerLastName').value,
       document.getElementById('customerPhoneNumber').value,
@@ -93,7 +95,7 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
   if (receiver.error) {
     alert(receiver.error.message);
     return
-  }
+  }*/
 
   //Format the date to SQL format.
   let splitDate = document.getElementById('deliveryDate').value.split("-")
@@ -135,7 +137,7 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
  */
 export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmployees}) {
   const router = useRouter();
-  let id = parseInt(router.query.id[0]);
+  let id = parseInt(router.query.id);
   let order;
   let customer;
   let receiver;
@@ -145,6 +147,8 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
       order = f;
     }
   })
+
+  console.log(id)
 
   findAllEmployees.map(f => {
     if (parseInt(f.id) === order.employeeId) {
@@ -353,7 +357,7 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
                           id="paymentMethod"
                       >
                         <option selected={order.paymentMethod === "PIN"} value="pin">Pin</option>
-                        <option selected={order.paymentMethod === "INVOICE"} value="invoice">Factuur</option>
+                        <option selected={order.paymentMethod === "BY_INVOICE"} value="by_invoice">Factuur</option>
                         <option selected={order.paymentMethod === "CASH"} value="cash">Contant</option>
                       </select>
                     </div>
@@ -522,7 +526,8 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
         bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`}
                            value="Order wijzigen" type="button" onClick={
                       async () => {
-                        await handleFormSubmit(findAllCustomers);
+                        await handleFormSubmit({orderObj: order,
+                        customerObj: customer, employeeObj: employee, receiverObj: receiver});
                       }
                     }></input>
                   </div>

@@ -2,12 +2,6 @@ import MainLayout from '../layout/MainLayout';
 import Link from 'next/link'
 import {updateOrderTable, getOrderTableData, OrderTable, TableRow, GreenButton, WhiteButton, nextPage, previousPage} from '../components/OrderTable'
 import {ArrowLeftIcon, ArrowRightIcon} from '@heroicons/react/20/solid';
-import {
-  OrderTable,
-  TableRow,
-  GreenButton,
-  WhiteButton,
-} from '../components/OrderTable';
 
 function Header() {
   return (
@@ -25,7 +19,14 @@ function Header() {
         </div>
         <div className={`flex justify-end w-1/2 gap-x-4`}>
           <GreenButton>Nieuwe Bestelling</GreenButton>
-          <WhiteButton>Importeer Bestelling</WhiteButton>
+
+
+            <button onClick={async () => {
+                await importWooCommerceOrder();
+            }
+            } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
+         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">Importeer Bestelling
+            </button>
           <WhiteButton>Exporteer Bestelling</WhiteButton>
         </div>
       </div>
@@ -38,8 +39,10 @@ export async function getServerSideProps() {
 }
 
 export default function OrderOverview({findAllOrders, findAllCustomers}) {
-    let content = updateOrderTable({startIndex: 0, findAllOrders, findAllCustomers,
-        pageLoad: true})
+    let content = updateOrderTable({
+        startIndex: 0, findAllOrders, findAllCustomers,
+        pageLoad: true
+    })
 
     return (
         <MainLayout>
@@ -60,11 +63,12 @@ export default function OrderOverview({findAllOrders, findAllCustomers}) {
                     </div>
                     <div className={"mb-3"}>
                         <button id={"prevButton"}
-                            className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
+                                className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`} type="button"
-                        onClick={() => {
-                        previousPage({findAllOrders, findAllCustomers})}
-                        }>
+                                onClick={() => {
+                                    previousPage({findAllOrders, findAllCustomers})
+                                }
+                                }>
                             <ArrowLeftIcon
                                 className="h-5 w-5 "
                                 aria-hidden="true"
@@ -73,7 +77,8 @@ export default function OrderOverview({findAllOrders, findAllCustomers}) {
                         <button id={"nextButton"} className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`}
                                 type="button" onClick={() => {
-                            nextPage({findAllOrders, findAllCustomers})}
+                            nextPage({findAllOrders, findAllCustomers})
+                        }
                         }>
                             <ArrowRightIcon
                                 className="h-5 w-5 "
@@ -92,7 +97,7 @@ export default function OrderOverview({findAllOrders, findAllCustomers}) {
             </div>
         </MainLayout>
     );
-
+}
 async function importWooCommerceOrder() {
   try {
     // import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api"; // Supports ESM
@@ -236,5 +241,3 @@ async function importWooCommerceOrder() {
     return null;
   }
 }
-
-importWooCommerceOrder();

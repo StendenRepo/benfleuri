@@ -56,68 +56,6 @@ query FindCustomerById($findCustomerByIdId: Int!) {
 }
 
 /**
- * Updates the given Customer with new data.
- *
- * @param {int} customerId The unique ID of the customer.
- * @param {int} employeeId The unique ID of the employee.
- * @param {int} recieverId The unique ID of the receiver, this may sometimes be the same as the customerID.
- * @param {string} dateOfDelivery The date of the delivery as a string.
- * @param {number} price The price of the order.
- * @param {('CASH', 'PIN', 'BY_INVOICE')} paymentMethod The payment method.
- * @param {string} extraInfo Extra information about the order.
- * @param {string} productInfo The information about the order.
- * @param {string} productMessage The text that is added to the card.
- * @param {('OPEN', 'CLOSED', 'IN_PROGRESS', 'DELIVERED')} orderState The payment method.
- * @param {boolean} includeDelivery If delivery costs should be added to the order.
- * @param {('NONE', 'BASIC_CARD', 'RIBBON', 'SPECIAL_CARD')} cardType The type of the card included with the order.
- *
- * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
- */
-export async function updateCustomer(customerId, employeeId, recieverId, dateOfDelivery, price, paymentMethod,
-                               extraInfo, productInfo, productMessage, orderState, includeDelivery, cardType){
-    //Check valid order state.
-    if(!["OPEN","CLOSED", "IN_PROGRESS", "DELIVERED"].includes(orderState)) {
-        return {error: {"message": "The gegeven order status is ongeldig."}}
-    }
-
-    //Check valid card type.
-    if(!["NONE","BASIC_CARD", "RIBBON", "SPECIAL_CARD"].includes(cardType)) {
-        return {error: {"message": "The gegeven kaart selectie is ongeldig."}}
-    }
-
-    //Check valid payment method.
-    if(!["CASH","PIN", "BY_INVOICE"].includes(paymentMethod)) {
-        return {error: {"message": "The gegeven betaal methode is ongeldig."}}
-    }
-
-    //Check valid price.
-    if(Number.isNaN(price)){
-        return {error: {"message": "De gegeven prijs is ongeldig."}}
-    }
-
-    if(!isValidDate(dateOfDelivery)){
-        return {error: {"message": "De gegeven datum is ongeldig."}}
-    }
-
-    const query = gql`
-mutation UpdateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String, $updateCustomerId: Int!) {
-  updateCustomer(firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber, id: $updateCustomerId) {
-  }
-}`
-
-    let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
-        "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
-    const data = await request('http://localhost:3000/api/graphql', query, variables)
-    const {updateCustomer} = data
-
-    return {
-        props: {
-            updateCustomer
-        },
-    }
-}
-/**
  * Returns all Employees from the database.
  *
  * @param {string} fields The fields that will be returned (Formatted as: 'id firstName lastName')
@@ -176,13 +114,15 @@ export async function updateOrder(orderID, customerId, employeeId, recieverId, d
     }
 
     const query = gql`
-mutation UpdateOrder($updateOrderId: ID, $customerId: ID, $employeeId: ID, $productInfo: String, $message: String, $cardType: CardType, $extraInfo: String, $includeDelivery: Boolean, $price: Float, $dateOfDelivery: String, $orderState: OrderState, $paymentMethod: PaymentMethod) {
-  updateOrder(id: $updateOrderId, customerId: $customerId, employeeId: $employeeId, productInfo: $productInfo, message: $message, cardType: $cardType, extraInfo: $extraInfo, includeDelivery: $includeDelivery, price: $price, dateOfDelivery: $dateOfDelivery, orderState: $orderState, paymentMethod: $paymentMethod) {
+mutation UpdateOrder($updateOrderId: ID, $customerId: ID, $employeeId: ID, $productInfo: String, $message: String, $cardType: CardType, $extraInfo: String, $includeDelivery: Boolean, $price: Float, $orderState: OrderState, $paymentMethod: PaymentMethod) {
+  updateOrder(id: $updateOrderId, customerId: $customerId, employeeId: $employeeId, productInfo: $productInfo, message: $message, cardType: $cardType, extraInfo: $extraInfo, includeDelivery: $includeDelivery, price: $price, orderState: $orderState, paymentMethod: $paymentMethod) {
     id
   }
 }`
 
-    let variables = {"id": orderID, "customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
+    let orderIDInt = parseInt(orderID)
+    //Date is not set at the moment,
+    let variables = {"updateOrderId": orderIDInt, "customer" : customerId, "employee":  employeeId, "reciever":  recieverId,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
         "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
