@@ -1,10 +1,41 @@
 import {Fragment} from 'react'
+//We use HeadlessUI for the dropdown, because we had issues with formatting the HTML dropdowns.
 import {Listbox, Menu, Transition} from '@headlessui/react'
-import {ChevronDownIcon} from '@heroicons/react/20/solid'
+//Used for hyperlinks.
 import Link from 'next/link'
 import { useState } from 'react'
+//Used for SVG icons
 import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+//Used for dynamically filling the table.
+import {renderToString} from "react-dom/server";
+import {getAllCustomers, getAllOrders} from "./sql";
 
+//The current page of the table.
+let currentPage = 1;
+
+/**
+ * Gets the database data for the Order table.
+ * Is used to update the data when the update button is pressed.
+ *
+ * @returns {Promise<{props: {findAllOrders: *, findAllCustomers: *}}>}
+ */
+export async function getOrderTableData(){
+    const {findAllOrders} = await getAllOrders(
+        "id customerId productInfo recieverId paymentMethod orderState price")
+    const {findAllCustomers} = await getAllCustomers("id firstName lastName")
+
+    return {
+        props: {
+            findAllOrders,
+            findAllCustomers
+        },
+    }
+}
+
+/**
+ * Table Header template.
+ * @param children values for the header.
+ */
 function TableHeaderCell({children}) {
     return <th scope="col"
                className="text-sm font-normal text-gray-400 px-4 py-2 text-left">
@@ -12,36 +43,51 @@ function TableHeaderCell({children}) {
     </th>
 }
 
-function TableButtonCell(orderID) {
+/**
+ * Table Button template.
+ * @param orderID The ID of the order.
+ */
+function TableButtonCell({orderID}) {
     return <td className={`text-sm text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
-        <button id={`edit-` + orderID}
+        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
                 className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
-        </button>
+        </button></Link>
     </td>
 }
-
-function PillLabel({type}) {
+/**
+ * Pill label template for the order status.
+ * @param status the order status..
+ */
+function PillLabel({status}) {
     let colorStyle = "rounded px-px text-center "
-    let text = ""
-    if (type === "send") {
+    let text = "";
+    if (status === "DELIVERED") {
         colorStyle += "bg-yellow-400 text-black"
         text = "Verzonden"
-    } else if (type === "complete") {
+    } else if (status === "CLOSED") {
         colorStyle += "bg-[#009A40] text-white"
         text = "Voltooid"
-    } else if (type === "open") {
+    } else if (status === "OPEN") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Open"
-    } else if (type === "not-delivered") {
+    } else if (status === "IN_PROGRESS") {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Geleverd maar niet thuis"
-    } //TODO
+    } else {
+        text = status;
+    }
 
     return <div className={colorStyle}>
         {text}
     </div>
 }
 
+/**
+ * Table cell template.
+ *
+ * @param children The values for the cell.
+ * @param center If the text should be centered.
+ */
 function TableCell({children, center}) {
     let className = "text-sm text-black font-normal px-4 py-2 whitespace-nowrap"
     if (center) {
@@ -52,6 +98,11 @@ function TableCell({children, center}) {
     </td>
 }
 
+/**
+ * Green Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
 export function GreenButton({children, link}) {
     return (
         <Link href={!link ? "" : link}>
@@ -62,6 +113,26 @@ export function GreenButton({children, link}) {
     )
 }
 
+/**
+ * Blue Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
+export function BlueButton({children, link}) {
+    return (
+        <Link href={!link ? "" : link}>
+            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} type="button">{children}
+            </button>
+        </Link>
+    )
+}
+
+/**
+ * White Button template
+ * @param children The value of the button.
+ * @param link The hyperlink.
+ */
 export function WhiteButton({children, link}) {
     return (
         <Link href={!link ? "" : link}>
@@ -73,6 +144,8 @@ export function WhiteButton({children, link}) {
 }
 
 /**
+ * Table row template
+ *
  * @param data A array containing the data for the table row.
  */
 export function TableRow({data}) {
@@ -86,22 +159,28 @@ export function TableRow({data}) {
             <TableCell>{data[4]}</TableCell>
             <TableCell><PillLabel type={data[5]}/></TableCell>
             <TableCell>€{data[6]}</TableCell>
-            <TableButtonCell id={data[0]}/>
+            <TableButtonCell orderID={data[0]}/>
         </tr>
     );
 }
 
-export function OrderTable({children}) {
+/**
+ * Order Table template
+ *
+ * @param data The HTML of the rows.
+ * @param orders The order data.
+ * @param customers The customer data.
+ */
+export function OrderTable({data, orders, customers}) {
     let status = [
-        { name: 'Status', disabled: true },
+        { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
-        { name: 'In behandeling', disabled: false },
         { name: 'Open', disabled: false },
         { name: 'Verzonden', disabled: false },
         { name: 'Voltooid', disabled: false },
     ]
     let sort = [
-        { name: 'Sorteer op', disabled: true },
+        { name: 'Sorteer op', disabled: false },
         { name: 'Order', disabled: false },
         { name: 'Besteller', disabled: false },
         { name: 'Bestelling', disabled: false },
@@ -114,8 +193,17 @@ export function OrderTable({children}) {
         <div className="inline-block min-w-full">
             <div className={"bg-slate-100 flex max-lg:flex-col flex-row p-2 gap-x-4 rounded-t-lg"}>
                 <div className="flex flex-grow gap-y-[5px]">
-                <input className={`grow rounded-lg`} type="text" placeholder="Search.."></input>
-                <GreenButton>Zoek</GreenButton>
+                <input id="searchField" className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
+                    if(event.key.toLowerCase() === "enter"){
+                        event.preventDefault();
+                        document.getElementById("searchButton").click();
+                    }
+                }}></input>
+                    <button id="searchButton" className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button" onClick={() =>{
+        updateOrderTable({startIndex: 0, findAllOrders: orders, findAllCustomers: customers})}
+                    }>Zoek
+                    </button>
                 </div>
                 <div className="gap-x-[5px] flex inline-block">
                 <div className="items-stretch flex flex-row ">
@@ -125,7 +213,14 @@ export function OrderTable({children}) {
                 <div className="items-stretch flex flex-row">
                     <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
                 </div>
-                <WhiteButton><ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></WhiteButton>
+                    <button onClick={async () => {
+                        let dbData = await getOrderTableData();
+                        updateOrderTable({startIndex: 0,
+                            findAllOrders: dbData.props.findAllOrders, findAllCustomers: dbData.props.findAllCustomers})
+                    }
+                    } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
+         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">
+                        <ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></button>
                 </div>
             </div>
             <table className="min-w-full ">
@@ -142,14 +237,18 @@ export function OrderTable({children}) {
                     <TableHeaderCell></TableHeaderCell>
                 </tr>
                 </thead>
-                <tbody>
-                {children}
+                <tbody id="tableContent" dangerouslySetInnerHTML={{"__html": data}}>
                 </tbody>
             </table>
         </div>
     );
 }
 
+/**
+ * Dropdown template using Headless UI.
+ * @param listValues The values of the list.
+ * @param roundCorners If the ListBox should have rounded corners.
+ */
 function Dropdown({listValues, roundCorners}) {
     const [selected, setSelected] = useState(listValues[0])
     let corners = roundCorners === "left" ? "rounded-l border-[1px]" :
@@ -158,20 +257,19 @@ function Dropdown({listValues, roundCorners}) {
     return (
         <div className="items-stretch">
             <Listbox value={selected} onChange={setSelected}>
-
                 <div className="h-full">
                     <div className="relative h-full">
-                    <Listbox.Button className={corners + " h-full border-black w-full cursor-default " +
-                        "text-sm font-['Roboto'] bg-white text-black py-2 pl-3 pr-10 text-left"}>
-                        <span className="block truncate">{selected.name}</span>
-                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                        <Listbox.Button className={corners + " cursor-pointer h-full border-black w-full cursor-default " +
+                            "text-sm font-['Roboto'] bg-white text-black py-2 pl-3 pr-10 text-left"}>
+                            <span className="block truncate">{selected.name}</span>
+                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
                   className="h-5 w-5 text-gray-400" aria-hidden="true"/></span></Listbox.Button>
                     </div>
                     <Transition as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0">
+                                leave="transition ease-in duration-100"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0">
                         <Listbox.Options className="absolute mt-1 max-h-60 overflow-auto
                         rounded-md bg-white py-1 text-base shadow-lg ring-1
                          ring-black ring-opacity-5 focus:outline-none sm:text-sm">
@@ -179,7 +277,7 @@ function Dropdown({listValues, roundCorners}) {
                                 <Listbox.Option
                                     key={listValueIdx}
                                     className={({ active, disabled }) =>
-                                        `relative cursor-default select-none py-2 px-4 
+                                        `relative cursor-pointer select-none py-2 px-4 
                                         ${active ? 'bg-[#009a4040] text-[#009A40]' : 'text-gray-900'}
                                         ${disabled ? 'bg-gray-100 text-gray-300' : 'text-gray-900'} 
                                             `}
@@ -199,65 +297,154 @@ function Dropdown({listValues, roundCorners}) {
     )
 }
 
-function SortDropdown() {
-    return (
-        <Menu as="div" className="h-full border-y-[1px] border-r-[1px] border-black rounded-r">
-            <div>
-                <Menu.Button
-                    className=" h-full w-full py-[10px] px-[20px] text-sm font-bold font-['Roboto'] bg-white text-black">
-                    Sorteer op
-                    <ChevronDownIcon className="inline -mr-1 ml-2 h-5 w-5" aria-hidden="true"/>
-                </Menu.Button>
-            </div>
+/**
+ * Updates the order table with relevant filters.
+ *
+ * @param startIndex The index of the order data the table should start at. Is used for pages.
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ * @param pageLoad If the page is still loading, should only be true on first load.
+ *
+ * @returns {string}
+ * The new HTML content of the order table. Return value is only used on first load.
+ * Otherwise, the HTML is directly set in this function.
+ */
+export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, pageLoad = false}) {
+    let content = "";
+    let searchInput = ""
+    let limit = 5;
+    if(startIndex === 0){
+        currentPage = 1;
+    }
+    if(!pageLoad) {
+        //Only look at the buttons and search field if the page is loaded.
+        limit = parseInt(document.getElementById("orderCount").value);
+        searchInput = document.getElementById("searchField").value.toLowerCase();
+    }
+    let matchedOrders = {}
+    //Loop over all the orders.
+    findAllOrders.map(f => {
+        let customerName = "";
+        let receiverName = "";
+        let customerId = f.customerId;
+        let receiverId = f.recieverId;
 
-            <Transition as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95">
-                <Menu.Items
-                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                    <div className="py-1">
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>ID</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Besteller</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Bestelling</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Datum</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Betaling</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Status</a>)}
-                        </Menu.Item>
-                        <Menu.Item>{({active}) => (
-                            <a href="#" className={(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm')}>Totaal prijs</a>)}
-                        </Menu.Item>
-                    </div>
-                </Menu.Items>
-            </Transition>
-        </Menu>
+        //Find the customer of the order.
+        for (let i = 0; i < findAllCustomers.length; i++) {
+            let v = findAllCustomers[i];
+            if (customerName !== "" && receiverName !== "") {
+                continue;
+            }
+            let cID = v.id;
+            if (cID === customerId) {
+                customerName = v.firstName + " " + v.lastName;
+            }
+            if (cID === receiverId) {
+                receiverName = v.firstName + " " + v.lastName;
+            }
+        }
+        //Check the search input.
+        if(searchInput !== ""){
+            if(
+                !customerName.toLowerCase().includes(searchInput) &&
+                !receiverName.toLowerCase().includes(searchInput) &&
+                !f.productInfo.toLowerCase().includes(searchInput)) {
+                console.log("Skipping: " + f.id)
+                return false;
+            }
+        }
+        //Add to object.
+        matchedOrders[f.id] = {"order": f, "customerName": customerName, "receiverName": receiverName}
+    })
+
+    let index = 0;
+    let amount = 0;
+    let leftAmount = Object.keys(matchedOrders).length;
+    //You now have an object containing only the rows that match the criteria.
+    //Loop over this for the table.
+    Object.keys(matchedOrders).forEach(key => {
+        if(index < startIndex){
+            //Is order from previous page.
+            index++;
+            leftAmount--
+            return false;
+        }
+
+        if (amount >= limit) {
+            //Is order from next page.
+            return false;
+        }
+
+        //Add HTML to string.
+        let f = matchedOrders[key].order
+        content += renderToString(getTableRow(f, matchedOrders[key].customerName, matchedOrders[key].receiverName));
+        amount++
+        leftAmount--
+    })
+
+    if(!pageLoad) {
+        //Only look at the buttons and search field if the page is loaded.
+        document.getElementById("prevButton").removeAttribute('disabled')
+        document.getElementById("nextButton").disabled = leftAmount <= 0;
+        document.getElementById("prevButton").disabled = startIndex - limit < 0;
+        document.getElementById("tableContent").innerHTML = content
+    }
+
+    return content;
+}
+
+/**
+ * Handles the next page button.
+ *
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ */
+export function nextPage({findAllOrders, findAllCustomers}){
+    currentPage++;
+    let page = currentPage - 1;
+    let limit = parseInt(document.getElementById("orderCount").value);
+    let startIndex = (page * limit);
+    if(startIndex > findAllOrders.length){
+        //Should already be stopped by disabling the button.
+        return;
+    }
+
+    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
+}
+
+/**
+ * Handles the previous page button.
+ *
+ * @param findAllOrders The order data.
+ * @param findAllCustomers The customer data.
+ */
+export function previousPage({findAllOrders, findAllCustomers}){
+    if(currentPage === 0){
+        return;
+    }
+    let page = currentPage - 1;
+    let limit = parseInt(document.getElementById("orderCount").value);
+    let startIndex = (page * limit)  - (limit)
+    if(startIndex < 0){
+        //Should already be stopped by disabling the button.
+        return;
+    }
+    currentPage--
+    if(currentPage <= 0){
+        currentPage = 1;
+    }
+    updateOrderTable({startIndex, findAllOrders, findAllCustomers});
+}
+
+/**
+ * Gets a TableRow template, filled with the order/customer data.
+ * @param order The order.
+ * @param customerName The name of the customer.
+ * @param receiverName The name of the receiver.
+ */
+function getTableRow(order, customerName, receiverName){
+    return (
+        <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
+            order.orderState, order.price]}></TableRow>
     )
 }

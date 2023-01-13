@@ -1,64 +1,184 @@
 import MainLayout from '../layout/MainLayout';
+//Is used for hyperlinks.
 import Link from 'next/link'
-import {
-  ArrowLeftIcon,
-} from '@heroicons/react/20/solid';
-import {
-  GreenButton,
-  WhiteButton,
-} from '../components/OrderTable';
+//HeroIcons is used for the SVG icons.
+import {ArrowLeftIcon} from '@heroicons/react/20/solid';
+import {WhiteButton,} from '../components/OrderTable';
+import {addOrder, getAllCustomers, getAllEmployees, addCustomerIfNotExists} from "../components/sql";
+import {updateTotalPriceField, validateElements} from "../components/OrderFormFunctions";
 
-export default function AddOrder() {
-  /**
-   * This function gets executed when a file is uploaded. 
-   * It checks if a file is present, if it is a pdf or eml and if it contains the name of the ordering company
-   * If it passes all the checks, it calls the uploadToServer() function and passes the file with it
-   * @param {event} event 
-   * @returns uploadToServer() function
-   */
-  const uploadToClient = (event) => {
-    try {
-      if(!event.target.files && !event.target.files[0]) {
-        return
-      }
 
-      const file = event.target.files[0]
-      if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
-        alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
-        document.getElementById("file-uploader").value = null
-        return
-      }
+/**
+ * Gets called when the page is loaded, this is where the data from the database is loaded.
+ *
+ * @returns {Promise<{props: {findAllCustomers: *, findAllEmployees: *}}>}
+ */
+export async function getServerSideProps() {
+    const {findAllCustomers} = await getAllCustomers("id firstName lastName city postalCode")
+    const {findAllEmployees} = await getAllEmployees("id name")
 
-      const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
-      const originalFileName = file.name.toString().toLowerCase()
-      if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
-        alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
-        document.getElementById("file-uploader").value = null
-        return
-      }
-
-      return uploadToServer(file)
-    } catch(error) {
-      return error
+    return {
+        props: {
+            findAllCustomers,
+            findAllEmployees
+        },
     }
-  }
+}
 
-  /**
-   * This function passes the file to a FormData object and makes an api request to api/fileUpload, it passes the file with it
-   * @param {file} file: the file that needs to be read 
-   */
-  const uploadToServer = async (file) => {
-    const body = new FormData();
-    body.append("file", file)
-    const response = await fetch("api/fileUpload", {
-      method: "POST",
-      body
-    })
-    return response
-  }
+/**
+ * Handles the validating and submitting of the form.
+ * When something goes wrong, an alert with an error will be displayed.
+ * Otherwise, the data will be added to the database and the user will be redirected
+ * to the orderOverview page.
+ */
+
+async function handleFormSubmit() {
+    //Check if all the required fields have been filled out.
+    let missingInput = validateElements(false, document.querySelectorAll("input[type=text]"));
+    missingInput = validateElements(missingInput, document.querySelectorAll("textarea"));
+    missingInput = validateElements(missingInput, document.querySelectorAll("textarea"));
+    missingInput = validateElements(missingInput, [document.getElementById("deliveryDate")]);
+
+    let cardSelect = document.querySelector('input[name="cardSelect"]:checked')
+    if (cardSelect === null) {
+        missingInput = true;
+        document.querySelector('#cardSelectContainer').style.border = "solid #ff0000"
+    } else {
+        document.querySelector('#cardSelectContainer').style.border = ""
+    }
+
+    if (missingInput) {
+        alert("Er zijn verplichte velden niet ingevuld.")
+        return
+    }
 
 
-  return (
+    let includeDeliveryCosts = document.querySelector('input[name="includeDeliveryCosts"]:checked').value;
+    let price = parseFloat(document.getElementById("totalPrice").value)
+    //Validate price.
+    if (isNaN(price)) {
+        alert("De gegeven prijs is ongeldig.")
+        return
+    }
+
+    //Add the customer if he/she does not yet exist in the database.
+    let customer = await addCustomerIfNotExists(
+        document.getElementById('customerFirstName').value,
+        document.getElementById('customerLastName').value,
+        document.getElementById('customerPhoneNumber').value,
+        document.getElementById('customerPlace').value,
+        document.getElementById('customerStreet').value,
+        document.getElementById('customerStreetNumber').value,
+        document.getElementById('customerPostalCode').value,
+    )
+
+    if (customer.error) {
+        alert(customer.error.message);
+        return
+    }
+    //Add the receiver if he/she does not yet exist in the database.
+    let receiver = await addCustomerIfNotExists(
+        document.getElementById('receiverFirstName').value,
+        document.getElementById('receiverLastName').value,
+        document.getElementById('receiverPhoneNumber').value,
+        document.getElementById('receiverPlace').value,
+        document.getElementById('receiverStreet').value,
+        document.getElementById('receiverStreetNumber').value,
+        document.getElementById('receiverPostalCode').value,
+    )
+
+    if (receiver.error) {
+        alert(receiver.error.message);
+        return
+    }
+
+    //Format the date to SQL format.
+    let splitDate = document.getElementById('deliveryDate').value.split("-")
+    let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
+
+    //Add the order to the database.
+    let order = await addOrder(
+        customer.id,
+        parseInt(document.getElementById('employee').value),
+        receiver.id,
+        date,
+        price,
+        document.getElementById('paymentMethod').value.toUpperCase(),
+        document.getElementById('extraInfo').value,
+        document.getElementById('productInfo').value,
+        document.getElementById('productMessage').value,
+        "OPEN",
+        includeDeliveryCosts === "yes",
+        cardSelect.value === "card-free" ? "BASIC_CARD" :
+            cardSelect.value === "card-ribbon" ? "RIBBON" :
+                cardSelect.value === "card-wish" ? "SPECIAL_CARD" : "NONE"
+    )
+    if (order.error) {
+        alert(order.error.message);
+    } else {
+        //Redirect to orderOverview if the Order was successfully added to the database.
+        window.location.replace("/orderOverview");
+    }
+}
+
+
+/**
+ * The page HTML.
+ *
+ * @param findAllCustomers The database data of the customers.
+ * @param findAllEmployees The database data of the employees.
+ * @returns {JSX.Element}
+ * @constructor
+ */
+export default function AddOrder({findAllCustomers, findAllEmployees}) {
+    /**
+     * This function gets executed when a file is uploaded.
+     * It checks if a file is present, if it is a pdf or eml and if it contains the name of the ordering company
+     * If it passes all the checks, it calls the uploadToServer() function and passes the file with it
+     * @param {event} event
+     * @returns uploadToServer() function
+     */
+    const uploadToClient = (event) => {
+        try {
+            if(!event.target.files && !event.target.files[0]) {
+                return
+            }
+
+            const file = event.target.files[0]
+            if (file.type != 'application/pdf' && file.type != 'message/rfc822'){
+                alert("Het is alleen mogelijk om pdf of eml bestanden te uploaden!")
+                document.getElementById("file-uploader").value = null
+                return
+            }
+
+            const supplierTypes = ['webbloemen', 'wybloem', 'euroflorist', 'bestelformulier', 'pimm']
+            const originalFileName = file.name.toString().toLowerCase()
+            if(!supplierTypes.some(supplier => originalFileName.includes(supplier))) {
+                alert("De bestandsnaam moet de naam van het opdrachtgevende bedrijf bevatten")
+                document.getElementById("file-uploader").value = null
+                return
+            }
+
+            return uploadToServer(file)
+        } catch(error) {
+            return error
+        }
+    }
+
+    /**
+     * This function passes the file to a FormData object and makes an api request to api/fileUpload, it passes the file with it
+     * @param {file} file: the file that needs to be read
+     */
+    const uploadToServer = async (file) => {
+        const body = new FormData();
+        body.append("file", file)
+        const response = await fetch("api/fileUpload", {
+            method: "POST",
+            body
+        })
+        return response
+    }
+    return (
     <MainLayout>
       <div
         className={`font-['Roboto'] ml-[5%] mt-[2%] border-b-gray-400 border-b-[1px] w-[90%]`}
@@ -95,444 +215,453 @@ export default function AddOrder() {
           <WhiteButton link="#">Exporteer bestellingen</WhiteButton>
         </div>
       </div>
-      <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
-        <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}>
-          <p className={`ml-5 mt-2`}>Klant gegevens</p>
-        </div>
-        <div className={` w-[100%]`}>
-          <div
-            className={`w-[100%] mt-10 flex flex-col sm:flex-row justify-between`}
-          >
-            <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
-              <div className={`font-['Roboto'] text-1xl font-bold`}>
-                Besteller
-              </div>
-              <form
-                className={`mt-1`}
-                method="POST"
-                action=""
-              >
-                <div className={`flex flex-col`}>
-                  <label htmlFor="opdrachtgever">Naam opdrachtgever</label>
-                  <input
-                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                    type="text"
-                    name="opdrachtgever"
-                    id="opdrachtgever"
-                  ></input>
+            <div className={`flex mt-10 w-5/6 ml-[8%] flex-col`}>
+                <div className={` bg-[#DEF2E6] h-10 w-[100%] rounded-t-2xl`}>
+                    <p className={`ml-5 mt-2`}>Klant gegevens</p>
                 </div>
-                <div
-                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
-                >
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="voornaamContactpersoon">
-                      Voornaam contactpersoon
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="voornaamContactpersoon"
-                      id="voornaamContactpersoon"
-                    ></input>
-                  </div>
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="achternaamContactpersoon">
-                      Achternaam contactpersoon
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="achternaamContactpersoon"
-                      id="achternaamContactpersoon"
-                    ></input>
-                  </div>
-                </div>
-                <div
-                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
-                >
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="straatnaam">Straatnaam</label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="straatnaam"
-                      id="straatnaam"
-                    ></input>
-                  </div>
-                  <div className={`flex w-[100%] lg:w-[48%] justify-between`}>
-                    <div className={`flex flex-col`}>
-                      <label htmlFor="nummer">Nummer</label>
-                      <input
-                        className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
-                        type="text"
-                        name="nummer"
-                        id="nummer"
-                      ></input>
+                <form className={` w-[100%]`}>
+                    <div className={`w-[100%] mt-10 flex flex-col sm:flex-row justify-between`}>
+                        <div className={`border-[1px]flex-col w-[45%] ml-[2%]`}>
+                            <div className={`font-['Roboto'] text-1xl font-bold`}>
+                                Besteller
+                            </div>
+                            <div id={"formHtml"}
+                                 className={`mt-1`}
+                            >
+                                <div className={`flex flex-col`}>
+                                    <label htmlFor="customerCompanyName">Naam opdrachtgever</label>
+                                    <input
+                                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                        type="text"
+                                        name="customerCompanyName"
+                                        id="customerCompanyName"
+                                    ></input>
+                                </div>
+                                <div
+                                    className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="customerFirstName">
+                                            Voornaam contactpersoon*
+                                        </label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerFirstName"
+                                               id="customerFirstName"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="customerLastName">
+                                            Achternaam contactpersoon*
+                                        </label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerLastName"
+                                               id="customerLastName"
+                                        ></input>
+                                    </div>
+                                </div>
+                                <div
+                                    className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="customerStreet">Straatnaam*</label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="customerStreet"
+                                               id="customerStreet"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex w-[100%] lg:w-[48%] justify-between`}>
+                                        <div className={`flex flex-col`}>
+                                            <label htmlFor="customerStreetNumber">Nummer*</label>
+                                            <input required
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
+                                                   type="text"
+                                                   name="customerStreetNumber"
+                                                   id="customerStreetNumber"
+                                            ></input>
+                                        </div>
+                                        <div className={`flex flex-col`}>
+                                            <label htmlFor="customerPostalCode">Postcode*</label>
+                                            <input required
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                                   type="text"
+                                                   name="customerPostalCode"
+                                                   id="customerPostalCode"
+                                            ></input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`flex flex-col mt-[3%]`}>
+                                    <label htmlFor="customerPlace">Plaats*</label>
+                                    <input required
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="customerPlace"
+                                           id="customerPlace"
+                                    ></input>
+                                </div>
+                                <div className={`flex flex-col mt-[3%]`}>
+                                    <label htmlFor="customerPhoneNumber">
+                                        Telefoonnummer*
+                                    </label>
+                                    <input required
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="customerPhoneNumber"
+                                           id="customerPhoneNumber"
+                                    ></input>
+                                </div>
+                                <div className={`flex flex-col lg:flex-row justify-between`}>
+                                    <div className={`flex flex-col  mt-[3%]`}>
+                                        <label className={`mt-[3%]`}>Bezorgkosten*</label>
+                                        <div
+                                            className={`flex w-[200px] justify-between lg:w-[90%]`}
+                                        >
+                                            <div className={`flex justify-between`}>
+                                                <input required
+                                                       className={`accent-[#009A42]`}
+                                                       type="radio"
+                                                       name="includeDeliveryCosts"
+                                                       id="includeDeliveryCosts"
+                                                       value="yes"
+                                                       checked="checked"
+                                                       onChange={() => {
+                                                           updateTotalPriceField()
+                                                       }
+                                                       }
+                                                ></input>
+                                                <label
+                                                    className={`ml-1`}
+                                                    htmlFor="includeDeliveryCosts">
+                                                    Ja
+                                                </label>
+                                            </div>
+                                            <div
+                                                className={`flex justify-between sm:ml[0px] ml-[5%]`}
+                                            >
+                                                <input
+                                                    className={`accent-[#009A42]`}
+                                                    type="radio"
+                                                    name="includeDeliveryCosts"
+                                                    id="includeDeliveryCosts"
+                                                    value="no"
+                                                    onChange={() => {
+                                                        updateTotalPriceField()
+                                                    }
+                                                    }
+                                                ></input>
+                                                <label
+                                                    className={`ml-1`}
+                                                    htmlFor="includeDeliveryCosts">
+                                                    Nee
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={`flex flex-col mt-[3%] w-[95px]`}>
+                                        <label htmlFor="paymentMethod">Betaalwijze*</label>
+                                        <select
+                                            className={`border-[1px] border-gray-500 h[10px]`}
+                                            name="paymentMethod"
+                                            id="paymentMethod"
+                                        >
+                                            <option value="pin">Pin</option>
+                                            <option value="by_invoice">Factuur</option>
+                                            <option value="cash">Contant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div
+                                    className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
+                                    <div className={`flex flex-col w-[100%]`}>
+                                        <label
+                                            className={`w-[200px]`}
+                                            htmlFor="deliveryDate">
+                                            Datum van bezorging*
+                                        </label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-6 w-[100%] lg:w-[200px]`}
+                                               type="date"
+                                               name="deliveryDate"
+                                               id="deliveryDate"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="deliveryMethod">Verzending*</label>
+                                        <select required
+                                                className={`border-[1px] border-gray-500`}
+                                                name="deliveryMethod"
+                                                id="deliveryMethod">
+                                            <option value="pickup">Afhalen</option>
+                                            <option value="deliver">Bezorging</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}>
+                            <div className={`font-['Roboto'] text-1xl font-bold`}>
+                                Ontvanger
+                            </div>
+                            <formHtml
+                                className={`mt-1`}
+                                method="POST"
+                                action="">
+                                <div className={`flex flex-col lg:flex-row justify-between`}>
+                                    <div className={`flex flex-col`}>
+                                        <label
+                                            className={'w-[150px]'}
+                                            htmlFor="receiverFirstName">
+                                            Naam ontvanger*
+                                        </label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverFirstName"
+                                               id="receiverFirstName"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="receiverLastName">Achternaam*</label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverLastName"
+                                               id="receiverLastName"
+                                        ></input>
+                                    </div>
+                                </div>
+                                <div
+                                    className={`flex flex-col lg:flex-row justify-between mt-[3%]`}>
+                                    <div className={`flex flex-col`}>
+                                        <label htmlFor="receiverStreet">Straatnaam*</label>
+                                        <input required
+                                               className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                               type="text"
+                                               name="receiverStreet"
+                                               id="receiverStreet"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex w-[100%] lg:w-[45%] justify-between`}>
+                                        <div className={`flex flex-col`}>
+                                            <label htmlFor="receiverStreetNumber">Nummer*</label>
+                                            <input required
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
+                                                   type="text"
+                                                   name="receiverStreetNumber"
+                                                   id="receiverStreetNumber"
+                                            ></input>
+                                        </div>
+                                        <div className={`flex flex-col`}>
+                                            <label htmlFor="receiverPostalCode">Postcode*</label>
+                                            <input required
+                                                   className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                                   type="text"
+                                                   name="receiverPostalCode"
+                                                   id="receiverPostalCode"
+                                            ></input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className={`flex flex-col  mt-[3%]`}>
+                                    <label htmlFor="receiverPlace">Plaats*</label>
+                                    <input required onChange={() => {
+                                        updateTotalPriceField()
+                                    }
+                                    }
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="receiverPlace"
+                                           id="receiverPlace"
+                                    ></input>
+                                </div>
+                                <div className={`flex flex-col  mt-[3%]`}>
+                                    <label htmlFor="receiverPhoneNumber">
+                                        Telefoonnummer*
+                                    </label>
+                                    <input required
+                                           className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
+                                           type="text"
+                                           name="receiverPhoneNumber"
+                                           id="receiverPhoneNumber"
+                                    ></input>
+                                </div>
+                                <div
+                                    className={`flex flex-col sm:flex-row justify-between mt-[3%]`}
+                                >
+                                    <div className={`flex flex-col`}>
+                                        <label
+                                            className={'w-[122px]'}
+                                            htmlFor="orderPrice">
+                                            Prijs bestelling*
+                                        </label>
+                                        <input required onChange={() => {
+                                            updateTotalPriceField()
+                                        }
+                                        }
+                                               className={`border-[1px] border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
+                                               type="text"
+                                               name="orderPrice"
+                                               id="orderPrice"
+                                        ></input>
+                                    </div>
+                                    <div className={`flex flex-col`}>
+                                        <label
+                                            className={'w-[130px]'}
+                                            htmlFor="totalPrice">
+                                            Prijs totaal
+                                        </label>
+                                        <input disabled
+                                               className={`border-[1px] bg-gray-200 border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
+                                               type="text"
+                                               name="totalPrice"
+                                               id="totalPrice"
+                                        ></input>
+                                    </div>
+                                </div>
+                            </formHtml>
+                        </div>
                     </div>
-                    <div className={`flex flex-col`}>
-                      <label htmlFor="postcode">Postcode</label>
-                      <input
-                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                        type="text"
-                        name="postcode"
-                        id="postcode"
-                      ></input>
+                    <div
+                        className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px] pb-5`}>
+                        <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[50px]`}>
+                            <div className={`font-['Roboto'] text-1xl font-bold`}>
+                                Product
+                            </div>
+                            <formHtml>
+                                <div className={`flex flex-col`}>
+                                    <label
+                                        className={`mt-3`}
+                                        htmlFor="productInfo">
+                                        Omschrijving bestelling*
+                                    </label>
+                                    <textarea required
+                                              className={`border-[1px] border-gray-500 h-[80px] resize-none`}
+                                              name="productInfo"
+                                              id="productInfo"
+                                    ></textarea>
+                                </div>
+                                <div className={`flex flex-col`}>
+                                    <label
+                                        className={`mt-3 w-[100%]`}
+                                        htmlFor="productMessage">
+                                        Optioneel tekst voor op het kaartje
+                                    </label>
+                                    <textarea
+                                        className={`border-[1px] border-gray-500 h-[80px] resize-none`}
+                                        name="productMessage"
+                                        id="productMessage"
+                                    ></textarea>
+                                </div>
+                                <div className={`flex flex-col`}>
+                                    <label
+                                        className={`mt-3`}
+                                        htmlFor="extraInfo">
+                                        Bijzonderheden
+                                    </label>
+                                    <textarea
+                                        className={`border-[1px] border-gray-500 h-[80px] resize-none`}
+                                        name="extraInfo"
+                                        id="extraInfo"
+                                    ></textarea>
+                                </div>
+                            </formHtml>
+                        </div>
+                        <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
+                            <div id={"cardSelectContainer"} className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
+                                <div className={`w-[82%] flex flex-col`}>
+                                    <div className={` w-[100%] `}>
+                                        <input required
+                                               className={`accent-[#009A42]`}
+                                               type="radio"
+                                               name="cardSelect"
+                                               id="cardSelect"
+                                               value="card-free"
+                                        ></input>
+                                        <label
+                                            className={`ml-[5px]`}
+                                            htmlFor="cardSelect">
+                                            Gratis kaartje
+                                        </label>
+                                    </div>
+                                    <div className={`w-[100%]`}>
+                                        <input
+                                            className={`accent-[#009A42]`}
+                                            type="radio"
+                                            name="cardSelect"
+                                            id="cardSelect"
+                                            value="card-none"
+                                        ></input>
+                                        <label
+                                            className={`ml-[5px]`}
+                                            htmlFor="cardSelect">
+                                            Geen kaartje
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className={` w-[90%] flex flex-col`}>
+                                    <div className={` w-[100%] flex`}>
+                                        <input
+                                            className={`accent-[#009A42]`}
+                                            type="radio"
+                                            name="cardSelect"
+                                            id="cardSelect"
+                                            value="card-ribbon"
+                                        ></input>
+                                        <label
+                                            className={`ml-[5px]`}
+                                            htmlFor="cardSelect">
+                                            Speciaal wenslintje
+                                        </label>
+                                    </div>
+                                    <div className={` w-[100%] flex`}>
+                                        <input
+                                            className={`accent-[#009A42]`}
+                                            type="radio"
+                                            name="cardSelect"
+                                            id="cardSelect"
+                                            value="card-wish"
+                                        ></input>
+                                        <label
+                                            className={`ml-[5px]`}
+                                            htmlFor="cardSelect">
+                                            Speciaal wenskaartje
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                className={`flex flex-col sm:w-[80%] w-[100%] justify-between mt-[45px]`}
+                            >
+                                <label htmlFor="employee">Aangenomen door:</label>
+                                <select required
+                                        className={`border-[1px] border-black w-[100%] h-[30px]`}
+                                        name="employee"
+                                        id="employee">
+                                    {findAllEmployees.map(f => {
+                                        return <option value={f.id}>{f.name}</option>
+                                    })}
+                                </select>
+                            </div>
+                            <div
+                                className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
+                            >
+                                <input className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`}
+                                       value="Order toevoegen" type="button" onClick={
+                                    async () => {
+                                        await handleFormSubmit(findAllCustomers);
+                                    }
+                                }></input>
+                                <WhiteButton link="/">Annuleren</WhiteButton>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                </div>
-                <div className={`flex flex-col mt-[3%]`}>
-                  <label htmlFor="plaats">Plaats</label>
-                  <input
-                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                    type="text"
-                    name="plaats"
-                    id="plaats"
-                  ></input>
-                </div>
-                <div className={`flex flex-col mt-[3%]`}>
-                  <label htmlFor="telefoonnummerBesteller">
-                    Telefoonnummer
-                  </label>
-                  <input
-                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                    type="text"
-                    name="telefoonnummerBesteller"
-                    id="telefoonnummerBesteller"
-                  ></input>
-                </div>
-                <div className={`flex flex-col  mt-[3%]`}>
-                  <label className={`mt-[3%]`}>Bezorgkosten</label>
-                  <div className={`flex w-[30%] justify-between lg:w-[20%]`}>
-                    <div className={`flex justify-between`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="ja"
-                        value="ja"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="ja"
-                      >
-                        Ja
-                      </label>
-                    </div>
-                    <div className={`flex justify-between sm:ml[0px] ml-[5%]`}>
-                      <input
-                        className={`accent-[#009A42]`}
-                        type="radio"
-                        name="bezorgkosten"
-                        id="nee"
-                        value="nee"
-                      ></input>
-                      <label
-                        className={`ml-1`}
-                        htmlFor="nee"
-                      >
-                        Nee
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
-                >
-                  <div className={`flex flex-col w-[100%]`}>
-                    <label
-                      className={`w-[200px]`}
-                      htmlFor="datumBezorging"
-                    >
-                      Datum van bezorging
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-6 w-[100%] lg:w-[200px]`}
-                      type="date"
-                      name="datumBezorging"
-                      id="datumBezorging"
-                    ></input>
-                  </div>
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="verzending">Verzending</label>
-                    <select
-                      className={`border-[1px] border-gray-500`}
-                      name="verzending"
-                      id="verzending"
-                    >
-                      <option value="afhalen">Afhalen</option>
-                      <option value="bezorging">Bezorging</option>
-                    </select>
-                  </div>
-                </div>
-              </form>
+                </form>
             </div>
-            <div
-              className={` sm:mt-[0px] mt-[10%] sm:ml-[0px] ml-[2%] flex-col w-[45%] mr-[2%] pb-1`}
-            >
-              <div className={`font-['Roboto'] text-1xl font-bold`}>
-                Ontvanger
-              </div>
-              <form
-                className={`mt-1`}
-                method="POST"
-                action=""
-              >
-                <div className={`flex flex-col lg:flex-row justify-between`}>
-                  <div className={`flex flex-col`}>
-                    <label
-                      className={'w-[150px]'}
-                      htmlFor="opdrachtgever"
-                    >
-                      Naam ontvanger
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="opdrachtgever"
-                      id="opdrachtgever"
-                    ></input>
-                  </div>
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="opdrachtgever">Achternaam</label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="opdrachtgever"
-                      id="opdrachtgever"
-                    ></input>
-                  </div>
-                </div>
-                <div
-                  className={`flex flex-col lg:flex-row justify-between mt-[3%]`}
-                >
-                  <div className={`flex flex-col`}>
-                    <label htmlFor="straatnaam">Straatnaam</label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                      type="text"
-                      name="straatnaam"
-                      id="straatnaam"
-                    ></input>
-                  </div>
-                  <div className={`flex w-[100%] lg:w-[45%] justify-between`}>
-                    <div className={`flex flex-col`}>
-                      <label htmlFor="nummer">Nummer</label>
-                      <input
-                        className={`border-[1px] border-gray-500 h-[25px] w-[95%]`}
-                        type="text"
-                        name="nummer"
-                        id="nummer"
-                      ></input>
-                    </div>
-                    <div className={`flex flex-col`}>
-                      <label htmlFor="postcode">Postcode</label>
-                      <input
-                        className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                        type="text"
-                        name="postcode"
-                        id="postcode"
-                      ></input>
-                    </div>
-                  </div>
-                </div>
-                <div className={`flex flex-col  mt-[3%]`}>
-                  <label htmlFor="plaats">Plaats</label>
-                  <input
-                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                    type="text"
-                    name="plaats"
-                    id="plaats"
-                  ></input>
-                </div>
-                <div className={`flex flex-col  mt-[3%]`}>
-                  <label htmlFor="telefoonnummerOntvanger">
-                    Telefoonnummer
-                  </label>
-                  <input
-                    className={`border-[1px] border-gray-500 h-[25px] w-[100%]`}
-                    type="text"
-                    name="telefoonnummerOntvanger"
-                    id="telefoonnummerOntvanger"
-                  ></input>
-                </div>
-                <div
-                  className={`flex flex-col sm:flex-row justify-between mt-[3%]`}
-                >
-                  <div className={`flex flex-col`}>
-                    <label
-                      className={'w-[122px]'}
-                      htmlFor="prijsBestelling"
-                    >
-                      Prijs bestelling
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
-                      type="text"
-                      name="prijsBestelling"
-                      id="prijsBestelling"
-                    ></input>
-                  </div>
-                  <div className={`flex flex-col`}>
-                    <label
-                      className={'w-[130px]'}
-                      htmlFor="prijsTotaal"
-                    >
-                      Prijs totaal
-                    </label>
-                    <input
-                      className={`border-[1px] border-gray-500 h-[25px] sm:w-[50%] w-[100%]`}
-                      type="text"
-                      name="prijsTotaal"
-                      id="prijsTotaal"
-                    ></input>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-          <div
-            className={`w-[100%] mt-20 flex flex-col sm:flex-row justify-between border-t-gray-400 border-t-[1px] pb-5`}
-          >
-            <div className={`border-[1px]flex-col w-[45%] ml-[2%] mt-[50px]`}>
-              <div className={`font-['Roboto'] text-1xl font-bold`}>
-                Product
-              </div>
-              <form>
-                <div className={`flex flex-col`}>
-                  <label
-                    className={`mt-3`}
-                    htmlFor="omschrijvingBestelling"
-                  >
-                    Omschrijving bestelling
-                  </label>
-                  <textarea
-                    className={`border-[1px] border-gray-500 h-[80px] resize-none`}
-                    type="text"
-                    name="omschrijvingBestelling"
-                    id="omschrijvingBestelling"
-                  ></textarea>
-                </div>
-                <div className={`flex flex-col`}>
-                  <label
-                    className={`mt-3 w-[100%]`}
-                    htmlFor="tekstKaartje"
-                  >
-                    Optioneel tekst voor op het kaartje
-                  </label>
-                  <textarea
-                    className={`border-[1px] border-gray-500 h-[80px] resize-none`}
-                    type="text"
-                    name="tekstKaartje"
-                    id="tekstKaartje"
-                  ></textarea>
-                </div>
-                <div className={`flex flex-col`}>
-                  <label
-                    className={`mt-3`}
-                    htmlFor="bijzonderheden"
-                  >
-                    Bijzonderheden
-                  </label>
-                  <textarea
-                    className={`border-[1px] border-gray-500 h-[80px] resize-none`}
-                    type="text"
-                    name="bijzonderheden"
-                    id="bijzonderheden"
-                  ></textarea>
-                </div>
-              </form>
-            </div>
-            <div className={`flex-col w-[45%] mr-[2%] mt-[110px]`}>
-              <div className={`flex flex-col md:flex-row md:ml-[0px] ml-[5%]`}>
-                <div className={`w-[82%] flex flex-col`}>
-                  <div className={` w-[100%] `}>
-                    <input
-                      className={`accent-[#009A42]`}
-                      type="radio"
-                      name="extra"
-                      id="gratisKaartje"
-                      value="gratisKaartje"
-                    ></input>
-                    <label
-                      className={`ml-[5px]`}
-                      htmlFor="gratisKaartje"
-                    >
-                      Gratis kaartje
-                    </label>
-                  </div>
-                  <div className={`w-[100%]`}>
-                    <input
-                      className={`accent-[#009A42]`}
-                      type="radio"
-                      name="extra"
-                      id="geenKaartje"
-                      value="geenKaartje"
-                    ></input>
-                    <label
-                      className={`ml-[5px]`}
-                      htmlFor="geenKaartje"
-                    >
-                      Geen kaartje
-                    </label>
-                  </div>
-                </div>
-                <div className={` w-[90%] flex flex-col`}>
-                  <div className={` w-[100%] flex`}>
-                    <input
-                      className={`accent-[#009A42]`}
-                      type="radio"
-                      name="extra"
-                      id="wenslintje"
-                      value="wenslintje"
-                    ></input>
-                    <label
-                      className={`ml-[5px]`}
-                      htmlFor="wenslintje"
-                    >
-                      Speciaal wenslintje
-                    </label>
-                  </div>
-                  <div className={` w-[100%] flex`}>
-                    <input
-                      className={`accent-[#009A42]`}
-                      type="radio"
-                      name="extra"
-                      id="wensKaartje"
-                      value="wensKaartje"
-                    ></input>
-                    <label
-                      className={`ml-[5px]`}
-                      htmlFor="wensKaartje"
-                    >
-                      Speciaal wenskaartje
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div
-                className={`flex flex-col sm:w-[80%] w-[100%] justify-between mt-[45px]`}
-              >
-                <label htmlFor="aangenomenDoor">Aangenomen door:</label>
-                <select
-                  className={`border-[1px] border-black w-[100%] h-[30px]`}
-                  name="aangenomenDoor"
-                  id="aangenomenDoor"
-                >
-                  <option value="Bernhardus Annen">Bernhardus Annen</option>
-                  <option value="Medewerker1">Medewerker1</option>
-                  <option value="Medewerker2">Medewerker2</option>
-                </select>
-              </div>
-              <div
-                className={`flex sm:flex-row flex-col sm:ml-[0px] ml-[10%] justify-between mt-[85px] w-[82%]`}
-              >
-                <GreenButton link="#">Voeg order</GreenButton>
-                <WhiteButton link="/">Annuleren</WhiteButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </MainLayout>
-  );
+        </MainLayout>
+    );
 }
