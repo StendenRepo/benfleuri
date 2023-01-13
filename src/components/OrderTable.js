@@ -384,12 +384,14 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
  * @param findAllCustomers The customer data.
  */
 export function nextPage({findAllOrders, findAllCustomers}){
+    let page = currentPage + 1;
     let limit = parseInt(document.getElementById("orderCount").value);
-    let startIndex = (currentPage * limit);
+    let startIndex = (page * limit);
     if(startIndex > findAllOrders.length){
         //Should already be stopped by disabling the button.
         return;
     }
+    currentPage++;
 
     updateOrderTable({startIndex, findAllOrders, findAllCustomers});
 }
@@ -401,12 +403,17 @@ export function nextPage({findAllOrders, findAllCustomers}){
  * @param findAllCustomers The customer data.
  */
 export function previousPage({findAllOrders, findAllCustomers}){
+    if(currentPage === 0){
+        return;
+    }
+    let page = currentPage - 1;
     let limit = parseInt(document.getElementById("orderCount").value);
-    let startIndex = (currentPage * limit)  - (limit)
+    let startIndex = (page * limit)  - (limit)
     if(startIndex < 0){
         //Should already be stopped by disabling the button.
         return;
     }
+    currentPage = page
     updateOrderTable({startIndex, findAllOrders, findAllCustomers});
 }
 
