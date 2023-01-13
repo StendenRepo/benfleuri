@@ -50,7 +50,6 @@ export default function AddOrder() {
   const uploadToServer = async (file) => {
     const body = new FormData();
     body.append("file", file)
-    console.log(file)
     const response = await fetch("api/fileUpload", {
       method: "POST",
       body
