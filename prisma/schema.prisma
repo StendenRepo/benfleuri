@@ -9,3 +9,65 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Customer {
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  city        String?
+  phoneNumber String
+  email       String?
+  postalCode  String? @db.VarChar(6)
+  streetName  String?
+  houseNumber String? @db.VarChar(6)
+  order       Order[]
+  Order       Order[] @relation(name: "recievers")
+}
+
+model Employee {
+  id       Int     @id @default(autoincrement())
+  name     String
+  isAdmin  Boolean @default(value: false)
+  password String
+  orders   Order[]
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  customerId      Int
+  employeeId      Int
+  recieverId      Int
+  productInfo     String
+  message         String
+  extraInfo       String
+  cardType        CardType
+  includeDelivery Boolean
+  price           Decimal       @db.Decimal(12, 2)
+  dateOfDelivery  DateTime
+  orderState      OrderState    @default(OPEN)
+  orderDate       DateTime      @default(now())
+  paymentMethod   PaymentMethod
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  reciever        Customer      @relation(fields: [recieverId], references: [id], name: "recievers")
+  employee        Employee      @relation(fields: [employeeId], references: [id])
+}
+
+enum CardType {
+  NONE
+  BASIC_CARD
+  RIBBON
+  SPECIAL_CARD
+}
+
+enum OrderState {
+  OPEN
+  CLOSED
+  IN_PROGRESS
+  DELIVERED
+}
+
+enum PaymentMethod {
+  CASH
+  PIN
+  BY_INVOICE
+}
