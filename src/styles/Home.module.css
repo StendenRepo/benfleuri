@@ -1,0 +1,10 @@
+.container {
+  padding: 0;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+}
+
