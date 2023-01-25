@@ -7,6 +7,8 @@ import {BlueButton, GreenButton, WhiteButton,} from '../components/OrderTable';
 import {updateTotalPriceField, validateElements} from "../components/OrderFormFunctions";
 import {updateOrder, getAllCustomers, getAllEmployees, getAllOrders} from "../components/sql";
 import { useRouter } from 'next/router'
+import { loadPrinters } from '../assets/useLabelPrinter';
+import Script from 'next/script';
 
 
 /**
@@ -126,6 +128,21 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
     window.location.replace("/orderOverview");
   }
 }
+
+async function printAdressLabel() {
+  var name = document.getElementById("receiverFirstName").value + " " + document.getElementById('receiverLastName').value
+  var postalCode = document.getElementById('receiverPostalCode').value
+  var adress = document.getElementById('receiverStreet').value + " " + document.getElementById('receiverStreetNumber').value
+  var city = document.getElementById('receiverPlace').value
+
+  loadPrinters(name, postalCode, adress, city)
+}
+
+async function printCardLabel() {
+  var cardText = document.getElementById("productMessage").value
+  loadPrinters(cardText)
+}
+
 /**
  * The page HTML.
  *
@@ -685,8 +702,8 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
                 <div
                     className={`flex sm:flex-col gap-y-4 flex-col sm:ml-[0px] ml-[10%] mt-[85px] w-[82%]`}
                 >
-                <BlueButton>Tekst kaartje uitprinten</BlueButton>
-                <BlueButton>Adres uitprinten</BlueButton>
+                <BlueButton onClick={printAdressLabel}>Tekst kaartje uitprinten</BlueButton>
+                <BlueButton onClick={printCardLabel}>Adres uitprinten</BlueButton>
                 </div>
               </div>
             </div>

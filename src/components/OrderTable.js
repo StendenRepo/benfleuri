@@ -118,13 +118,11 @@ export function GreenButton({children, link}) {
  * @param children The value of the button.
  * @param link The hyperlink.
  */
-export function BlueButton({children, link}) {
+export function BlueButton({children, onClick}) {
     return (
-        <Link href={!link ? "" : link}>
             <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} type="button">{children}
+        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} onClick={onClick} type="button">{children}
             </button>
-        </Link>
     )
 }
 
