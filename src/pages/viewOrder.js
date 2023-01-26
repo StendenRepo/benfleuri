@@ -130,17 +130,25 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
 }
 
 async function printAdressLabel() {
+  if(dymo.label.framework.getPrinters().length == 0) {
+    alert("Er is geen labelwriter verbonden!")
+    return
+  }
   var name = document.getElementById("receiverFirstName").value + " " + document.getElementById('receiverLastName').value
   var postalCode = document.getElementById('receiverPostalCode').value
   var adress = document.getElementById('receiverStreet').value + " " + document.getElementById('receiverStreetNumber').value
   var city = document.getElementById('receiverPlace').value
 
-  loadPrinters(name, postalCode, adress, city)
+  return loadPrinters([name, postalCode, adress, city])
 }
 
 async function printCardLabel() {
+  if(dymo.label.framework.getPrinters().length == 0) {
+      alert("Er is geen labelwriter verbonden!")
+      return
+  }
   var cardText = document.getElementById("productMessage").value
-  loadPrinters(cardText)
+  return loadPrinters([cardText])
 }
 
 /**
@@ -702,8 +710,8 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
                 <div
                     className={`flex sm:flex-col gap-y-4 flex-col sm:ml-[0px] ml-[10%] mt-[85px] w-[82%]`}
                 >
-                <BlueButton onClick={printAdressLabel}>Tekst kaartje uitprinten</BlueButton>
-                <BlueButton onClick={printCardLabel}>Adres uitprinten</BlueButton>
+                <BlueButton onClick={printCardLabel}>Tekst kaartje uitprinten</BlueButton>
+                <BlueButton onClick={printAdressLabel}>Adres uitprinten</BlueButton>
                 </div>
               </div>
             </div>
