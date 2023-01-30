@@ -130,10 +130,6 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
 }
 
 async function printAdressLabel() {
-  if(dymo.label.framework.getPrinters().length == 0) {
-    alert("Er is geen labelwriter verbonden!")
-    return
-  }
   var name = document.getElementById("receiverFirstName").value + " " + document.getElementById('receiverLastName').value
   var postalCode = document.getElementById('receiverPostalCode').value
   var adress = document.getElementById('receiverStreet').value + " " + document.getElementById('receiverStreetNumber').value
@@ -143,10 +139,6 @@ async function printAdressLabel() {
 }
 
 async function printCardLabel() {
-  if(dymo.label.framework.getPrinters().length == 0) {
-      alert("Er is geen labelwriter verbonden!")
-      return
-  }
   var cardText = document.getElementById("productMessage").value
   return loadPrinters([cardText])
 }
