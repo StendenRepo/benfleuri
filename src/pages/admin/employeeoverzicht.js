@@ -40,7 +40,7 @@ export default function CustomerOverview() {
               Beheer
             </h3>
           </a>
-          <h1 className={'text-3xl m-4 mt-0 w-fit'}>Klanten</h1>
+          <h1 className={'text-3xl m-4 mt-0 w-fit'}>Medewerkers</h1>
         </div>
         <hr className={'border-0 bg-[#DEF2E6] h-px w-full mt-[5%]'}></hr>
         <div
@@ -50,7 +50,9 @@ export default function CustomerOverview() {
         >
           <div className={'flex w-[90%]'}>
             <div className={'flex flex-row align-middle justify-start mb-5'}>
-              <p className={'text-lg font-bold'}>Aantal klanten op pagina: </p>
+              <p className={'text-lg font-bold'}>
+                Aantal medewerkers op pagina:{' '}
+              </p>
               <select
                 className={
                   'bg-white border text-black font-bold py-1 px-3 rounded ml-5'
@@ -67,7 +69,7 @@ export default function CustomerOverview() {
             <input
               type="text"
               className={'border rounded w-[60%] mr-2'}
-              placeholder="Zoek naar klanten"
+              placeholder="Zoek naar medewerkers"
             ></input>
             <button
               className={
@@ -79,9 +81,7 @@ export default function CustomerOverview() {
             <select className={'border border-gray rounded'}>
               <option value="">Sorteer op</option>
               <option value="name">Naam</option>
-              <option value="sirname">Achternaam</option>
-              <option value="phone">Telefoon</option>
-              <option value="mail">E-mail</option>
+              <option value="sirname">Rechten</option>
             </select>
             <button className={'border border-gray rounded mr-[5%] px-2.5'}>
               <ArrowPathIcon className={'h-5 w-5'} />
@@ -96,9 +96,7 @@ export default function CustomerOverview() {
                   </th>
                   <th className={'px-4 py-2'}>ID</th>
                   <th className={'px-4 py-2'}>Naam</th>
-                  <th className={'px-4 py-2'}>Achternaam</th>
-                  <th className={'px-4 py-2'}>Telefoon</th>
-                  <th className={'px-4 py-2'}>E-mail</th>
+                  <th className={'px-4 py-2'}>Rechten</th>
                   <th className={'px-4 py-2'}>Bekijk</th>
                 </tr>
               </thead>
@@ -107,18 +105,16 @@ export default function CustomerOverview() {
                   <td className={'px-4 py-2'}>
                     <input type="checkbox"></input>
                   </td>
-                  <td className={'px-4 py-2'}>1</td>
-                  <td className={'px-4 py-2'}>Mark</td>
-                  <td className={'px-4 py-2'}>Otto</td>
-                  <td className={'px-4 py-2'}>123456789</td>
-                  <td className={'px-4 py-2'}>JohnDoe@test.com</td>
+                  <td className={'px-4 py-2'}></td>
+                  <td className={'px-4 py-2'}></td>
+                  <td className={'px-4 py-2'}></td>
                   <td className={'px-4 py-2'}>
                     <button
                       className={
                         'bg-white border uppercase text-black py-1 px-3'
                       }
                     >
-                      <Link href="/admin/customerOverview">Bekijk</Link>
+                      <Link href="/admin/changeUser">Bekijk</Link>
                     </button>
                   </td>
                 </tr>
@@ -126,18 +122,16 @@ export default function CustomerOverview() {
                   <td className={'border-y px-4 py-2'}>
                     <input type="checkbox"></input>
                   </td>
-                  <td className={'border-y px-4 py-2'}>2</td>
-                  <td className={'border-y px-4 py-2'}>Jacob</td>
-                  <td className={'border-y px-4 py-2'}>Thornton</td>
-                  <td className={'border-y px-4 py-2'}>123456789</td>
-                  <td className={'border-y px-4 py-2'}>Test@test.com</td>
+                  <td className={'border-y px-4 py-2'}></td>
+                  <td className={'border-y px-4 py-2'}></td>
+                  <td className={'border-y px-4 py-2'}></td>
                   <td className={'border-y px-4 py-2'}>
                     <button
                       className={
                         'bg-white border uppercase text-black py-1 px-3'
                       }
                     >
-                      Bekijk
+                      <Link href="/admin/changeUser">Bekijk</Link>
                     </button>
                   </td>
                 </tr>
@@ -148,15 +142,13 @@ export default function CustomerOverview() {
                   <td className={'border-y px-4 py-2'}></td>
                   <td className={'border-y px-4 py-2'}></td>
                   <td className={'border-y px-4 py-2'}></td>
-                  <td className={'border-y px-4 py-2'}></td>
-                  <td className={'border-y px-4 py-2'}></td>
                   <td className={'border-y px-4 py-2'}>
                     <button
                       className={
                         'bg-white border uppercase text-black py-1 px-3'
                       }
                     >
-                      Bekijk
+                      <Link href="/admin/changeUser">Bekijk</Link>
                     </button>
                   </td>
                 </tr>
