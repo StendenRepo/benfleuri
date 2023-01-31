@@ -121,8 +121,9 @@ mutation UpdateOrder($updateOrderId: ID, $customerId: ID, $employeeId: ID, $prod
 }`
 
     let orderIDInt = parseInt(orderID)
+
     //Date is not set at the moment,
-    let variables = {"updateOrderId": orderIDInt, "customer" : customerId, "employee":  employeeId, "reciever":  recieverId,
+    let variables = {"updateOrderId": +orderIDInt, "customer" : customerId, "employee":  employeeId, "reciever":  recieverId,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
         "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
@@ -177,9 +178,13 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
         return {error: {"message": "De gegeven prijs is ongeldig."}}
     }
 
+    console.log(dateOfDelivery)
+
     if(!isValidDate(dateOfDelivery)){
         return {error: {"message": "De gegeven datum is ongeldig."}}
     }
+
+
 
     const query = gql`
     mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $dateOfDelivery: String, $price: Float, $paymentMethod: PaymentMethod, $extraInfo: String, $productInfo: String, $message: String, $orderState: OrderState, $includeDelivery: Boolean, $cardType: CardType) {
@@ -230,18 +235,28 @@ export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
     }
 
     let customers = await getAllCustomers("id firstName lastName city postalCode")
-    customers.findAllCustomers.forEach(function (value) {
+    let exists = false;
+    let id = -1;
+
+    customers.findAllCustomers.some(value => {
         if(value.firstName === firstName &&
             value.lastName === lastName &&
             value.city === city &&
             value.postalCode === postalCode){
             //Already exists in database.
             console.log("in db")
-            return {
-                "exists": true,
-                "id": value.id
-            }
-        }})
+            id = value.id;
+            exists = true;
+        }
+        return exists
+    })
+
+    if(exists) {
+        return {
+            "exists": true,
+            "id": id
+        }
+    }
 
     const query = gql`
 mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
