@@ -70,6 +70,7 @@ async function handleFormSubmit() {
         document.getElementById('customerStreet').value,
         document.getElementById('customerStreetNumber').value,
         document.getElementById('customerPostalCode').value,
+        document.getElementById('customerCompanyName').value
     )
 
     if (customer.error) {
@@ -85,6 +86,7 @@ async function handleFormSubmit() {
         document.getElementById('receiverStreet').value,
         document.getElementById('receiverStreetNumber').value,
         document.getElementById('receiverPostalCode').value,
+        document.getElementById('customerCompanyName').value
     )
 
     if (receiver.error) {
@@ -95,6 +97,7 @@ async function handleFormSubmit() {
     //Format the date to SQL format.
     let splitDate = document.getElementById('deliveryDate').value.split("-")
     let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
+    let defaultOrderTreatingEmployee = 1
 
     //Add the order to the database.
     let order = await addOrder(
@@ -111,7 +114,8 @@ async function handleFormSubmit() {
         includeDeliveryCosts === "yes",
         cardSelect.value === "card-free" ? "BASIC_CARD" :
             cardSelect.value === "card-ribbon" ? "RIBBON" :
-                cardSelect.value === "card-wish" ? "SPECIAL_CARD" : "NONE"
+                cardSelect.value === "card-wish" ? "SPECIAL_CARD" : "NONE",
+        defaultOrderTreatingEmployee
     )
     if (order.error) {
         alert(order.error.message);

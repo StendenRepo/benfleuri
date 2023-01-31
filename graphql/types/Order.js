@@ -20,6 +20,7 @@ export const Order = objectType({
       t.int('customerId'),
       t.int('employeeId'),
       t.int('recieverId'),
+      t.int('orderTreatingEmployeeId')
       t.string('message'),
       t.string('extraInfo'),
       t.string('productInfo'),
@@ -69,6 +70,7 @@ export const OrderMutation = extendType({
         customerId: nonNull(intArg()),
         employeeId: nonNull(intArg()),
         recieverId: nonNull(intArg()),
+        orderTreatingEmployeeId: intArg(),
         productInfo: stringArg(),
         message: stringArg(),
         extraInfo: stringArg(),
@@ -100,6 +102,11 @@ export const OrderMutation = extendType({
                 id: args.recieverId,
               },
             },
+            orderTreatingEmployee: {
+              connect: {
+                id: args.orderTreatingEmployeeId,
+              }
+            },
             productInfo: args.productInfo,
             message: args.message,
             extraInfo: args.extraInfo,
@@ -119,9 +126,10 @@ export const OrderMutation = extendType({
     t.field('updateOrder', {
       type: Order,
       args: {
-        id: idArg(),
+        id: intArg(),
         customerId: idArg(),
         employeeId: idArg(),
+        orderTreatingEmployeeId: idArg(),
         productInfo: stringArg(),
         message: stringArg(),
         extraInfo: stringArg(),
