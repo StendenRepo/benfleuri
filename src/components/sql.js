@@ -157,7 +157,7 @@ mutation UpdateOrder($updateOrderId: ID, $customerId: ID, $employeeId: ID, $prod
  * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
  */
 export async function addOrder(customerId, employeeId, recieverId, dateOfDelivery, price, paymentMethod,
-                               extraInfo, productInfo, productMessage, orderState, includeDelivery, cardType){
+                               extraInfo, productInfo, productMessage, orderState, includeDelivery, cardType, orderTreatingEmployeeId){
     //Check valid order state.
     if(!["OPEN","CLOSED", "IN_PROGRESS", "DELIVERED"].includes(orderState)) {
         return {error: {"message": "The gegeven order status is ongeldig."}}
@@ -187,15 +187,15 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
 
 
     const query = gql`
-    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $dateOfDelivery: String, $price: Float, $paymentMethod: PaymentMethod, $extraInfo: String, $productInfo: String, $message: String, $orderState: OrderState, $includeDelivery: Boolean, $cardType: CardType) {
-    createOrder(customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, dateOfDelivery: $dateOfDelivery, price: $price, paymentMethod: $paymentMethod, extraInfo: $extraInfo, productInfo: $productInfo, message: $message, orderState: $orderState, includeDelivery: $includeDelivery, cardType: $cardType) {
+    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $dateOfDelivery: String, $price: Float, $paymentMethod: PaymentMethod, $extraInfo: String, $productInfo: String, $message: String, $orderState: OrderState, $includeDelivery: Boolean, $cardType: CardType, $orderTreatingEmployeeId: Int) {
+    createOrder(orderTreatingEmployeeId: $orderTreatingEmployeeId, customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, dateOfDelivery: $dateOfDelivery, price: $price, paymentMethod: $paymentMethod, extraInfo: $extraInfo, productInfo: $productInfo, message: $message, orderState: $orderState, includeDelivery: $includeDelivery, cardType: $cardType) {
     id
     }
     }`
 
     let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
+        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": orderTreatingEmployeeId}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 
@@ -224,7 +224,7 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
  * @returns {Promise<{error: {message: string}|exists: boolean, id}>}
  */
 export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
-                                             city, streetName, houseNumber, postalCode){
+                                             city, streetName, houseNumber, postalCode, clientName){
     //Validate length for postalCode and houseNumber.
     if(postalCode.length > 6){
         return {error: {"message": "De gegeven postcode voor " + firstName + " is ongeldig."}}
@@ -259,15 +259,15 @@ export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
     }
 
     const query = gql`
-mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
-  createCustomer(firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber) {
+mutation CreateCustomer($clientName: String, $firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
+  createCustomer(clientName: $clientName, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber) {
     id
   }
 }`
 
     let data = await request('http://localhost:3000/api/graphql',
         query, {"firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
-        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode})
+        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode, "clientName": clientName})
 
     return {
         "exists": false,

@@ -18,7 +18,7 @@ import Script from 'next/script';
  */
 export async function getServerSideProps() {
   const {findAllOrders} = await getAllOrders("id price customerId employeeId recieverId message extraInfo productInfo dateOfDelivery orderDate includeDelivery cardType orderState paymentMethod")
-  const {findAllCustomers} = await getAllCustomers("id firstName lastName city phoneNumber email postalCode streetName houseNumber")
+  const {findAllCustomers} = await getAllCustomers("id clientName firstName lastName city phoneNumber email postalCode streetName houseNumber")
   const {findAllEmployees} = await getAllEmployees("id name")
 
   return {
@@ -232,6 +232,7 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
                         type="text"
                         name="customerCompanyName"
                         id="customerCompanyName"
+                        defaultValue={customer.clientName}
                     ></input>
                   </div>
                   <div
