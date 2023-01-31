@@ -117,7 +117,7 @@ async function handleFormSubmit() {
         alert(order.error.message);
     } else {
         //Redirect to orderOverview if the Order was successfully added to the database.
-      //  window.location.replace("/orderOverview");
+        window.location.replace("/orderOverview");
     }
 }
 

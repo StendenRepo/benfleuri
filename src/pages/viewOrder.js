@@ -101,7 +101,7 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
 
   //Format the date to SQL format.
   let splitDate = document.getElementById('deliveryDate').value.split("-")
-  let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
+  let date = splitDate[2] + "-" + (splitDate[1] - 1 )+ "-" + splitDate[0]
 
   //Add the order to the database.
   let order = await updateOrder(
