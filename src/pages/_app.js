@@ -6,7 +6,7 @@ import Script from 'next/script';
 function MyApp({ Component, pageProps }) {
   return (
     <ApolloProvider client={apolloClient}>
-      <Script src="http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js"></Script>
+      <Script src="dymo-framework.js"></Script>
       <Component {...pageProps} />
     </ApolloProvider>
   );
