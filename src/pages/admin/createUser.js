@@ -16,10 +16,12 @@ export default function createEmployee() {
       alert({ error: { message: 'The given name is invalid.' } });
       return;
     }
-    if (typeof password !== 'string' || password.length <= 5) {
-      alert(
-        'The given password is too short. It should be at least 6 characters long.'
-      );
+    if (
+      typeof password !== 'string' ||
+      password.length <= 5 ||
+      password.length > 6
+    ) {
+      alert('Pincode moet 6 tekens zijn');
       return;
     }
 
