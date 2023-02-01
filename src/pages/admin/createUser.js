@@ -9,8 +9,8 @@ export default function createEmployee() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const name = e.target.name.value;
-    const isAdmin = e.target.isAdmin.value;
     const password = e.target.password.value;
+    const isAdmin = e.target.isAdmin.value === 'true';
 
     if (typeof name !== 'string' || name.length === 0) {
       setError({ error: { message: 'The given name is invalid.' } });
@@ -38,6 +38,10 @@ export default function createEmployee() {
     const { createEmployee } = data;
 
     setCreateEmployee({ createEmployee });
+    redirectToHome();
+  };
+  const redirectToHome = () => {
+    window.location.href = '/';
   };
   return (
     <MainLayout>
@@ -107,8 +111,8 @@ export default function createEmployee() {
                 'w-full h-[25px] pt-0 pr-5 pl-[9px] mx-[8px] my-0 ml-0 inline-bloc border-[1px] border-[#ccc] box-border'
               }
             >
-              <option value={true}>Admin</option>
-              <option value={false}>Gebruiker</option>
+              <option value="true">Admin</option>
+              <option value="false">Gebruiker</option>
             </select>
             <label>Pincode</label>
             <input
