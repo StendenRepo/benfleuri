@@ -5,7 +5,6 @@ import {
     GreenButton,
     OrderTable,
     updateOrderTable,
-    WhiteButton,
 } from '../components/OrderTable';
 import {
     ArrowLeftIcon, ArrowPathIcon,
@@ -48,7 +47,6 @@ function getDates(){
     let dates = []
     let weekDay = new Date();
     weekDay.setDate(new Date().getDate() + (currentWeekOffset * 7))
-    console.log(weekDay)
     //Loop through days of the week.
     for(let i = 0; i < 7; i++){
         let date = getMonday(weekDay)
@@ -225,6 +223,10 @@ function previousWeek({findAllOrders, findAllCustomers}){
     currentWeekOffset--;
     updateTables(findAllOrders, findAllCustomers)
 }
+
+//TODO: BUG: The week number for the next year starts with 0.
+//TODO: Set table column widths.
+//TODO: Limit text display length in the tables..
 
 function getWeekNumber(date){
     let startDate = new Date(date.getFullYear(), 0, 1);

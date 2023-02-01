@@ -31,7 +31,6 @@ export function validateElements(missingInput, elements) {
     for (let i = 0; i < elements.length; i++) {
         let element = elements[i]
         if (element.hasAttribute("required")) {
-            console.log("required")
             if (element.value === "") {
                 element.style.border = "solid #ff0000"
                 missingInput = true;
