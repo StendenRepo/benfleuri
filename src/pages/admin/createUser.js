@@ -13,11 +13,13 @@ export default function createEmployee() {
     const isAdmin = e.target.isAdmin.value === 'true';
 
     if (typeof name !== 'string' || name.length === 0) {
-      setError({ error: { message: 'The given name is invalid.' } });
+      alert({ error: { message: 'The given name is invalid.' } });
       return;
     }
-    if (typeof password !== 'string' || password.length === 0) {
-      setError({ error: { message: 'The given password is invalid.' } });
+    if (typeof password !== 'string' || password.length <= 5) {
+      alert(
+        'The given password is too short. It should be at least 6 characters long.'
+      );
       return;
     }
 
