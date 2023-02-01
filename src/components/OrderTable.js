@@ -454,6 +454,6 @@ export function previousPage({findAllOrders, findAllCustomers}){
 function getTableRow(order, customerName, receiverName){
     return (
         <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
-            order.orderState, order.price]}></TableRow>
+            order.orderState, order.price.toFixed(2)]}></TableRow>
     )
 }

@@ -93,7 +93,7 @@ export default function Home({findAllOrders, findAllCustomers}) {
                         </button>
                         <button onClick={async () => {
                             let dbData = await getOrderTableData();
-                            updateTables({findAllOrders: dbData.props.findAllOrders, findAllCustomers: dbData.props.findAllCustomers})
+                            updateTables(dbData.props.findAllOrders, dbData.props.findAllCustomers)
                         }
                         } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`} type="button">

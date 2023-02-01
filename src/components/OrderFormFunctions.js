@@ -15,7 +15,7 @@ export function updateTotalPriceField() {
             price += 5.95;
         }
     }
-    document.getElementById("totalPrice").value = Math.round((price + Number.EPSILON) * 100) / 100
+    document.getElementById("totalPrice").value = (Math.round((price + Number.EPSILON) * 100) / 100).toFixed(2);
 
 }
 
