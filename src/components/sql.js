@@ -192,7 +192,7 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
 
     let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": null}
+        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": 1}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 
