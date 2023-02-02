@@ -25,6 +25,7 @@ function Header() {
                     Bestellingen
                 </div>
                 <div className={`flex justify-end w-1/2 gap-x-4`}>
+                    <GreenButton className={"route-button"}>Route maken</GreenButton>
                     <GreenButton link="/addOrder">Voeg nieuwe bestelling toe</GreenButton>
                 </div>
             </div>
@@ -125,8 +126,9 @@ export default function Home({findAllOrders, findAllCustomers}) {
                             pageLoad: true
                         })
                         return (<DayTable day={dateString} number={count}  content={content} customers={findAllCustomers} orders={orders}/>
-                    )
-            })}</div>
+                        )
+            })}
+            </div>
         </MainLayout>
     );
 }
@@ -223,10 +225,6 @@ function previousWeek({findAllOrders, findAllCustomers}){
     currentWeekOffset--;
     updateTables(findAllOrders, findAllCustomers)
 }
-
-//TODO: BUG: The week number for the next year starts with 0.
-//TODO: Set table column widths.
-//TODO: Limit text display length in the tables..
 
 function getWeekNumber(date){
     let startDate = new Date(date.getFullYear(), 0, 1);

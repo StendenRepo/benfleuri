@@ -180,8 +180,6 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
         }
     })
 
-    console.log(id)
-
     findAllEmployees.map(f => {
         let intID = parseInt(f.id)
         if (intID === order.employeeId) {
