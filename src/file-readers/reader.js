@@ -76,7 +76,7 @@ export async function fileReader(file) {
             "cardType": fileData['withCard'],
             "includeDelivery": fileData['withDeliveryCosts'],
             "price": fileData['price'],
-            // "dateOfDelivery": fileData['deliveryDate'],
+            "orderTreatingEmployeeId": 1,
             "orderState": "OPEN",
             "paymentMethod": "PIN",
         }
@@ -284,8 +284,8 @@ async function createCustomer(customerVariables) {
 async function createOrder(orderVariables) {
     const createOrder = gql
     `
-    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $productInfo: String, $message: String, $extraInfo: String, $cardType: CardType, $includeDelivery: Boolean, $price: Float, $dateOfDelivery: String, $orderState: OrderState, $paymentMethod: PaymentMethod) {
-        createOrder(customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, productInfo: $productInfo, message: $message, extraInfo: $extraInfo, cardType: $cardType, includeDelivery: $includeDelivery, price: $price, dateOfDelivery: $dateOfDelivery, orderState: $orderState, paymentMethod: $paymentMethod) {
+    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $productInfo: String, $message: String, $extraInfo: String, $cardType: CardType, $includeDelivery: Boolean, $price: Float, $dateOfDelivery: String, $orderState: OrderState, $paymentMethod: PaymentMethod, $orderTreatingEmployeeId: Int) {
+        createOrder(customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, productInfo: $productInfo, message: $message, extraInfo: $extraInfo, cardType: $cardType, includeDelivery: $includeDelivery, price: $price, dateOfDelivery: $dateOfDelivery, orderState: $orderState, paymentMethod: $paymentMethod, orderTreatingEmployeeId: $orderTreatingEmployeeId) {
         id
         price
         customerId
@@ -300,6 +300,7 @@ async function createOrder(orderVariables) {
         cardType
         orderState
         paymentMethod
+        orderTreatingEmployeeId
         }
     }
     `

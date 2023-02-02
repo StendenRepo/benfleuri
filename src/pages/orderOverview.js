@@ -11,6 +11,7 @@ import {
   previousPage,
 } from '../components/OrderTable';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
+import { addOrder, addCustomerIfNotExists } from '../components/sql';
 
 function Header() {
   return (
@@ -58,6 +59,7 @@ function Header() {
 }
 
 export async function getServerSideProps() {
+  await importWooCommerceOrder()
   return getOrderTableData();
 }
 
@@ -169,116 +171,132 @@ async function importWooCommerceOrder() {
     //console.log(store_url + endpoint + '?' + query_string);
 
     //test order: 39527 or 39685
-    WooCommerce.get('orders/39527').then((response) => {
+    var arr = [];
+    WooCommerce.get('orders', {per_page: 5}).then((response) => {
       //convert orderer data to json objects
-      const jsonCustomer = JSON.stringify(response.data.billing);
-      const customerData = JSON.parse(jsonCustomer);
+      response.data.forEach(element => {
+        // console.log(element.billing)
+        
+        const jsonCustomer = JSON.stringify(element.billing);
+        const customerData = JSON.parse(jsonCustomer);
 
-      //the data from the customer who ordered
-      const first_name = customerData.first_name;
-      const last_name = customerData.last_name;
-      const company = customerData.company;
-      const address = customerData.address_1;
-      const city = customerData.city;
-      const postcode = customerData.postcode;
-      const country = customerData.country;
-      const email = customerData.email;
-      const phone = customerData.phone;
+        //the data from the customer who ordered
+        const first_name = customerData.first_name;
+        const last_name = customerData.last_name;
+        const company = customerData.company;
+        const address = customerData.address_1;
+        const city = customerData.city;
+        const postcode = customerData.postcode;
+        const country = customerData.country;
+        const email = customerData.email;
+        const phone = customerData.phone;
 
-      const ordererData = {
-        first_name: first_name,
-        last_name: last_name,
-        company: company,
-        address: address,
-        city: city,
-        postcode: postcode,
-        country: country,
-        email: email,
-        telNumber: phone,
-      };
+        const ordererData = {
+          first_name: first_name,
+          last_name: last_name,
+          company: company,
+          address: address,
+          city: city,
+          postcode: postcode,
+          country: country,
+          email: email,
+          telNumber: phone,
+        };
 
-      //convert shipping data to json objects
-      const jsonShipping = JSON.stringify(response.data.shipping);
-      const shipping = JSON.parse(jsonShipping);
+        //convert shipping data to json objects
+        const jsonShipping = JSON.stringify(element.shipping);
+        const shipping = JSON.parse(jsonShipping);
 
-      //The data where the order should be shipped to
-      const shippingFirstName = shipping.first_name;
-      const shippingLastName = shipping.last_name;
-      const shippingCompany = shipping.company;
-      const shippingAddress = shipping.address_1;
-      const shippingCity = shipping.city;
-      const shippingpPostcode = shipping.postcode;
-      const shippingCountry = shipping.country;
-      const shippingTelNumber = shipping.phone;
+        //The data where the order should be shipped to
+        const shippingFirstName = shipping.first_name;
+        const shippingLastName = shipping.last_name;
+        const shippingCompany = shipping.company;
+        const shippingAddress = shipping.address_1;
+        const shippingCity = shipping.city;
+        const shippingpPostcode = shipping.postcode;
+        const shippingCountry = shipping.country;
+        const shippingTelNumber = shipping.phone;
 
-      const shippingData = {
-        first_name: shippingFirstName,
-        last_name: shippingLastName,
-        shippingcompany: shippingCompany,
-        address: shippingAddress,
-        city: shippingCity,
-        postcode: shippingpPostcode,
-        country: shippingCountry,
-        telNumber: shippingTelNumber,
-      };
+        const shippingData = {
+          first_name: shippingFirstName,
+          last_name: shippingLastName,
+          shippingcompany: shippingCompany,
+          address: shippingAddress,
+          city: shippingCity,
+          postcode: shippingpPostcode,
+          country: shippingCountry,
+          telNumber: shippingTelNumber,
+        };
 
-      //convert data order to json object
-      const jsonOrder = JSON.stringify(response.data);
-      const order = JSON.parse(jsonOrder);
-      const jsonOrderLevel1 = JSON.stringify(response.data.line_items[0]);
-      const orderLevel1 = JSON.parse(jsonOrderLevel1);
+        //convert data order to json object
+        const jsonOrder = JSON.stringify(element);
+        const order = JSON.parse(jsonOrder);
+        const jsonOrderLevel1 = JSON.stringify(element.line_items[0]);
+        const orderLevel1 = JSON.parse(jsonOrderLevel1);
 
-      //The data of the order
-      const status = order.status;
-      const paymentMethod = order.payment_method_title;
-      const shippingCost = order.shipping_total;
-      const totalOrderPrice = order.total;
-      const datePaid = order.date_paid;
-      const product = orderLevel1.name;
-      const productQuantity = orderLevel1.quantity;
-      const deliveryDate = order.meta_data[2].value;
-      const cardText = orderLevel1.meta_data[1].value[0].value;
-      const cardType = orderLevel1.meta_data[5].value[0]?.[0].element.rules;
+        //The data of the order
+        const status = order.status;
+        const paymentMethod = order.payment_method_title;
+        const shippingCost = order.shipping_total;
+        const totalOrderPrice = order.total;
+        const datePaid = order.date_paid;
+        const product = orderLevel1.name;
+        const productQuantity = orderLevel1.quantity;
+        const deliveryDate = order.meta_data[2].value;
+        const cardText = orderLevel1.meta_data[1].value[0].value;
+        var cardTypeIndex = "";
+        orderLevel1.meta_data.forEach(element => {
+          if (element.key == '_tmcartfee_data') {
+            cardTypeIndex = element
+            return
+          }
+        })
+        const cardType = cardTypeIndex.value[0][0].element.rules;
+        //Card type data
+        const noCard = cardType['Ik wil geen kaartje toevoegen_0'];
+        const basicCard = cardType['Gratis kaartje_1'];
+        const specialCard = cardType['Speciaal wenskaartje_2'];
+        const ribbon = cardType['Speciaal wenslintje_3'];
 
-      //Card type data
-      const noCard = cardType['Ik wil geen kaartje toevoegen_0'];
-      const basicCard = cardType['Gratis kaartje_1'];
-      const specialCard = cardType['Speciaal wenskaartje_2'];
-      const ribbon = cardType['Speciaal wenslintje_3'];
+        //Card type check
+        const noCardCheck = noCard == '1' ? true : false;
+        const basicCardCheck = basicCard == '1' ? true : false;
+        const specialCardCheck = specialCard == '1' ? true : false;
+        const ribbonCheck = ribbon == '1' ? true : false;
 
-      //Card type check
-      const noCardCheck = noCard == '1' ? true : false;
-      const basicCardCheck = basicCard == '1' ? true : false;
-      const specialCardCheck = specialCard == '1' ? true : false;
-      const ribbonCheck = ribbon == '1' ? true : false;
+        const productInfo = {
+          product: product,
+          productQuantity: productQuantity,
+          status: status,
+          datePaid: datePaid,
+          paymentMethod: paymentMethod,
+          shippingCost: shippingCost,
+          totalOrderPrice: totalOrderPrice,
+          deliveryDate: deliveryDate,
+          cardText: cardText,
+          noCard: noCardCheck,
+          basicCard: basicCardCheck,
+          specialCard: specialCardCheck,
+          ribbonCheck: ribbonCheck,
+        };
 
-      const productInfo = {
-        product: product,
-        productQuantity: productQuantity,
-        status: status,
-        datePaid: datePaid,
-        paymentMethod: paymentMethod,
-        shippingCost: shippingCost,
-        totalOrderPrice: totalOrderPrice,
-        deliveryDate: deliveryDate,
-        cardText: cardText,
-        noCard: noCardCheck,
-        basicCard: basicCardCheck,
-        specialCard: specialCardCheck,
-        ribbonCheck: ribbonCheck,
-      };
-
-      const extractedData = {
-        ordererData,
-        shippingData,
-        productInfo,
-      };
-
-      return extractedData;
-      // console.log(extractedData);
+        const extractedData = {
+          ordererData,
+          shippingData,
+          productInfo,
+        };
+        // console.log(extractedData)
+        arr.push(extractedData)
+        return extractedData;
+      });
+      console.log(arr)
     });
+    // data.forEach(extractedData => {
+    //   addCustomerIfNotExists()
+    // })
+    // TODO: EXTRACTEDDATA HERFORMULEREN ZODAT DEZE SIMPEL GEPUSHT KAN WORDEN NAAR DATABASE
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     return null;
   }
 }
