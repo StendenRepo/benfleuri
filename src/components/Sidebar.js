@@ -58,7 +58,7 @@ export default function Sidebar() {
             </div>
             <div>
               <p className="text-base text-black mt-6 ml-3">
-                Goedemorgen, Bernhardus
+                Goedendag, Bernhardus
               </p>
               <p className="text-sm text-gray-500 ml-3 mb-5">Admin</p>
             </div>
@@ -109,18 +109,6 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  <Link href="/admin/createUser">Gebruikerbeheer</Link>
-                </p>
-              </div>
-              <div className="flex content-center p-2 group hover:bg-hover-green">
-                <Image
-                  src="/heart.svg"
-                  width={20}
-                  height={20}
-                  className="grayscale group-hover:grayscale-0"
-                  alt="Icon"
-                />
-                <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
                   <Link href="/admin/customerOverview">Klanten</Link>
                 </p>
               </div>
@@ -133,7 +121,19 @@ export default function Sidebar() {
                   alt="Icon"
                 />
                 <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
-                  <Link href="/admin/employeeoverzicht">Medewerkers</Link>
+                  <Link href="/admin/employeeOverview">Medewerkers</Link>
+                </p>
+              </div>
+              <div className="flex content-center p-2 group hover:bg-hover-green">
+                <Image
+                    src="/heart.svg"
+                    width={20}
+                    height={20}
+                    className="grayscale group-hover:grayscale-0"
+                    alt="Icon"
+                />
+                <p className="text-black text-base pb-1 pl-9 group-hover:text-primary-green">
+                  <Link href="/admin/createUser">Beheer</Link>
                 </p>
               </div>
             </div>
