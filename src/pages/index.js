@@ -2,7 +2,6 @@ import MainLayout from '../layout/MainLayout';
 
 import {
     getOrderTableData,
-    GreenButton,
     OrderTable,
     updateOrderTable,
 } from '../components/OrderTable';
@@ -10,6 +9,7 @@ import {
     ArrowLeftIcon, ArrowPathIcon,
     ArrowRightIcon,
 } from '@heroicons/react/20/solid';
+import {GreenButton} from "../components/Table";
 
 let currentPage = [1, 1, 1, 1, 1, 1, 1]
 let currentWeekOffset = 0;

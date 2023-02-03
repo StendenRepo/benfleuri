@@ -309,6 +309,8 @@ mutation UpdateCustomer($updateCustomerId: Int!, $firstName: String!, $lastName:
   }
 }`
 
+
+
     let variables = {"updateCustomerId": customerId, "firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
         "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode, "clientName": clientName}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
