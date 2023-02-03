@@ -218,7 +218,7 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
  * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
  */
 export async function addEmployee(name, isAdmin, pincode){
-    if(pincode.length === 6){
+    if(pincode.length !== 6){
         return {error: {"message": "De gegeven pincode moet 6 tekens zijn."}}
     }
 
@@ -372,7 +372,7 @@ mutation UpdateCustomer($updateCustomerId: Int!, $firstName: String!, $lastName:
  *  @returns {Promise<{error: {message: string}|exists: boolean, id}>}
  *  */
 export async function updateEmployee(employeeID, name, isAdmin, pincode){
-    if(pincode.length === 6){
+    if(pincode.length !== 6){
         return {error: {"message": "De gegeven pincode moet 6 tekens zijn."}}
     }
 
