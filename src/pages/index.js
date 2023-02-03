@@ -2,7 +2,6 @@ import MainLayout from '../layout/MainLayout';
 
 import {
     getOrderTableData,
-    GreenButton,
     OrderTable,
     updateOrderTable,
 } from '../components/OrderTable';
@@ -11,6 +10,7 @@ import {
     ArrowRightIcon,
 } from '@heroicons/react/20/solid';
 import { importWooCommerceOrder } from './orderOverview';
+import {GreenButton} from "../components/Table";
 
 let currentPage = [1, 1, 1, 1, 1, 1, 1]
 let currentWeekOffset = 0;

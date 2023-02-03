@@ -4,15 +4,13 @@ import {
   updateOrderTable,
   getOrderTableData,
   OrderTable,
-  TableRow,
-  GreenButton,
   WhiteButton,
   nextPage,
   previousPage,
-  BlueButton,
 } from '../components/OrderTable';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 import { addOrder, addCustomerIfNotExists, getAllOrders } from '../components/sql';
+import {GreenButton} from "../components/Table";
 
 function Header() {
   return (

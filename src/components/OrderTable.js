@@ -9,10 +9,10 @@ import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 //Used for dynamically filling the table.
 import {renderToString} from "react-dom/server";
 import {getAllCustomers, getAllOrders} from "./sql";
+import {TableCell} from "./Table";
 
 //The current page of the table.
 let currentPage = 1;
-
 let statusDropdownValue = ""
 
 /**
@@ -35,8 +35,21 @@ export async function getOrderTableData(){
 }
 
 /**
+ * Table Button template.
+ * @param orderID The ID of the order.
+ */
+export function TableButtonCell({orderID}) {
+    return <td className={`text-sm text-right text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
+        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
+                                                        className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
+        </button></Link>
+    </td>
+}
+
+/**
  * Table Header template.
  * @param children Values for the header.
+ * @param widthPercent The column width as a percentage.
  * @param center   If the cell contents should be centered.
  */
 function TableHeaderCell({children, widthPercent, center}) {
@@ -75,17 +88,6 @@ function TableHeaderCell({children, widthPercent, center}) {
 }
 
 /**
- * Table Button template.
- * @param orderID The ID of the order.
- */
-function TableButtonCell({orderID}) {
-    return <td className={`text-sm text-right text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
-        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
-                className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
-        </button></Link>
-    </td>
-}
-/**
  * Pill label template for the order status.
  * @param status the order status..
  */
@@ -111,51 +113,6 @@ function PillLabel({status}) {
     return <div className={"rounded px-px text-center"}>
         <span className={colorStyle}>{text}</span>
     </div>
-}
-
-/**
- * Table cell template.
- *
- * @param children The values for the cell.
- * @param center If the text should be centered.
- */
-function TableCell({children, center}) {
-    let className = "text-sm text-black font-normal px-4 py-2 whitespace-normal break-all"
-    if (center) {
-        className += " text-center"
-    }
-    return <td className={className}>
-        {children}
-    </td>
-}
-
-/**
- * Green Button template
- * @param children The value of the button.
- * @param link The hyperlink.
- * @param className The className for the button.
- */
-export function GreenButton({children, link, className = ""}) {
-    return (
-        <Link href={!link ? "" : link}>
-            <button className={className + ` text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#00A952] disabled:bg-[#2d6930] text-white font-bold border-[#45a049] disabled:border-[#45a049]  rounded-lg hover:bg-[#45a049]`} type="button">{children}
-            </button>
-        </Link>
-    )
-}
-
-/**
- * Blue Button template
- * @param children The value of the button.
- * @param link The hyperlink.
- */
-export function BlueButton({children, onClick}) {
-    return (
-            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} onClick={onClick} type="button">{children}
-            </button>
-    )
 }
 
 /**

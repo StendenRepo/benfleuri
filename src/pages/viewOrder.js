@@ -3,7 +3,7 @@ import MainLayout from '../layout/MainLayout';
 import Link from 'next/link'
 //HeroIcons is used for the SVG icons.
 import {ArrowLeftIcon} from '@heroicons/react/20/solid';
-import {BlueButton, GreenButton, WhiteButton,} from '../components/OrderTable';
+import {WhiteButton,} from '../components/OrderTable';
 import {updateTotalPriceField, validateElements} from "../components/OrderFormFunctions";
 import {
     updateOrder,
@@ -15,8 +15,7 @@ import {
 } from "../components/sql";
 import {useRouter} from 'next/router'
 import {loadPrinters} from '../assets/useLabelPrinter';
-import Script from 'next/script';
-
+import {BlueButton} from "../components/Table";
 
 /**
  * Gets called when the page is loaded, this is where the data from the database is loaded.
@@ -210,8 +209,6 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
     }
 
     price = price.toFixed(2)
-
-
     let date = new Date(+order.dateOfDelivery);
     let month = date.getMonth() + 1;
     let day = date.getDate();
