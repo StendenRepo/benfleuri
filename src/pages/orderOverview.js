@@ -12,7 +12,7 @@ import {
   BlueButton,
 } from '../components/OrderTable';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
-import { addOrder, addCustomerIfNotExists } from '../components/sql';
+import { addOrder, addCustomerIfNotExists, getAllOrders } from '../components/sql';
 
 
 
@@ -44,6 +44,7 @@ async function importWooCommerceOrder() {
 
     const query_string = querystring.stringify(params).replace(/%20/g, '+');
     //console.log(store_url + endpoint + '?' + query_string);
+    let findOrders = await getAllOrders("customerId recieverId message productInfo")
 
     //test order: 39527 or 39685
     WooCommerce.get('orders', {per_page: 5}).then((response) => {
@@ -181,15 +182,27 @@ async function importWooCommerceOrder() {
           shippingData,
           productInfo,
         };
-        // console.log(extractedData)
-        // allData.push(extractedData)
+
         (async () => {
+          let orderInDatabase = false
           let customer = await addCustomerIfNotExists(first_name, last_name, phone, city, streetName, houseNumber, postcode, company)
           let receiver = await addCustomerIfNotExists(shippingFirstName, shippingLastName, shippingTelNumber, shippingCity, shippingStreetName, shippingHouseNumber, shippingpPostcode, shippingCompany)
-          let newOrder = await addOrder(customer.id, 1, receiver.id, deliveryDate, totalOrderPrice, "PIN", "", product, cardText, status, true, card)
-          console.log(newOrder)
+          findOrders['findAllOrders'].map((order) => {
+            let compareOrder = {
+              "customerId": customer.id,
+              "recieverId": receiver.id,
+              "message": cardText,
+              "productInfo": product
+            }  
+            if(JSON.stringify(compareOrder) == JSON.stringify(order)) {
+              orderInDatabase = true
+            }
+          })
+          if(!orderInDatabase) {
+            let newOrder = await addOrder(customer.id, 1, receiver.id, deliveryDate, totalOrderPrice, "PIN", "", product, cardText, status, true, card)
+            console.log(newOrder)
+          }
         })()
-        console.log(extractedData)
         return extractedData;
       });
     });
@@ -229,10 +242,11 @@ function Header() {
         <div className={`flex justify-end w-1/2 gap-x-4`}>
           <GreenButton link="/addOrder">Nieuwe Bestelling</GreenButton>
           <button
-            onClick={importWooCommerceOrder()}
+            // onClick={async () => {await importWooCommerceOrder()}}
             className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`}
             type="button"
+            id="importbutton"
           >
             Importeer Bestelling
           </button>
@@ -244,7 +258,7 @@ function Header() {
 }
 
 export async function getServerSideProps() {
-  // await importWooCommerceOrder()
+  await importWooCommerceOrder()
   return getOrderTableData();
 }
 
