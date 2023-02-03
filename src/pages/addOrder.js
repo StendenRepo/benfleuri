@@ -70,6 +70,7 @@ async function handleFormSubmit() {
         document.getElementById('customerStreet').value,
         document.getElementById('customerStreetNumber').value,
         document.getElementById('customerPostalCode').value,
+        document.getElementById('customerCompanyName').value,
     )
 
     if (customer.error) {
@@ -94,7 +95,7 @@ async function handleFormSubmit() {
 
     //Format the date to SQL format.
     let splitDate = document.getElementById('deliveryDate').value.split("-")
-    let date = splitDate[2] + "-" + splitDate[1] + "-" + splitDate[0]
+    let date = splitDate[2] + "-" + (splitDate[1] - 1 )+ "-" + splitDate[0]
 
     //Add the order to the database.
     let order = await addOrder(
@@ -383,7 +384,7 @@ export default function AddOrder({findAllCustomers, findAllEmployees}) {
                                             Datum van bezorging*
                                         </label>
                                         <input required
-                                               className={`border-[1px] border-gray-500 h-6 w-[100%] lg:w-[200px]`}
+                                               className={`border-[1px] border-gray-500 pt-[2px] h-6 w-[100%] lg:w-[200px]`}
                                                type="date"
                                                name="deliveryDate"
                                                id="deliveryDate"

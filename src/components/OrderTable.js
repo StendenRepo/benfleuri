@@ -21,7 +21,7 @@ let currentPage = 1;
  */
 export async function getOrderTableData(){
     const {findAllOrders} = await getAllOrders(
-        "id customerId productInfo recieverId paymentMethod orderState price")
+        "id customerId productInfo recieverId paymentMethod orderState dateOfDelivery price")
     const {findAllCustomers} = await getAllCustomers("id firstName lastName")
 
     return {
@@ -34,11 +34,15 @@ export async function getOrderTableData(){
 
 /**
  * Table Header template.
- * @param children values for the header.
+ * @param children Values for the header.
+ * @param center   If the cell contents should be centered.
  */
-function TableHeaderCell({children}) {
-    return <th scope="col"
-               className="text-sm font-normal text-gray-400 px-4 py-2 text-left">
+function TableHeaderCell({children, center}) {
+    let className = "text-sm font-normal text-gray-400 px-4 py-2 text-left"
+    if (center) {
+        className += " text-center"
+    }
+    return <th scope="col" className={className}>
         {children}
     </th>
 }
@@ -76,6 +80,8 @@ function PillLabel({status}) {
     } else {
         text = status;
     }
+
+
 
     return <div className={colorStyle}>
         {text}
@@ -155,7 +161,7 @@ export function TableRow({data}) {
             <TableCell>{data[2]}</TableCell>
             <TableCell>{data[3]}</TableCell>
             <TableCell>{data[4]}</TableCell>
-            <TableCell><PillLabel type={data[5]}/></TableCell>
+            <TableCell><PillLabel status={data[5]}/></TableCell>
             <TableCell>€{data[6]}</TableCell>
             <TableButtonCell orderID={data[0]}/>
         </tr>
@@ -168,8 +174,10 @@ export function TableRow({data}) {
  * @param data The HTML of the rows.
  * @param orders The order data.
  * @param customers The customer data.
+ * @param number The index of the table, used for the dashboard.
  */
-export function OrderTable({data, orders, customers}) {
+export function OrderTable({data, number = -1, orders, customers}) {
+    let numberString = number === -1 ? "" : "-" + number.toString();
     let status = [
         { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
@@ -191,15 +199,15 @@ export function OrderTable({data, orders, customers}) {
         <div className="inline-block min-w-full">
             <div className={"bg-slate-100 flex max-lg:flex-col flex-row p-2 gap-x-4 rounded-t-lg"}>
                 <div className="flex flex-grow gap-y-[5px]">
-                <input id="searchField" className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
+                <input id={"searchField" + numberString} className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
                     if(event.key.toLowerCase() === "enter"){
                         event.preventDefault();
-                        document.getElementById("searchButton").click();
+                        document.getElementById("searchButton" + numberString).click();
                     }
                 }}></input>
-                    <button id="searchButton" className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+                    <button id={"searchButton" + numberString} className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
         bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button" onClick={() =>{
-        updateOrderTable({startIndex: 0, findAllOrders: orders, findAllCustomers: customers})}
+        updateOrderTable({startIndex: 0, findAllOrders: orders, number: number, findAllCustomers: customers})}
                     }>Zoek
                     </button>
                 </div>
@@ -209,15 +217,15 @@ export function OrderTable({data, orders, customers}) {
                     <Dropdown listValues={sort} roundCorners="right"/>
                 </div>
                 <div className="items-stretch flex flex-row">
-                    <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
+                    <input disabled={number !== -1} className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white disabled:bg-gray-300 text-black" type="date"/>
                 </div>
-                    <button onClick={async () => {
+                    <button disabled={number !== -1} onClick={async () => {
                         let dbData = await getOrderTableData();
-                        updateOrderTable({startIndex: 0,
+                        updateOrderTable({startIndex: 0, number: number,
                             findAllOrders: dbData.props.findAllOrders, findAllCustomers: dbData.props.findAllCustomers})
                     }
                     } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
-         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">
+         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`} type="button">
                         <ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></button>
                 </div>
             </div>
@@ -225,7 +233,7 @@ export function OrderTable({data, orders, customers}) {
                 <thead className="border-b border-t">
                 <tr>
                     <TableHeaderCell><input type="checkbox" name="select-all"/></TableHeaderCell>
-                    <TableHeaderCell>Order</TableHeaderCell>
+                    <TableHeaderCell center={true}>Order</TableHeaderCell>
                     <TableHeaderCell>Besteller</TableHeaderCell>
                     <TableHeaderCell>Bestelling</TableHeaderCell>
                     <TableHeaderCell>Ontvanger</TableHeaderCell>
@@ -235,7 +243,7 @@ export function OrderTable({data, orders, customers}) {
                     <TableHeaderCell></TableHeaderCell>
                 </tr>
                 </thead>
-                <tbody id="tableContent" dangerouslySetInnerHTML={{"__html": data}}>
+                <tbody id={"tableContent" + numberString} dangerouslySetInnerHTML={{"__html": data}}>
                 </tbody>
             </table>
         </div>
@@ -302,12 +310,15 @@ function Dropdown({listValues, roundCorners}) {
  * @param findAllOrders The order data.
  * @param findAllCustomers The customer data.
  * @param pageLoad If the page is still loading, should only be true on first load.
+ * @param number The index of the table, used for the dashboard.
  *
  * @returns {string}
  * The new HTML content of the order table. Return value is only used on first load.
  * Otherwise, the HTML is directly set in this function.
  */
-export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, pageLoad = false}) {
+export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, number = -1, pageLoad = false}) {
+    console.log(number)
+    let numberString = number === -1 ? "" : "-" + number.toString();
     let content = "";
     let searchInput = ""
     let limit = 5;
@@ -315,9 +326,10 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
         currentPage = 1;
     }
     if(!pageLoad) {
+        console.log(number)
         //Only look at the buttons and search field if the page is loaded.
-        limit = parseInt(document.getElementById("orderCount").value);
-        searchInput = document.getElementById("searchField").value.toLowerCase();
+        limit = parseInt(document.getElementById("orderCount" + numberString).value);
+        searchInput = document.getElementById("searchField" + numberString).value.toLowerCase();
     }
     let matchedOrders = {}
     //Loop over all the orders.
@@ -347,7 +359,6 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
                 !customerName.toLowerCase().includes(searchInput) &&
                 !receiverName.toLowerCase().includes(searchInput) &&
                 !f.productInfo.toLowerCase().includes(searchInput)) {
-                console.log("Skipping: " + f.id)
                 return false;
             }
         }
@@ -382,10 +393,10 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
 
     if(!pageLoad) {
         //Only look at the buttons and search field if the page is loaded.
-        document.getElementById("prevButton").removeAttribute('disabled')
-        document.getElementById("nextButton").disabled = leftAmount <= 0;
-        document.getElementById("prevButton").disabled = startIndex - limit < 0;
-        document.getElementById("tableContent").innerHTML = content
+        document.getElementById("prevButton" + numberString).removeAttribute('disabled')
+        document.getElementById("nextButton" + numberString).disabled = leftAmount <= 0;
+        document.getElementById("prevButton" + numberString).disabled = startIndex - limit < 0;
+        document.getElementById("tableContent" + numberString).innerHTML = content
     }
 
     return content;
@@ -443,6 +454,6 @@ export function previousPage({findAllOrders, findAllCustomers}){
 function getTableRow(order, customerName, receiverName){
     return (
         <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
-            order.orderState, order.price]}></TableRow>
+            order.orderState, order.price.toFixed(2)]}></TableRow>
     )
 }

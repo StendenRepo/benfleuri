@@ -2,6 +2,10 @@
  * Updated the total price field when a relevant value in the form is changed.
  */
 export function updateTotalPriceField() {
+    let priceArray = document.getElementById("orderPrice").value.replace(/,/g, ".").split(".");
+    if(priceArray.length > 1) {
+        document.getElementById("orderPrice").value = priceArray[0] + "." + priceArray[1].substring(0, 2);
+    }
     let price = parseFloat(document.getElementById("orderPrice").value);
     if (document.querySelector('input[name="includeDeliveryCosts"]:checked').value
         === "yes") {
@@ -11,7 +15,8 @@ export function updateTotalPriceField() {
             price += 5.95;
         }
     }
-    document.getElementById("totalPrice").value = price
+    document.getElementById("totalPrice").value = (Math.round((price + Number.EPSILON) * 100) / 100).toFixed(2);
+
 }
 
 /**

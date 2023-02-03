@@ -74,6 +74,7 @@ export async function getAllEmployees(fields) {
  * @param orderID
  * @param {int} customerId The unique ID of the customer.
  * @param {int} employeeId The unique ID of the employee.
+ * @param {int} assignedEmployee The unique ID of the assigned employee.
  * @param {int} recieverId The unique ID of the receiver, this may sometimes be the same as the customerID.
  * @param {string} dateOfDelivery The date of the delivery as a string.
  * @param {number} price The price of the order.
@@ -87,11 +88,11 @@ export async function getAllEmployees(fields) {
  *
  * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
  */
-export async function updateOrder(orderID, customerId, employeeId, recieverId, dateOfDelivery, price, paymentMethod,
+export async function updateOrder(orderID, customerId, employeeId, assignedEmployee, recieverId, dateOfDelivery, price, paymentMethod,
                                extraInfo, productInfo, productMessage, orderState, includeDelivery, cardType){
     //Check valid order state.
     if(!["OPEN","CLOSED", "IN_PROGRESS", "DELIVERED"].includes(orderState)) {
-        return {error: {"message": "The gegeven order status is ongeldig."}}
+        return {error: {"message": "The gegeven order status is ongeldig (" + orderState + ")."}}
     }
 
     //Check valid card type.
@@ -109,22 +110,19 @@ export async function updateOrder(orderID, customerId, employeeId, recieverId, d
         return {error: {"message": "De gegeven prijs is ongeldig."}}
     }
 
-    if(!isValidDate(dateOfDelivery)){
-        return {error: {"message": "De gegeven datum is ongeldig."}}
-    }
 
     const query = gql`
-mutation UpdateOrder($updateOrderId: ID, $customerId: ID, $employeeId: ID, $productInfo: String, $message: String, $cardType: CardType, $extraInfo: String, $includeDelivery: Boolean, $price: Float, $orderState: OrderState, $paymentMethod: PaymentMethod) {
-  updateOrder(id: $updateOrderId, customerId: $customerId, employeeId: $employeeId, productInfo: $productInfo, message: $message, cardType: $cardType, extraInfo: $extraInfo, includeDelivery: $includeDelivery, price: $price, orderState: $orderState, paymentMethod: $paymentMethod) {
+mutation UpdateOrder($updateOrderId: Int, $customerId: ID, $employeeId: ID, $orderTreatingEmployeeId: ID, $productInfo: String, $message: String, $dateOfDelivery: String, $cardType: CardType, $extraInfo: String, $includeDelivery: Boolean, $price: Float, $orderState: OrderState, $paymentMethod: PaymentMethod) {
+  updateOrder(id: $updateOrderId, customerId: $customerId, employeeId: $employeeId, orderTreatingEmployeeId: $orderTreatingEmployeeId, productInfo: $productInfo, message: $message, dateOfDelivery: $dateOfDelivery, cardType: $cardType, extraInfo: $extraInfo, includeDelivery: $includeDelivery, price: $price, orderState: $orderState, paymentMethod: $paymentMethod) {
     id
   }
 }`
 
     let orderIDInt = parseInt(orderID)
-    //Date is not set at the moment,
-    let variables = {"updateOrderId": orderIDInt, "customer" : customerId, "employee":  employeeId, "reciever":  recieverId,
-        "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
+
+    let variables = {"updateOrderId": orderIDInt, "customer" : customerId, "employee":  employeeId, "orderTreatingEmployee" : assignedEmployee,
+        "reciever":  recieverId, "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
+        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "dateOfDelivery" : dateOfDelivery}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 
@@ -177,20 +175,24 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
         return {error: {"message": "De gegeven prijs is ongeldig."}}
     }
 
+    console.log(dateOfDelivery)
+
     if(!isValidDate(dateOfDelivery)){
         return {error: {"message": "De gegeven datum is ongeldig."}}
     }
 
+
+
     const query = gql`
-    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $dateOfDelivery: String, $price: Float, $paymentMethod: PaymentMethod, $extraInfo: String, $productInfo: String, $message: String, $orderState: OrderState, $includeDelivery: Boolean, $cardType: CardType) {
-    createOrder(customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, dateOfDelivery: $dateOfDelivery, price: $price, paymentMethod: $paymentMethod, extraInfo: $extraInfo, productInfo: $productInfo, message: $message, orderState: $orderState, includeDelivery: $includeDelivery, cardType: $cardType) {
+    mutation CreateOrder($customerId: Int!, $employeeId: Int!, $recieverId: Int!, $dateOfDelivery: String, $price: Float, $paymentMethod: PaymentMethod, $extraInfo: String, $productInfo: String, $message: String, $orderState: OrderState, $includeDelivery: Boolean, $cardType: CardType, $orderTreatingEmployeeId: Int) {
+    createOrder(orderTreatingEmployeeId: $orderTreatingEmployeeId, customerId: $customerId, employeeId: $employeeId, recieverId: $recieverId, dateOfDelivery: $dateOfDelivery, price: $price, paymentMethod: $paymentMethod, extraInfo: $extraInfo, productInfo: $productInfo, message: $message, orderState: $orderState, includeDelivery: $includeDelivery, cardType: $cardType) {
     id
     }
     }`
 
     let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType}
+        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": 1}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 
@@ -215,11 +217,12 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
  * @param {string} streetName The name of the street of the Customer.
  * @param {string} houseNumber The house number of the Customer (Is a string due to house numbers having letters (16B)).
  * @param {string} postalCode The postal code of the Customer.
+ * @param {string|null} clientName The name of the client (optional).
  *
  * @returns {Promise<{error: {message: string}|exists: boolean, id}>}
  */
 export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
-                                             city, streetName, houseNumber, postalCode){
+                                             city, streetName, houseNumber, postalCode, clientName = null){
     //Validate length for postalCode and houseNumber.
     if(postalCode.length > 6){
         return {error: {"message": "De gegeven postcode voor " + firstName + " is ongeldig."}}
@@ -230,33 +233,90 @@ export async function addCustomerIfNotExists(firstName, lastName, phoneNumber,
     }
 
     let customers = await getAllCustomers("id firstName lastName city postalCode")
-    customers.findAllCustomers.forEach(function (value) {
+    let exists = false;
+    let id = -1;
+
+    customers.findAllCustomers.some(value => {
         if(value.firstName === firstName &&
             value.lastName === lastName &&
             value.city === city &&
             value.postalCode === postalCode){
             //Already exists in database.
             console.log("in db")
-            return {
-                "exists": true,
-                "id": value.id
-            }
-        }})
+            id = value.id;
+            exists = true;
+        }
+        return exists
+    })
+
+    if(exists) {
+        return {
+            "exists": true,
+            "id": id
+        }
+    }
 
     const query = gql`
-mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
-  createCustomer(firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber) {
+mutation CreateCustomer($clientName: String, $firstName: String!, $lastName: String!, $phoneNumber: String!, $city: String, $email: String, $postalCode: String, $streetName: String, $houseNumber: String) {
+  createCustomer(clientName: $clientName, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, city: $city, email: $email, postalCode: $postalCode, streetName: $streetName, houseNumber: $houseNumber) {
     id
   }
 }`
 
     let data = await request('http://localhost:3000/api/graphql',
         query, {"firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
-        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode})
+        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode, "clientName": clientName})
 
     return {
         "exists": false,
         "id": data.createCustomer.id
+    }
+}
+
+/**
+ * Updates the given Customer with new data.
+ *
+ * Returns the id of the added Customer if successful or an error message if it failed.
+ *
+ *  @param {int} customerId The unique ID of the Customer that will be updated.
+ *  @param {string} firstName The first name of the Customer.
+ *  @param {string} lastName The last name of the Customer.
+ *  @param {string} phoneNumber The phone number of the Customer.
+ *  @param {string} city The city of the Customer.
+ *  @param {string} streetName The name of the street of the Customer.
+ *  @param {string} houseNumber The house number of the Customer (Is a string due to house numbers having letters (16B)).
+ *  @param {string} postalCode The postal code of the Customer.
+ *  @param {string|null} clientName The name of the client (optional).
+ *
+ *  @returns {Promise<{error: {message: string}|exists: boolean, id}>}
+ *  */
+export async function updateCustomer(customerId, firstName, lastName, phoneNumber, city, streetName, houseNumber, postalCode, clientName = null){
+    //Validate length for postalCode and houseNumber.
+    if(postalCode.length > 6){
+        return {error: {"message": "De gegeven postcode voor " + firstName + " is ongeldig."}}
+    }
+
+    if(houseNumber.length > 6){
+        return {error: {"message": "Het gegeven huisnummer voor " + firstName + " is ongeldig."}}
+    }
+
+
+    const query = gql`
+mutation UpdateCustomer($updateCustomerId: Int!, $firstName: String!, $lastName: String!, $phoneNumber: String!, $clientName: String, $city: String, $streetName: String, $email: String, $houseNumber: String, $postalCode: String) {
+  updateCustomer(id: $updateCustomerId, firstName: $firstName, lastName: $lastName, phoneNumber: $phoneNumber, clientName: $clientName, city: $city, streetName: $streetName, email: $email, houseNumber: $houseNumber, postalCode: $postalCode) {
+    id
+  }
+}`
+
+    let variables = {"updateCustomerId": customerId, "firstName" : firstName, "lastName":  lastName, "phoneNumber":  phoneNumber,
+        "city":  city, "streetName":  streetName, "houseNumber": houseNumber, "postalCode": postalCode, "clientName": clientName}
+    const data = await request('http://localhost:3000/api/graphql', query, variables)
+    const {updateCustomer} = data
+
+    return {
+        props: {
+            updateCustomer
+        },
     }
 }
 
@@ -267,7 +327,7 @@ mutation CreateCustomer($firstName: String!, $lastName: String!, $phoneNumber: S
  *
  * @returns True if the given date is valid, otherwise false.
  */
-function isValidDate(dateString) {
+export function isValidDate(dateString) {
     // First check for the pattern
     if(!/^\d{1,2}-\d{1,2}-\d{4}$/.test(dateString)) {
         return false;
