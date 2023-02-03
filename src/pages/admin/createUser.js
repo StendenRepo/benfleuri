@@ -1,6 +1,52 @@
 import MainLayout from '../../layout/MainLayout';
+import { gql, request } from 'graphql-request';
+import React, { useState } from 'react';
 
-export default function CreateUser() {
+export default function createEmployee() {
+  const [createUser, setCreateEmployee] = useState({});
+  const [error, setError] = useState({});
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const name = e.target.name.value;
+    const password = e.target.password.value;
+    const isAdmin = e.target.isAdmin.value === 'true';
+
+    if (typeof name !== 'string' || name.length === 0) {
+      alert({ error: { message: 'The given name is invalid.' } });
+      return;
+    }
+    if (
+      typeof password !== 'string' ||
+      password.length <= 5 ||
+      password.length > 6
+    ) {
+      alert('Pincode moet 6 tekens zijn');
+      return;
+    }
+
+    const query = `
+      mutation CreateEmployee($name: String!, $isAdmin: Boolean, $password: String!) {
+        createEmployee(name: $name, isAdmin: $isAdmin, password: $password) {
+          id
+        }
+      }
+    `;
+
+    let variables = { name: name, isAdmin: isAdmin, password: password };
+    const data = await request(
+      'http://localhost:3000/api/graphql',
+      query,
+      variables
+    );
+    const { createEmployee } = data;
+
+    setCreateEmployee({ createEmployee });
+    redirectToHome();
+  };
+  const redirectToHome = () => {
+    window.location.href = '/';
+  };
   return (
     <MainLayout>
       <div className={'bg-white bg-opacity-0 mt-1 ml-0.5'}>
@@ -49,11 +95,14 @@ export default function CreateUser() {
           >
             <p className={'mt-4'}>Gebruiker aanmaken</p>
           </div>
-          <form className={'w-[30%] mt-[50px]'}>
+          <form
+            className={'w-[30%] mt-[50px]'}
+            onSubmit={handleSubmit}
+          >
             <label>Naam gebruiker</label>
             <input
               type="text"
-              name="Naam"
+              name="name"
               placeholder="Naam gebruiker"
               className={
                 'w-full h-[25px] px-[12px] py-[12.5px] mx-[8px] ml-0 my-0 inline-block border-[#CCC] box-border'
@@ -61,46 +110,47 @@ export default function CreateUser() {
             />
             <label>Rechten</label>
             <select
-              name="role"
+              name="isAdmin"
               className={
                 'w-full h-[25px] pt-0 pr-5 pl-[9px] mx-[8px] my-0 ml-0 inline-bloc border-[1px] border-[#ccc] box-border'
               }
             >
-              <option value="admin">Admin</option>
-              <option value="user">Gebruiker</option>
+              <option value="true">Admin</option>
+              <option value="false">Gebruiker</option>
             </select>
             <label>Pincode</label>
             <input
               type="password"
-              name="pincode"
+              name="password"
               placeholder="Pincode"
               className={
                 'w-full h-[10px] px-[12px] py-[12.5px] mx-[8px] ml-0 my-0 inline-block border-[#CCC] box-border'
               }
             />
+
+            <div
+              className={
+                ' bg-white bg-opacity-0 flex justify-end w-full mt-[7rem] h-0'
+              }
+            >
+              <button
+                type="submit"
+                className={
+                  'flex items-center bg-[#009a42]  border-2 border-[#009a42] text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]'
+                }
+              >
+                Voeg gebruiker
+              </button>
+              <button
+                type="button"
+                className={
+                  'flex items-center bg-white text-black px-[5px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer border-2 border-[black] rounded-[5px] mr-[90px]'
+                }
+              >
+                Annuleren
+              </button>
+            </div>
           </form>
-          <div
-            className={
-              ' bg-white bg-opacity-0 flex justify-end w-full mt-[7rem] h-0'
-            }
-          >
-            <button
-              type="submit"
-              className={
-                'flex items-center bg-[#009a42]  border-2 border-[#009a42] text-white px-[15px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer rounded-[5px] mr-[10px]'
-              }
-            >
-              Voeg gebruiker
-            </button>
-            <button
-              type="button"
-              className={
-                'flex items-center bg-white text-black px-[5px] py-[18px] text-center no-underline text-[16px] mx-[4px] my[2px] cursor-pointer border-2 border-[black] rounded-[5px] mr-[90px]'
-              }
-            >
-              Annuleren
-            </button>
-          </div>
         </div>
       </div>
     </MainLayout>
