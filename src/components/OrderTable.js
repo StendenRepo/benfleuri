@@ -1,4 +1,4 @@
-import {Fragment} from 'react'
+import {Fragment, useEffect} from 'react'
 //We use HeadlessUI for the dropdown, because we had issues with formatting the HTML dropdowns.
 import {Listbox, Menu, Transition} from '@headlessui/react'
 //Used for hyperlinks.
@@ -9,9 +9,11 @@ import { ArrowPathIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 //Used for dynamically filling the table.
 import {renderToString} from "react-dom/server";
 import {getAllCustomers, getAllOrders} from "./sql";
+import {TableCell} from "./Table";
 
 //The current page of the table.
 let currentPage = 1;
+let statusDropdownValue = ""
 
 /**
  * Gets the database data for the Order table.
@@ -21,7 +23,7 @@ let currentPage = 1;
  */
 export async function getOrderTableData(){
     const {findAllOrders} = await getAllOrders(
-        "id customerId productInfo recieverId paymentMethod orderState price")
+        "id customerId productInfo recieverId paymentMethod orderState dateOfDelivery price")
     const {findAllCustomers} = await getAllCustomers("id firstName lastName")
 
     return {
@@ -33,33 +35,64 @@ export async function getOrderTableData(){
 }
 
 /**
- * Table Header template.
- * @param children values for the header.
+ * Table Button template.
+ * @param orderID The ID of the order.
  */
-function TableHeaderCell({children}) {
-    return <th scope="col"
-               className="text-sm font-normal text-gray-400 px-4 py-2 text-left">
+export function TableButtonCell({orderID}) {
+    return <td className={`text-sm text-right text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
+        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
+                                                        className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
+        </button></Link>
+    </td>
+}
+
+/**
+ * Table Header template.
+ * @param children Values for the header.
+ * @param widthPercent The column width as a percentage.
+ * @param center   If the cell contents should be centered.
+ */
+function TableHeaderCell({children, widthPercent, center}) {
+    let width = ""
+    switch (widthPercent) {
+        case "3":
+            width =  "w-[3%] max-w-[3%]"
+            break
+        case "5":
+            width =  "w-[5%] max-w-[5%]"
+            break
+        case "9":
+            width = "w-[9%] max-w-[9%]"
+            break
+        case "10":
+            width = "w-[10%] max-w-[10%]"
+            break
+        case "12":
+            width = "w-[12%] max-w-[12%]"
+            break
+        case "15":
+            width = "w-[15%] max-w-[15%]"
+            break
+        case "20":
+            width = "w-[20%] max-w-[20%]"
+            break
+    }
+    let className = "text-sm font-normal text-gray-400 px-4 py-2 text-left " + width
+    if (center) {
+        className += " text-center"
+    }
+    //className = className.replace(/\\"/g, '"');
+    return <th scope="col" className={className}>
         {children}
     </th>
 }
 
 /**
- * Table Button template.
- * @param orderID The ID of the order.
- */
-function TableButtonCell({orderID}) {
-    return <td className={`text-sm text-gray-900 font-light px-6 py-0 whitespace-nowrap`}>
-        <Link href={"/viewOrder?id=" + orderID}><button id={`edit-` + orderID}
-                className={`py-[2px] px-[4px] text-xs font-normal border-[#e5e7eb] border uppercase`}>Bekijk
-        </button></Link>
-    </td>
-}
-/**
  * Pill label template for the order status.
  * @param status the order status..
  */
 function PillLabel({status}) {
-    let colorStyle = "rounded px-px text-center "
+    let colorStyle = "rounded px-2 py-0.5 "
     let text = "";
     if (status === "DELIVERED") {
         colorStyle += "bg-yellow-400 text-black"
@@ -71,61 +104,15 @@ function PillLabel({status}) {
         colorStyle += "bg-[#FF623F] text-black"
         text = "Open"
     } else if (status === "IN_PROGRESS") {
-        colorStyle += "bg-[#FF623F] text-black"
+        colorStyle += "bg-cyan-300 text-black"
         text = "Geleverd maar niet thuis"
     } else {
         text = status;
     }
 
-    return <div className={colorStyle}>
-        {text}
+    return <div className={"rounded px-px text-center"}>
+        <span className={colorStyle}>{text}</span>
     </div>
-}
-
-/**
- * Table cell template.
- *
- * @param children The values for the cell.
- * @param center If the text should be centered.
- */
-function TableCell({children, center}) {
-    let className = "text-sm text-black font-normal px-4 py-2 whitespace-nowrap"
-    if (center) {
-        className += " text-center"
-    }
-    return <td className={className}>
-        {children}
-    </td>
-}
-
-/**
- * Green Button template
- * @param children The value of the button.
- * @param link The hyperlink.
- */
-export function GreenButton({children, link}) {
-    return (
-        <Link href={!link ? "" : link}>
-            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button">{children}
-            </button>
-        </Link>
-    )
-}
-
-/**
- * Blue Button template
- * @param children The value of the button.
- * @param link The hyperlink.
- */
-export function BlueButton({children, link}) {
-    return (
-        <Link href={!link ? "" : link}>
-            <button className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#5da4e4] text-white font-bold border-[#5da4e4] rounded-lg`} type="button">{children}
-            </button>
-        </Link>
-    )
 }
 
 /**
@@ -147,17 +134,18 @@ export function WhiteButton({children, link}) {
  * Table row template
  *
  * @param data A array containing the data for the table row.
+ * @param number The table index, used for the dashboard.
  */
-export function TableRow({data}) {
+export function TableRow({data, number}) {
     return (
         <tr className="border-b odd:bg-gray-100">
-            <TableCell><input id={`check-` + data[0]} type="checkbox"/></TableCell>
+            <TableCell><input id={`check-` + data[0]} className={"table-row-checkbox" + (number !== -1 ? "-" + number : "")} type="checkbox"/></TableCell>
             <TableCell center={true}>{data[0]}</TableCell>
             <TableCell>{data[1]}</TableCell>
             <TableCell>{data[2]}</TableCell>
             <TableCell>{data[3]}</TableCell>
             <TableCell>{data[4]}</TableCell>
-            <TableCell><PillLabel type={data[5]}/></TableCell>
+            <TableCell><PillLabel status={data[5]}/></TableCell>
             <TableCell>€{data[6]}</TableCell>
             <TableButtonCell orderID={data[0]}/>
         </tr>
@@ -170,8 +158,10 @@ export function TableRow({data}) {
  * @param data The HTML of the rows.
  * @param orders The order data.
  * @param customers The customer data.
+ * @param number The index of the table, used for the dashboard.
  */
-export function OrderTable({data, orders, customers}) {
+export function OrderTable({data, number = -1, orders, customers}) {
+    let numberString = number === -1 ? "" : "-" + number.toString();
     let status = [
         { name: 'Status', disabled: false },
         { name: 'Geleverd maar niet thuis', disabled: false },
@@ -193,51 +183,54 @@ export function OrderTable({data, orders, customers}) {
         <div className="inline-block min-w-full">
             <div className={"bg-slate-100 flex max-lg:flex-col flex-row p-2 gap-x-4 rounded-t-lg"}>
                 <div className="flex flex-grow gap-y-[5px]">
-                <input id="searchField" className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
+                <input id={"searchField" + numberString} className={`grow rounded-lg`} type="text" placeholder="Search.." onKeyDown={(event) => {
                     if(event.key.toLowerCase() === "enter"){
                         event.preventDefault();
-                        document.getElementById("searchButton").click();
+                        document.getElementById("searchButton" + numberString).click();
                     }
                 }}></input>
-                    <button id="searchButton" className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+                    <button id={"searchButton" + numberString} className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
         bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`} type="button" onClick={() =>{
-        updateOrderTable({startIndex: 0, findAllOrders: orders, findAllCustomers: customers})}
+        updateOrderTable({startIndex: 0, findAllOrders: orders, number: number, findAllCustomers: customers})}
                     }>Zoek
                     </button>
                 </div>
                 <div className="gap-x-[5px] flex inline-block">
                 <div className="items-stretch flex flex-row ">
-                    <Dropdown listValues={status} roundCorners="left"/>
-                    <Dropdown listValues={sort} roundCorners="right"/>
+                    <Dropdown id={"status"} findAllOrders={orders} findAllCustomers={customers} number={number} listValues={status} roundCorners="left"/>
+                    <Dropdown id={"sort"} findAllOrders={orders} findAllCustomers={customers} number={number} listValues={sort} roundCorners="right"/>
                 </div>
                 <div className="items-stretch flex flex-row">
-                    <input className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white text-black" type="date"/>
+                    <input id={"datePicker-" + number} onChange={() =>
+                        updateOrderTable({startIndex: 0, number: number, findAllOrders: orders, findAllCustomers: customers})
+                    } disabled={number !== -1} className="text-sm rounded font-['Roboto'] border-[1px] border-black bg-white disabled:bg-gray-300 text-black" type="date"/>
                 </div>
-                    <button onClick={async () => {
+                    <button disabled={number !== -1} onClick={async () => {
                         let dbData = await getOrderTableData();
-                        updateOrderTable({startIndex: 0,
+                        updateOrderTable({startIndex: 0, number: number,
                             findAllOrders: dbData.props.findAllOrders, findAllCustomers: dbData.props.findAllCustomers})
                     }
                     } className={`text-sm h-full font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
-         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">
+         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`} type="button">
                         <ArrowPathIcon className="h-5 w-5 " aria-hidden="true"/></button>
                 </div>
             </div>
-            <table className="min-w-full ">
+            <table className="min-w-full max-w-full table-fixed whitespace-normal word-break: break-all;">
                 <thead className="border-b border-t">
                 <tr>
-                    <TableHeaderCell><input type="checkbox" name="select-all"/></TableHeaderCell>
-                    <TableHeaderCell>Order</TableHeaderCell>
-                    <TableHeaderCell>Besteller</TableHeaderCell>
-                    <TableHeaderCell>Bestelling</TableHeaderCell>
-                    <TableHeaderCell>Ontvanger</TableHeaderCell>
-                    <TableHeaderCell>Betaling</TableHeaderCell>
-                    <TableHeaderCell>Status</TableHeaderCell>
-                    <TableHeaderCell>Totaal</TableHeaderCell>
-                    <TableHeaderCell></TableHeaderCell>
+                    <TableHeaderCell widthPercent={"3"}><input onClick={(event) => checkAll(event.target, number)}
+                                                               className={"table-select-all-" + number} type="checkbox" name="select-all"/></TableHeaderCell>
+                    <TableHeaderCell widthPercent={"5"} center={true}>Order</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"12"}>Besteller</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"20"}>Bestelling</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"12"}>Ontvanger</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"9"}>Betaling</TableHeaderCell>
+                    <TableHeaderCell center={true} widthPercent={"15"}>Status</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"10"}>Totaal</TableHeaderCell>
+                    <TableHeaderCell widthPercent={"3"}></TableHeaderCell>
                 </tr>
                 </thead>
-                <tbody id="tableContent" dangerouslySetInnerHTML={{"__html": data}}>
+                <tbody id={"tableContent" + numberString} dangerouslySetInnerHTML={{"__html": data}}>
                 </tbody>
             </table>
         </div>
@@ -245,12 +238,37 @@ export function OrderTable({data, orders, customers}) {
 }
 
 /**
+ * Update the select status of all the current table rows.
+ * @param source The header select button.
+ * @param number The table index, used for the dashboard page.
+ */
+function checkAll(source, number){
+    document.querySelectorAll('.table-row-checkbox' + (number !== -1 ? "-" + number : "")).forEach(function(node) {
+        node.checked = source.checked;
+    });
+}
+
+/**
  * Dropdown template using Headless UI.
+ * @param id The ID of the dropdown, used for table update logic.
  * @param listValues The values of the list.
  * @param roundCorners If the ListBox should have rounded corners.
+ * @param findAllOrders The loaded orders.
+ * @param findAllCustomers The loaded customers.
+ * @param number The table index, used for the dashboard page.
  */
-function Dropdown({listValues, roundCorners}) {
+function Dropdown({id, listValues, roundCorners, findAllOrders, findAllCustomers, number = -1}) {
     const [selected, setSelected] = useState(listValues[0])
+
+    if(id === "status") {
+        useEffect(() => {
+            statusDropdownValue = selected.name
+            updateOrderTable({
+                startIndex: 0, number: number,
+                findAllOrders: findAllOrders, findAllCustomers: findAllCustomers
+            })
+        }, [selected])
+    }
     let corners = roundCorners === "left" ? "rounded-l border-[1px]" :
         (roundCorners === "right" ? "rounded-r border-y-[1px] border-r-[1px]" : (roundCorners === "both" ?
             "rounded border-[1px]" : "border-[1px]"))
@@ -304,22 +322,37 @@ function Dropdown({listValues, roundCorners}) {
  * @param findAllOrders The order data.
  * @param findAllCustomers The customer data.
  * @param pageLoad If the page is still loading, should only be true on first load.
+ * @param number The index of the table, used for the dashboard.
  *
  * @returns {string}
  * The new HTML content of the order table. Return value is only used on first load.
  * Otherwise, the HTML is directly set in this function.
  */
-export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, pageLoad = false}) {
+export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, number = -1, pageLoad = false}) {
+    let numberString = number === -1 ? "" : "-" + number.toString();
     let content = "";
     let searchInput = ""
     let limit = 5;
+    let date = ""
+
+    let status = statusDropdownValue !== "Status" ?  getStateName(statusDropdownValue) : ""
+
     if(startIndex === 0){
         currentPage = 1;
     }
     if(!pageLoad) {
         //Only look at the buttons and search field if the page is loaded.
-        limit = parseInt(document.getElementById("orderCount").value);
-        searchInput = document.getElementById("searchField").value.toLowerCase();
+        document.querySelectorAll('.table-row-checkbox' + (number !== -1 ? "-" + number : "")).forEach(function(node) {
+            node.checked = false
+        });
+
+        document.querySelectorAll('.table-select-all' + (number !== -1 ? "-" + number : "")).forEach(function(node) {
+            node.checked = false
+        });
+
+        limit = parseInt(document.getElementById("orderCount" + numberString).value);
+        searchInput = document.getElementById("searchField" + numberString).value.toLowerCase();
+        date = document.getElementById("datePicker-" + number).value
     }
     let matchedOrders = {}
     //Loop over all the orders.
@@ -349,7 +382,24 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
                 !customerName.toLowerCase().includes(searchInput) &&
                 !receiverName.toLowerCase().includes(searchInput) &&
                 !f.productInfo.toLowerCase().includes(searchInput)) {
-                console.log("Skipping: " + f.id)
+                return false;
+            }
+        }
+
+        if(date !== ""){
+            let dateObj = document.getElementById("datePicker-" + number).valueAsDate
+            let orderDate = new Date(+f.dateOfDelivery);
+            if(orderDate.getFullYear() !== dateObj.getFullYear() ||
+                orderDate.getMonth() !== dateObj.getMonth() ||
+                orderDate.getDate() !== dateObj.getDate()){
+                return false;
+            }
+        }
+
+        if(status !== ""){
+            console.log(status)
+            console.log(f.orderState.toLowerCase())
+            if(f.orderState.toLowerCase() !== status){
                 return false;
             }
         }
@@ -377,17 +427,17 @@ export function updateOrderTable({startIndex, findAllOrders, findAllCustomers, p
 
         //Add HTML to string.
         let f = matchedOrders[key].order
-        content += renderToString(getTableRow(f, matchedOrders[key].customerName, matchedOrders[key].receiverName));
+        content += renderToString(getTableRow(f, matchedOrders[key].customerName, matchedOrders[key].receiverName, number));
         amount++
         leftAmount--
     })
 
     if(!pageLoad) {
         //Only look at the buttons and search field if the page is loaded.
-        document.getElementById("prevButton").removeAttribute('disabled')
-        document.getElementById("nextButton").disabled = leftAmount <= 0;
-        document.getElementById("prevButton").disabled = startIndex - limit < 0;
-        document.getElementById("tableContent").innerHTML = content
+        document.getElementById("prevButton" + numberString).removeAttribute('disabled')
+        document.getElementById("nextButton" + numberString).disabled = leftAmount <= 0;
+        document.getElementById("prevButton" + numberString).disabled = startIndex - limit < 0;
+        document.getElementById("tableContent" + numberString).innerHTML = content
     }
 
     return content;
@@ -436,15 +486,29 @@ export function previousPage({findAllOrders, findAllCustomers}){
     updateOrderTable({startIndex, findAllOrders, findAllCustomers});
 }
 
+function getStateName(state){
+    state = state.toLowerCase();
+    if (state === "verzonden") {
+        return  "delivered"
+    } else if (state === "voltooid") {
+        return "closed"
+    } else if (state === "open") {
+        return  "open"
+    } else if (state === "geleverd maar niet thuis") {
+        return "in_progress"
+    }
+}
+
 /**
  * Gets a TableRow template, filled with the order/customer data.
  * @param order The order.
  * @param customerName The name of the customer.
  * @param receiverName The name of the receiver.
+ * @param number The table index, used for the dashboard page.
  */
-function getTableRow(order, customerName, receiverName){
+function getTableRow(order, customerName, receiverName, number = -1){
     return (
-        <TableRow data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
-            order.orderState, order.price]}></TableRow>
+        <TableRow number={number} data={[order.id, customerName, order.productInfo, receiverName, order.paymentMethod,
+            order.orderState, order.price.toFixed(2)]}></TableRow>
     )
 }

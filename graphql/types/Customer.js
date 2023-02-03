@@ -4,6 +4,7 @@ export const Customer = objectType({
   name: 'Customer',
   definition(t) {
     t.int('id'),
+      t.string('clientName'),
       t.string('firstName'),
       t.string('lastName'),
       t.string('city'),
@@ -44,6 +45,7 @@ export const CustomerMutation = extendType({
     t.field('createCustomer', {
       type: Customer,
       args: {
+        clientName: stringArg(),
         firstName: nonNull(stringArg()),
         lastName: nonNull(stringArg()),
         city: stringArg(),
@@ -63,6 +65,7 @@ export const CustomerMutation = extendType({
       type: Customer,
       args: {
         id: nonNull(intArg()),
+        clientName: stringArg(),
         firstName: nonNull(stringArg()),
         lastName: nonNull(stringArg()),
         city: stringArg(),

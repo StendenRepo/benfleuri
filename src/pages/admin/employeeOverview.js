@@ -1,13 +1,18 @@
 import MainLayout from '../../layout/MainLayout';
-import Link from 'next/link';
-import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 import {
-  CustomerTable,
-  getCustomerTableData,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from '@heroicons/react/20/solid';
+import Link from 'next/link';
+import {
+  EmployeeTable,
+  getEmployeeTableData,
   nextPage,
   previousPage,
-  updateCustomerTable
-} from "../../components/CustomerTable";
+  updateEmployeeTable
+} from "../../components/EmployeeTable";
+import {GreenButton} from "../../components/Table";
+import {WhiteButton} from "../../components/OrderTable";
 
 function Header() {
   return (
@@ -32,7 +37,10 @@ function Header() {
           <div
               className={`font-['Roboto'] items-start text-3xl font-bold w-1/2 `}
           >
-            Klanten
+            Medewerkers
+          </div>
+          <div className={`flex justify-end w-1/2 gap-x-4`}>
+            <GreenButton link="/admin/createUser">Nieuwe Medewerker</GreenButton>
           </div>
         </div>
       </div>
@@ -40,13 +48,13 @@ function Header() {
 }
 
 export async function getServerSideProps() {
-  return getCustomerTableData();
+  return getEmployeeTableData();
 }
 
-export default function CustomerOverview({findAllCustomers}) {
-  let content = updateCustomerTable({
+export default function EmployeeOverview({findAllEmployees}) {
+  let content = updateEmployeeTable({
     startIndex: 0,
-    findAllCustomers,
+    findAllEmployees,
     pageLoad: true,
   });
 
@@ -57,15 +65,15 @@ export default function CustomerOverview({findAllCustomers}) {
           <div className="mt-[3%] overflow-auto items-center justify-center w-[95%]">
             <div
                 className={`font-['Roboto'] items-start text-2xl font-bold w-1/2 pb-2`}>
-              Aantal klanten op pagina:
+              Aantal medewerkers op pagina:
               <select
                   className="text-sm h-full font-bold border-[1px] border-black rounded ml-5 py-[8px] px-[20px]
                             font-['Roboto'] bg-white text-black"
-                  id="customerCount"
+                  id="employeeCount"
                   onChange={() => {
-                    updateCustomerTable({
+                    updateEmployeeTable({
                       startIndex: 0,
-                      findAllCustomers,
+                      findAllEmployees,
                     });
                   }}
               >
@@ -81,7 +89,7 @@ export default function CustomerOverview({findAllCustomers}) {
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`}
                   type="button"
                   onClick={() => {
-                    previousPage({ findAllCustomers });
+                    previousPage({ findAllEmployees });
                   }}
               >
                 <ArrowLeftIcon
@@ -95,7 +103,7 @@ export default function CustomerOverview({findAllCustomers}) {
          font-['Roboto'] bg-white text-black hover:bg-black hover:text-white disabled:bg-gray-300`}
                   type="button"
                   onClick={() => {
-                    nextPage({ findAllCustomers });
+                    nextPage({ findAllEmployees });
                   }}
               >
                 <ArrowRightIcon
@@ -105,10 +113,10 @@ export default function CustomerOverview({findAllCustomers}) {
               </button>
             </div>
             <div id="tableContainer">
-              <CustomerTable
+              <EmployeeTable
                   data={content}
-                  customers={findAllCustomers}
-              ></CustomerTable>
+                  employees={findAllEmployees}
+              ></EmployeeTable>
             </div>
           </div>
         </div>

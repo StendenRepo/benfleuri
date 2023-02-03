@@ -12,6 +12,7 @@ datasource db {
 
 model Customer {
   id          Int     @id @default(autoincrement())
+  clientName  String?
   firstName   String
   lastName    String
   city        String?
@@ -25,31 +26,34 @@ model Customer {
 }
 
 model Employee {
-  id       Int     @id @default(autoincrement())
-  name     String
-  isAdmin  Boolean @default(value: false)
-  password String
-  orders   Order[]
+  id             Int     @id @default(autoincrement())
+  name           String
+  isAdmin        Boolean @default(value: false)
+  password       String
+  orders         Order[]
+  treatingOrders Order[] @relation(name: "orderTreatingEmployee")
 }
 
 model Order {
-  id              Int           @id @default(autoincrement())
-  customerId      Int
-  employeeId      Int
-  recieverId      Int
-  productInfo     String
-  message         String
-  extraInfo       String
-  cardType        CardType
-  includeDelivery Boolean
-  price           Decimal       @db.Decimal(12, 2)
-  dateOfDelivery  DateTime
-  orderState      OrderState    @default(OPEN)
-  orderDate       DateTime      @default(now())
-  paymentMethod   PaymentMethod
-  customer        Customer      @relation(fields: [customerId], references: [id])
-  reciever        Customer      @relation(fields: [recieverId], references: [id], name: "recievers")
-  employee        Employee      @relation(fields: [employeeId], references: [id])
+  id                      Int           @id @default(autoincrement())
+  customerId              Int
+  employeeId              Int
+  orderTreatingEmployeeId Int           @default(1)
+  recieverId              Int
+  productInfo             String
+  message                 String
+  extraInfo               String
+  cardType                CardType
+  includeDelivery         Boolean
+  price                   Decimal       @db.Decimal(12, 2)
+  dateOfDelivery          DateTime
+  orderState              OrderState    @default(OPEN)
+  orderDate               DateTime      @default(now())
+  paymentMethod           PaymentMethod
+  customer                Customer      @relation(fields: [customerId], references: [id])
+  reciever                Customer      @relation(fields: [recieverId], references: [id], name: "recievers")
+  employee                Employee      @relation(fields: [employeeId], references: [id])
+  orderTreatingEmployee   Employee      @relation(fields: [orderTreatingEmployeeId], references: [id], name: "orderTreatingEmployee")
 }
 
 enum CardType {

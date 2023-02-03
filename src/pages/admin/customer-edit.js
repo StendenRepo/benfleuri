@@ -1,14 +1,76 @@
 import MainLayout from '../../layout/MainLayout';
+//Is used for hyperlinks.
+import Link from 'next/link'
+import {getAllCustomers, getAllOrders, isValidDate, updateCustomer, updateOrder} from "../../components/sql";
+import {updateTotalPriceField, validateElements} from "../../components/OrderFormFunctions";
+import {useRouter} from "next/router";
+import {WhiteButton} from "../../components/OrderTable";
+import {ArrowLeftIcon} from "@heroicons/react/20/solid";
+
+/**
+ * Handles the validating and submitting of the form.
+ * When something goes wrong, an alert with an error will be displayed.
+ * Otherwise, the data will be added to the database and the user will be redirected
+ * to the orderOverview page.
+ */
+
+async function handleFormSubmit({customerObj}) {
+    //Check if all the required fields have been filled out.
+    let missingInput = validateElements(false, document.querySelectorAll("input[type=text]"));
+    missingInput = validateElements(missingInput, document.querySelectorAll("textarea"));
+
+    if (missingInput) {
+        alert("Er zijn verplichte velden niet ingevuld.")
+        return
+    }
+
+    let customer = await updateCustomer(customerObj.customer.id,
+        document.getElementById('customer-firstname').value,
+        document.getElementById('customer-lastname').value,
+        document.getElementById('phone').value,
+        document.getElementById('residence').value,
+        document.getElementById('address').value,
+        document.getElementById('house-number').value,
+        document.getElementById('postal-code').value,
+        document.getElementById('client-name').value,
+    )
+
+    if (customer.error) {
+        alert(customer.error.message);
+    } else {
+        //Redirect to orderOverview if the Order was successfully added to the database.
+        window.location.replace("./customerOverview");
+    }
+}
 
 function Header() {
-    return <div className={`font-['Roboto'] ml-[5%] mt-[2%]`}>
-        <div className={`font-['Roboto'] ml-[2%] mb-[1%]`}>
-            <a href={"#"}>Klantoverzicht</a>
+    return (
+        <div
+            className={`border-b pb-[4%] flex flex-col font-['Roboto'] px-[4%] pt-[2%]`}
+        >
+            <div
+                className={`flex font-['Roboto'] ml-[1%] mb-[1%] w-[150px] justify-between`}
+            >
+                <Link
+                    className={`mr-[50px]`}
+                    href={'/'}
+                >
+                    <ArrowLeftIcon
+                        className="h-5 w-5 pr-[2%] inline-block"
+                        aria-hidden="true"
+                    />
+                    Dashboard
+                </Link>
+            </div>
+            <div className={`flex flex-row`}>
+                <div
+                    className={`font-['Roboto'] items-start text-3xl font-bold w-1/2 `}
+                >
+                    Klant wijzigen
+                </div>
+            </div>
         </div>
-        <div className={`font-['Roboto'] text-2xl font-bold`}>
-            Klanten
-        </div>
-    </div>
+    );
 }
 
 function FormRow({children}) {
@@ -36,25 +98,53 @@ function InputField(props) {
     }
     return <label className={`${labelStyle}`}>
         {props.label}
-        <input name={props.name} className={`${inputStyle}`} type={type}/>
+        <input id={props.id} defaultValue={props.defaultValue} className={`${inputStyle}`} type={type}/>
     </label>
 }
 
-function Buttons() {
+function Buttons(customer) {
     return <div className={`flex gap-x-[10px] flex-row justify-end max-[900px]:justify-center max-[900px]:pt-[20px]`}>
-        <button className={`text-sm py-[8px] px-[20px] font-['Roboto'] 
-        bg-[#00A952] text-white font-bold border-0 rounded hover:bg-[#45a049]`}
-                type="submit">Wijzig klant
-        </button>
-        <a href={"#"}>
-            <button className={`text-sm font-bold border-[1px] border-black rounded py-[8px] px-[20px] 
-         font-['Roboto'] bg-white text-black hover:bg-black hover:text-white`} type="button">Annuleren
-            </button>
-        </a>
+        <input className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
+        bg-[#00A952] text-white font-bold border-[#45a049] rounded-lg hover:bg-[#45a049]`}
+               value="Wijzig klant" type="button" onClick={
+            async () => {
+                await handleFormSubmit({
+                    customerObj: customer
+                });
+            }
+        }></input>
+        <WhiteButton link={"./customerOverview"}>Annuleren</WhiteButton>
     </div>
 }
 
-export default function EditCustomerPage() {
+/**
+ * Gets called when the page is loaded, this is where the data from the database is loaded.
+ *
+ * @returns {Promise<{props: {findAllCustomers: *, findAllEmployees: *}}>}
+ */
+export async function getServerSideProps() {
+    const {findAllOrders} = await getAllOrders("id price customerId employeeId orderTreatingEmployeeId recieverId message extraInfo productInfo dateOfDelivery orderDate includeDelivery cardType orderState paymentMethod")
+    const {findAllCustomers} = await getAllCustomers("id clientName firstName lastName city phoneNumber email postalCode streetName houseNumber")
+
+    return {
+        props: {
+            findAllOrders,
+            findAllCustomers
+        },
+    }
+}
+
+export default function EditCustomerPage({findAllOrders, findAllCustomers}) {
+    const router = useRouter();
+    let id = parseInt(router.query.id);
+    let customer = {};
+
+    findAllCustomers.map(f => {
+        if (parseInt(f.id) === id) {
+            customer = f;
+        }
+    })
+
     return (
         <MainLayout>
             <Header/>
@@ -70,24 +160,32 @@ export default function EditCustomerPage() {
                     <form action='src/pages' method='post' className={`flex flex-col gap-y-[20px] w-[80%] max-w-[900px] pt-5
                      max-[900px]:gap-y-0 max-[900px]:pt-0`}>
                         <FormRow>
-                            <InputField name="client-name" size="full" label="Naam opdrachtgever (optioneel)"/>
+                            <InputField id="client-name" defaultValue={customer.clientName}
+                                        size="full" label="Naam opdrachtgever (optioneel)"/>
                         </FormRow>
                         <FormRow>
-                            <InputField name="customer-firstname" size="half" label="Voornaam"/>
-                            <InputField name="customer-lastname" size="half" label="Achternaam"/>
+                            <InputField id="customer-firstname" defaultValue={customer.firstName}
+                                        size="half" label="Voornaam"/>
+                            <InputField id="customer-lastname" defaultValue={customer.lastName}
+                                        size="half" label="Achternaam"/>
                         </FormRow>
                         <FormRow>
-                            <InputField name="address" size="half" label="Straatnaam"/>
-                            <InputField name="house-number" label="Nummer"/>
-                            <InputField name="postal-code" label="Postcode"/>
+                            <InputField id="address" size="half" defaultValue={customer.streetName}
+                                        label="Straatnaam"/>
+                            <InputField id="house-number" defaultValue={customer.houseNumber}
+                                        label="Nummer"/>
+                            <InputField id="postal-code" defaultValue={customer.postalCode}
+                                        label="Postcode"/>
                         </FormRow>
                         <FormRow>
-                            <InputField name="residence" size="full" label="Plaats"/>
+                            <InputField id="residence" defaultValue={customer.city}
+                                        size="full" label="Plaats"/>
                         </FormRow>
                         <FormRow>
-                            <InputField name="phone" size="full" type="tel" label="Telefoon Nr"/>
+                            <InputField id="phone" size="full" defaultValue={customer.phoneNumber}
+                                        type="tel" label="Telefoon Nr"/>
                         </FormRow>
-                        <Buttons/>
+                        <Buttons customer={customer}></Buttons>
                     </form>
                 </div>
             </div>
