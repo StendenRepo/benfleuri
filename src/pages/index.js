@@ -5,7 +5,6 @@ import {
     GreenButton,
     OrderTable,
     updateOrderTable,
-    WhiteButton,
 } from '../components/OrderTable';
 import {
     ArrowLeftIcon, ArrowPathIcon,
@@ -26,6 +25,7 @@ function Header() {
                     Bestellingen
                 </div>
                 <div className={`flex justify-end w-1/2 gap-x-4`}>
+                    <GreenButton className={"route-button"}>Route maken</GreenButton>
                     <GreenButton link="/addOrder">Voeg nieuwe bestelling toe</GreenButton>
                 </div>
             </div>
@@ -48,7 +48,6 @@ function getDates(){
     let dates = []
     let weekDay = new Date();
     weekDay.setDate(new Date().getDate() + (currentWeekOffset * 7))
-    console.log(weekDay)
     //Loop through days of the week.
     for(let i = 0; i < 7; i++){
         let date = getMonday(weekDay)
@@ -127,8 +126,9 @@ export default function Home({findAllOrders, findAllCustomers}) {
                             pageLoad: true
                         })
                         return (<DayTable day={dateString} number={count}  content={content} customers={findAllCustomers} orders={orders}/>
-                    )
-            })}</div>
+                        )
+            })}
+            </div>
         </MainLayout>
     );
 }

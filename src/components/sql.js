@@ -190,9 +190,10 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
     }
     }`
 
+    //NOTE: We set the treating/assigned employee ID to the employee who created it.
     let variables = {"customerId" : customerId, "employeeId":  employeeId, "recieverId":  recieverId, "dateOfDelivery":  dateOfDelivery,
         "price":  price, "paymentMethod":  paymentMethod, "extraInfo": extraInfo, "productInfo": productInfo, "message": productMessage,
-        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": 1}
+        "orderState": orderState, "includeDelivery": includeDelivery, "cardType": cardType, "orderTreatingEmployeeId": employeeId}
     const data = await request('http://localhost:3000/api/graphql', query, variables)
     const {createOrder} = data
 

@@ -88,8 +88,10 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
       alert(customer.error.message);
       return
     }
+
+
     //Add the receiver if he/she does not yet exist in the database.
-    let receiver = await updateCustomer(orderObj.customerId,
+    let receiver = await updateCustomer(orderObj.recieverId,
         document.getElementById('receiverFirstName').value,
         document.getElementById('receiverLastName').value,
         document.getElementById('receiverPhoneNumber').value,
@@ -104,11 +106,15 @@ async function handleFormSubmit({orderObj, customerObj, receiverObj, employeeObj
       return
     }
 
-    if(!isValidDate(document.getElementById('deliveryDate').value)){
-        return {error: {"message": "De gegeven datum is ongeldig."}}
+    let splitDate = document.getElementById('deliveryDate').value.split("-")
+    let date = splitDate[2] + "-" + (splitDate[1] - 1 )+ "-" + splitDate[0]
+
+    if(!isValidDate(date)){
+        alert("De gegeven datum is ongeldig.");
+        return
     }
 
-    let date = document.getElementById('deliveryDate').valueAsDate
+    date = document.getElementById('deliveryDate').valueAsDate
 
     //Add the order to the database.
     let order = await updateOrder(
@@ -173,8 +179,6 @@ export default function ViewOrder({findAllOrders, findAllCustomers, findAllEmplo
             order = f;
         }
     })
-
-    console.log(id)
 
     findAllEmployees.map(f => {
         let intID = parseInt(f.id)
