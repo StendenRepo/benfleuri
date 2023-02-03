@@ -66,6 +66,8 @@ export async function getAllEmployees(fields) {
     return await request('http://localhost:3000/api/graphql', "{findAllEmployees {" + fields + "}}");
 }
 
+
+
 /**
  * Updates the given Order with new data.
  *
@@ -204,6 +206,40 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
     }
 }
 
+/**
+ * Adds an Order with the given values to the database.
+ *
+ * Returns the id of the added Order if successful or an error message if it failed.
+ *
+ * @param name The name of the employee.
+ * @param isAdmin If the employee is an admin.
+ * @param pincode The pincode/password of the employee.
+ *
+ * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
+ */
+export async function addEmployee(name, isAdmin, pincode){
+    if(pincode.length !== 6){
+        return {error: {"message": "De gegeven pincode moet 6 tekens zijn."}}
+    }
+
+    const query = gql`
+mutation CreateEmployee($name: String!, $password: String!, $isAdmin: Boolean) {
+  createEmployee(name: $name, password: $password, isAdmin: $isAdmin) {
+    id
+  }
+}`
+
+    let variables = {"name" : name, "isAdmin":  isAdmin, "password":  pincode}
+    const data = await request('http://localhost:3000/api/graphql', query, variables)
+    const {createEmployee} = data
+
+    return {
+        props: {
+            createEmployee
+        },
+    }
+}
+
 
 /**
  * Adds a Customer with the given values to the database if he/she does not yet exist.
@@ -322,6 +358,42 @@ mutation UpdateCustomer($updateCustomerId: Int!, $firstName: String!, $lastName:
         },
     }
 }
+
+/**
+ * Updates the given Employee with new data.
+ *
+ * Returns the id of the added employee if successful or an error message if it failed.
+ *
+ * @param {int} employeeID The ID of the employee.
+ * @param {string} name The name of the employee.
+ * @param {boolean} isAdmin If the employee is an Admin.
+ * @param {string} pincode The pincode of the employee.
+ *
+ *  @returns {Promise<{error: {message: string}|exists: boolean, id}>}
+ *  */
+export async function updateEmployee(employeeID, name, isAdmin, pincode){
+    if(pincode.length !== 6){
+        return {error: {"message": "De gegeven pincode moet 6 tekens zijn."}}
+    }
+
+    const query = gql`
+mutation UpdateEmployee($updateEmployeeId: Int!, $name: String, $isAdmin: Boolean, $password: String) {
+  updateEmployee(id: $updateEmployeeId, name: $name, isAdmin: $isAdmin, password: $password) {
+    id
+  }
+}`
+
+    let variables = {"updateEmployeeId": employeeID, "name" : name, "isAdmin":  isAdmin, "password":  pincode}
+    const data = await request('http://localhost:3000/api/graphql', query, variables)
+    const {updateEmployee} = data
+
+    return {
+        props: {
+            updateEmployee
+        },
+    }
+}
+
 
 /**
  * Validates that the input string is a valid date formatted as "dd/mm/yyyy"
