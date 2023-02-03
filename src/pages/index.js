@@ -9,6 +9,7 @@ import {
     ArrowLeftIcon, ArrowPathIcon,
     ArrowRightIcon,
 } from '@heroicons/react/20/solid';
+import { importWooCommerceOrder } from './orderOverview';
 import {GreenButton} from "../components/Table";
 
 let currentPage = [1, 1, 1, 1, 1, 1, 1]
@@ -34,6 +35,7 @@ function Header() {
 }
 
 export async function getServerSideProps() {
+    await importWooCommerceOrder()
     return getOrderTableData();
 }
 
