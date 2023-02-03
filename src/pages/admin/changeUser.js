@@ -113,12 +113,8 @@ function Buttons(employee) {
     <input className={`text-sm border-[1px] h-full py-[8px] px-[20px] font-['Roboto'] 
         bg-rose-500 text-white font-bold border-rose-500 rounded-lg hover:bg-rose-200`}
            value="Verwijderen" type="button" onClick={
-      async () => {
-        await handleFormSubmit({
-          employeeObj: employee
-        });
-      }
-    } disabled></input>
+       () => {alert("Deze functie is niet geïmplementeerd.")}
+    }></input>
   </div>
 }
 

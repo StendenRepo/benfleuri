@@ -218,6 +218,10 @@ export async function addOrder(customerId, employeeId, recieverId, dateOfDeliver
  * @returns {Promise<{error: {message: string}}|{props: {createOrder}}>}
  */
 export async function addEmployee(name, isAdmin, pincode){
+    if(pincode.length > 6){
+        return {error: {"message": "De gegeven pincode is te lang (maximaal 6 tekens)."}}
+    }
+
     const query = gql`
 mutation CreateEmployee($name: String!, $password: String!, $isAdmin: Boolean) {
   createEmployee(name: $name, password: $password, isAdmin: $isAdmin) {
@@ -368,6 +372,10 @@ mutation UpdateCustomer($updateCustomerId: Int!, $firstName: String!, $lastName:
  *  @returns {Promise<{error: {message: string}|exists: boolean, id}>}
  *  */
 export async function updateEmployee(employeeID, name, isAdmin, pincode){
+    if(pincode.length > 6){
+        return {error: {"message": "De gegeven pincode is te lang (maximaal 6 tekens)."}}
+    }
+
     const query = gql`
 mutation UpdateEmployee($updateEmployeeId: Int!, $name: String, $isAdmin: Boolean, $password: String) {
   updateEmployee(id: $updateEmployeeId, name: $name, isAdmin: $isAdmin, password: $password) {
