@@ -10,6 +10,7 @@ import {
     ArrowLeftIcon, ArrowPathIcon,
     ArrowRightIcon,
 } from '@heroicons/react/20/solid';
+import { importWooCommerceOrder } from './orderOverview';
 
 let currentPage = [1, 1, 1, 1, 1, 1, 1]
 let currentWeekOffset = 0;
@@ -34,6 +35,7 @@ function Header() {
 }
 
 export async function getServerSideProps() {
+    await importWooCommerceOrder()
     return getOrderTableData();
 }
 

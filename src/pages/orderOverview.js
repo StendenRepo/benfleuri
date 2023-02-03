@@ -58,7 +58,6 @@ function Header() {
 }
 
 export async function getServerSideProps() {
-  await importWooCommerceOrder()
   return getOrderTableData();
 }
 
@@ -141,7 +140,7 @@ export default function OrderOverview({ findAllOrders, findAllCustomers }) {
   );
 }
 
-async function importWooCommerceOrder() {
+export async function importWooCommerceOrder() {
   try {
     // import WooCommerceRestApi from "@woocommerce/woocommerce-rest-api"; // Supports ESM
     const WooCommerceRestApi =
@@ -185,8 +184,22 @@ async function importWooCommerceOrder() {
         const last_name = customerData.last_name;
         const company = customerData.company;
         const address = customerData.address_1.split(" ");
-        const houseNumber = address.pop()
-        const streetName = address.join(" ")
+
+        let houseNumber
+        let streetName
+        if(address.length <= 1) {
+          houseNumber = ""
+          streetName = address[0]
+        } else {
+          houseNumber = address.pop()
+          streetName = address.join(" ")
+        }
+
+        if(houseNumber.length > 6) {
+          streetName += houseNumber
+          houseNumber = ""
+        }
+        
         const city = customerData.city;
         const postcode = customerData.postcode.replace(" ", "");
         const country = customerData.country;
@@ -214,8 +227,22 @@ async function importWooCommerceOrder() {
         const shippingLastName = shipping.last_name;
         const shippingCompany = shipping.company;
         const shippingAddress = shipping.address_1.split(" ");
-        const shippingHouseNumber = shippingAddress.pop()
-        const shippingStreetName = shippingAddress.join(" ")
+
+        let shippingHouseNumber
+        let shippingStreetName
+        if(shippingAddress.length <= 1) {
+          shippingHouseNumber = ""
+          shippingStreetName = address[0]
+        } else {
+          shippingHouseNumber = shippingAddress.pop()
+          shippingStreetName = shippingAddress.join(" ")
+        }
+
+        if(shippingHouseNumber.length > 6) {
+          shippingStreetName += shippingHouseNumber
+          shippingHouseNumber = ""
+        }
+
         const shippingCity = shipping.city;
         const shippingpPostcode = shipping.postcode.replace(" ", "");
         const shippingCountry = shipping.country;
@@ -331,8 +358,6 @@ async function importWooCommerceOrder() {
         return extractedData;
       });
     });
-    
-    // TODO: CONTROLEREN OF DE ORDER AL BESTAAT
   } catch (error) {
     console.log(error)
     return null;
