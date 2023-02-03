@@ -172,7 +172,7 @@ async function importWooCommerceOrder() {
     let findOrders = await getAllOrders("customerId recieverId message productInfo")
 
     //test order: 39527 or 39685
-    WooCommerce.get('orders', {per_page: 5}).then((response) => {
+    WooCommerce.get('orders', {per_page: 15}).then((response) => {
       //convert orderer data to json objects
       response.data.forEach(element => {
         // console.log(element.billing)
